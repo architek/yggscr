@@ -1,0 +1,19 @@
+<li use="5" data-id="2125">
+		
+			<a href="/forum/index.php?members/hijohimoto.27/" class="avatar avatar--xxs" data-user-id="27" data-xf-init="member-tooltip" id="js-XFUniqueId81">
+			<img src="/forum/data/avatars/s/0/27.jpg?1528567101" alt="Hijohimoto" class="avatar-u27-s" itemprop="image"> 
+		</a>
+		
+		<a href="/forum/index.php?members/hijohimoto.27/" class="username " dir="auto" data-user-id="27" data-xf-init="member-tooltip" user-group-id="5" id="js-XFUniqueId82">Hijohimoto</a>:
+		<span><div class="bbWrapper"><div class="lbContainer lbContainer--inline" data-xf-init="lightbox" data-lb-single-image="1" data-lb-container-zoom="1" data-lb-trigger=".js-lbImage-_xfUid-1-1531654757" data-lb-id="_xfUid-1-1531654757">
+		
+			<div class="lbContainer-zoomer js-lbImage-_xfUid-1-1531654757" data-src="https://image.noelshack.com/fichiers/2018/28/1/1531087599-gifs-sourires-emotions-vcq3ktl1g0.gif" aria-label="Zoom"></div>
+		
+		<img src="https://image.noelshack.com/fichiers/2018/28/1/1531087599-gifs-sourires-emotions-vcq3ktl1g0.gif" data-url="https://image.noelshack.com/fichiers/2018/28/1/1531087599-gifs-sourires-emotions-vcq3ktl1g0.gif" class="bbImage" data-zoom-target="1" alt="">
+	</div>
+
+ bien sur que si <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" class="smilie smilie--sprite smilie--sprite6" alt=":cool:" title="Cool    :cool:"></div></span>
+		<time class="u-dt" dir="auto" datetime="2018-07-15T12:12:09+0100" data-time="1531653129" data-date-string="15/7/18" data-time-string="12:12" title="15/7/18, à 12:12">il y a 27 minutes</time>
+		
+		
+	</li>

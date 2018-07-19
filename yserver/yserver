@@ -1,0 +1,105 @@
+#!/usr/bin/env python3
+import bottle
+from bottle import route, run, template, response, static_file, request
+from configparser import ConfigParser
+from yggscr.ygg import YggBrowser
+from transmissionrpc import Client as tclient
+from base64 import b64encode
+import re
+
+config = ConfigParser()
+config.read('yserver.cfg')
+
+username = config['user']['username']
+password = config['user']['password']
+host = config['app']['hostname']
+port = config['app']['port']
+thostname = config['transmission']['hostname']
+tport = config['transmission']['port']
+cats = {'Films & Vidéos': 2145, 'Audio': 2139, 'Application': 2144,
+        'Jeu vidéo': 2142, 'Ebook': 2140, 'Emulation': 2141,
+        'GPS': 2143, 'XXX': 2188}
+
+ygg = YggBrowser()
+ygg.login(ygg_id=username, ygg_pass=password)
+
+
+def results_opts(results, sort=''):
+    if sort == 'seeders' or sort == '':
+        items = sorted(results, key=lambda k: int(k.seeders), reverse=True)
+    elif sort == 'size':
+        items = sorted(results, key=lambda k: int(k.size), reverse=True)
+    elif sort == 'added':
+        items = sorted(results, key=lambda k: getattr(k, sort), reverse=True)
+    else:
+        items = sorted(results, key=lambda k: getattr(k, sort), reverse=False)
+    return items
+
+
+@route('/static/<filepath>')
+def server_static(filepath):
+    return static_file(filepath, root='resources/static')
+
+
+@route('/images/<filepath>')
+def server_static(filepath):
+    return static_file(filepath, root='resources/images')
+
+
+@route('/')
+def index():
+    return template('index')
+
+
+@route('/search')
+def index():
+    search = request.query.search
+    sort = request.query.sort
+    if search == '':
+        return template('index')
+    else:
+        torrents = ygg.search_torrents(search)
+        sorted_torrents = results_opts(torrents, sort)
+        return template('search_results', results=sorted_torrents)
+
+
+@route('/get/<idtorrent>')
+def index(idtorrent):
+    head, resp = ygg.download_torrent(id=idtorrent)
+    for k, v in head:
+        response.set_header(k, v)
+    return resp
+#    f = open('/tmp/test.torrent', 'wb')
+#    f.write(data)
+#    f.close()
+#    tc = tclient(thostname, tport)
+#    tc.add_torrent(b64encode(data).decode('ascii'))
+#    return data
+
+@route('/rss')
+def index_rss():
+    return template('rss', results=cats)
+
+@route('/rss/<cat>')
+def index(cat):
+    if cat in cats.keys():
+        cat = cats[cat]
+    elif cat not in cats.values():
+        return index_rss()
+    BASE = "ww1.yggtorrent.is"
+    rss_link = "https://"+BASE+"/rss?type=1&parent_category=%(category)s"
+    ygg.get(rss_link % {'category': cat})
+    response_body = re.sub(
+            r'https:[^"]*torrent_generator[^"0-9]*([0-9]*).*"',
+            r'http://%s:%s/get/\1"' % (host, port),
+            ygg.response().content.decode('utf-8'))
+    response.set_header('Content-type', 'application/xml')
+    response_body = re.sub(r'(Official YggTorrent)', r'Better than \1',
+                           response_body)
+    return response_body
+
+
+if __name__ == "__main__":
+    run(host=host, port=port)
+
+app = bottle.default_app()

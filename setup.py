@@ -50,6 +50,6 @@ setup(name='yggscr',
           'cfscrape>=1.9.4',
           'bottle>=0.12.13',
       ],
-      scripts=['bin/yshell', 'Bygg/yserver'],
+      scripts=['bin/yshell', 'yserver/yserver'],
       include_package_data=True,
       zip_safe=False)

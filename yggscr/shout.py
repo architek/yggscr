@@ -6,6 +6,8 @@ import time
 import yggscr.ygg
 from bs4 import NavigableString
 
+SHOUT_URL = "https://ww1.yggtorrent.is/forum/index.php?shoutbox/refresh"
+
 
 class ShoutMessage(object):
 
@@ -46,8 +48,8 @@ class ShoutMessage(object):
                 message = message + disp
             elif e.name == "a":
                 message = message + e.string
-        message = message.replace('\n',' ')
-        message = message.replace('\r',' ')
+        message = message.replace('\n', ' ')
+        message = message.replace('\r', ' ')
         return mtime, username, int(group_id), str(message)
 
 
@@ -61,12 +63,11 @@ class YggShout:
 
     def get_shouts(self):
         """ Return current shouts from website """
-        self.robs.get(
-            "https://ww1.yggtorrent.is/forum/index.php?shoutbox/refresh")
-        return [ ShoutMessage(soup=li, shout=self)
-            for li in list(reversed(
-                [li for li in self.robs.parsed().find_all("li")
-                 if li.has_attr('data-id')]
+        self.robs.get(SHOUT_URL)
+        return [ShoutMessage(soup=li, shout=self)
+                for li in list(reversed(
+                     [li for li in self.robs.parsed().find_all("li")
+                      if li.has_attr('data-id')]
                 ))]
 
     def do_diff(self):

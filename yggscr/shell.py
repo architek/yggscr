@@ -144,6 +144,18 @@ class YggShell(Cmd):
         else:
             self.print_torrents(torrents)
 
+    def do_top_day(self, line):
+        ''' top day '''
+        try:
+            torrents = self.ygg_browser.top_day()
+        except (requests.exceptions.RequestException) as e:
+            print("Network error:%s" % e)
+            return
+        if torrents is None:
+            print("No results")
+        else:
+            self.print_torrents(torrents)
+
     def do_lscat(self, line):
         'list categories and subcategories'
         print("List of cat, subcat combinaisons:\n%s" %
@@ -155,7 +167,7 @@ class YggShell(Cmd):
 
     def do_response(self, line):
         'get last response'
-        print(self.ygg_browser.response().content)
+        print(self.ygg_browser.response().text)
 
     def do_get(self, url):
         'do a simple get on an url'

@@ -4,7 +4,9 @@
 import re
 import os
 import time
+import json
 import datetime
+from bs4 import BeautifulSoup
 from .torrents import Torrent
 from .sbrowser import SBrowser
 from .exceptions import YggException
@@ -19,10 +21,14 @@ except ImportError:
 # pp = PrettyPrinter(indent=4)
 
 SITE = "ww1.yggtorrent.is"
-
 HOME_URL = "https://" + SITE
 TORRENT_URL = HOME_URL + "/torrents/"
 SEARCH_URL = HOME_URL + "/engine/search"
+TOP_DAY_URL = HOME_URL + "/engine/ajax_top_query/day"
+TOP_WEEK_URL = HOME_URL + "/engine/ajax_top_query/week"
+TOP_MONTH_URL = HOME_URL + "/engine/ajax_top_query/month"
+TOP_SEED_URL = HOME_URL + "/engine/mostseeded"
+DL_TMPL = HOME_URL + "/engine/download_torrent?id=%s"
 
 
 class YggBrowser(SBrowser):
@@ -44,7 +50,8 @@ class YggBrowser(SBrowser):
 
     def gen_state(self):
         def upd_state(r, *args, **kwargs):
-            if r.url.startswith(HOME_URL) and "forum" not in r.url and r.encoding is not None:
+            if "yggtorrent.is" in r.url and "forum" not in r.url \
+                    and r.encoding is not None:
                 if "Mon compte" in r.text:
                     self.idstate = "authenticated"
                 else:
@@ -57,7 +64,6 @@ class YggBrowser(SBrowser):
             raise YggException("Disconnect first")
         self._id = ygg_id if ygg_id else os.environ['ygg_id']
         self._pass = ygg_pass if ygg_id else os.environ['ygg_pass']
-        self.browser.open(HOME_URL)
         for form in self.browser.get_forms():
             if form.parsed.find(id="login_msg_pass"):
                 login_form = form
@@ -119,7 +125,41 @@ class YggBrowser(SBrowser):
         return {'down': down, 'up': up, 'ratio': ratio,
                 'i_up': i_up, 'm_up': m_up, 'i_down': i_down, 'm_down': m_down}
 
-    def _get_torrents(self, sup=None, detail=None):
+    def _get_torrents_xhr(self, url, method="get"):
+        torrent_list = []
+        self.browser.open(url, method=method)
+        jres = json.loads(self.response().content.decode('utf-8'))
+        for jcat in jres:
+            for jtor in jres[jcat]:
+                torrent_list.append(Torrent(
+                    torrent_title=BeautifulSoup(jtor[1], "lxml").text.rstrip(),
+                    torrent_comm=jtor[3],
+                    torrent_age=datetime.datetime.fromtimestamp(
+                        int(BeautifulSoup(jtor[4], "lxml").div.text)).strftime(
+                            "%Y-%m-%d %H:%M:%S"),
+                    torrent_size=jtor[5].split(">")[-1],
+                    torrent_compl=jtor[6],
+                    torrent_seed=jtor[7],
+                    torrent_leech=jtor[8],
+                    href=BeautifulSoup(jtor[1], "lxml").find(
+                        'a', href=True)['href'],
+                    cat=jcat
+                ))
+        return torrent_list
+
+    def top_day(self):
+        return self._get_torrents_xhr(TOP_DAY_URL)
+
+    def top_week(self):
+        return self._get_torrents_xhr(TOP_WEEK_URL)
+
+    def top_month(self):
+        return self._get_torrents_xhr(TOP_MONTH_URL)
+
+    def top_seeded(self):
+        return self._get_torrents_xhr(TOP_SEED_URL, method="post")
+
+    def _parse_torrents(self, sup=None, detail=None):
         torrent_list = []
         if sup is None:
             sup = self.parsed()
@@ -156,8 +196,7 @@ class YggBrowser(SBrowser):
                         thref, tid))
                 else:
                     torrent_list.append(Torrent(
-                        name, comm, age, size, compl, seeders, leechers, href,
-                        None, None))
+                        name, comm, age, size, compl, seeders, leechers, href))
         except (IndexError, KeyError):
             raise YggException("Couldn't decode web page")
 
@@ -166,7 +205,7 @@ class YggBrowser(SBrowser):
     def list_torrents(self, cat, subcat, detail=False):
         self.browser.open(TORRENT_URL + get_link(cat, subcat))
         self.detail = detail
-        return self._get_torrents()
+        return self._parse_torrents()
 
     def search_torrents(self, pattern, cat=None, subcat=None, detail=False):
         param = dict()
@@ -178,7 +217,7 @@ class YggBrowser(SBrowser):
         param['do'] = "search"
         self.browser.open(SEARCH_URL, params=param)
         self.detail = detail
-        return self._get_torrents()
+        return self._parse_torrents()
 
     def next_torrents(self):
         s_href = self.browser.find('a', string=re.compile('suivant'))
@@ -186,7 +225,7 @@ class YggBrowser(SBrowser):
             self.browser.follow_link(s_href)
         else:
             return None
-        return self._get_torrents()
+        return self._parse_torrents()
 
     def cat_subcat(self):
         return list_cat_subcat()
@@ -195,11 +234,11 @@ class YggBrowser(SBrowser):
         self.browser.open(HOME_URL)
 
     def id2href(self, id):
-        tmpl = "https://ww1.yggtorrent.is/engine/download_torrent?id=%s"
-        return tmpl % id
+        return DL_TMPL % id
 
     def download_torrent(self, torrent=None, id=None):
-        href = torrent.get_dl_link() if torrent is not None else self.id2href(id)
+        href = torrent.get_dl_link() if torrent is not None \
+                                       else self.id2href(id)
         self.get(href)
         iheaders = self.response().headers
         headers = [('Content-type', iheaders['Content-type']),

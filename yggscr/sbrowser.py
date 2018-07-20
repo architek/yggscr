@@ -15,8 +15,8 @@ class SBrowser:
         self.scraper = scraper or cfscrape.create_scraper()
         self.browser = browser or RoboBrowser(session=self.scraper,
                                               history=False,
-                                              parser='html.parser',
-                                              timeout=10)
+                                              parser='lxml',
+                                              timeout=7)
         self.proxy = None
 
     def __str__(self):

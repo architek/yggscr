@@ -3,7 +3,7 @@
 <br />
 <div class="results">
 <table>
-    <tr> <th> Category </th> </tr>
+    <tr> <th> Choose RSS category </th> </tr>
 %for t in results:
    <tr>
     <td><a class="torrent" href="/rss/{{!t}}">{{!t}}</a></td>

@@ -6,7 +6,7 @@
 
 import yggscr
 import requests
-from time import sleep
+from time import sleep, time
 from hashlib import sha256
 import supybot.ircdb as ircdb
 from supybot.commands import (wrap, optional)
@@ -194,16 +194,32 @@ class YBot(callbacks.Plugin):
         irc.replySuccess()
     yresp = wrap(yresp)
 
-    def yping(self, irc, msg, args):
+    def yping(self, irc, msg, args, n=1):
         """
         GET /
         """
-        try:
-            self.yggb.ping()
-            irc.reply("ypong")
-        except Exception as e:
-            irc.error("nope: %s" % e)
-    yping = wrap(yping)
+        t = []
+        mmin, mmax, mmean = float("inf"), float("-inf"), float("inf")
+        for _ in range(n):
+            try:
+                t1 = time()
+                self.yggb.ping()
+                t2 = time()
+                dt = t2-t1
+                mmax = max(mmax, dt)
+                mmin = min(mmin, dt)
+                t.append(dt)
+            except Exception as e:
+                pass
+                mmax = float("inf")
+        if t:
+            mmean = sum(t)/len(t)
+        irc.reply("%d packets transmitted, %d received, %.2f:% packet loss".
+                  format(n, len(t), 100*(1-len(t)/n)))
+        irc.reply("rtt min/avg/max = %.2f/%.2f/%.2f ms".
+                  format(mmin, mmean, mmax))
+
+    yping = wrap(yping, [optional(int)])
 
     def colorize_user(self, user, group, w_colour):
 

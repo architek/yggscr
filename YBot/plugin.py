@@ -180,7 +180,7 @@ class YBot(callbacks.Plugin):
     yresp = wrap(yresp)
 
     def yping(self, irc, msg, args, n, quiet=False):
-        """
+        """[n] [quiet: boolean]
         GET /
         """
         t = []

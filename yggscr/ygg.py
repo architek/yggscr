@@ -36,7 +36,7 @@ class YggBrowser(SBrowser):
     """
     def __init__(self, scraper=None,
                  browser=None):
-        SBrowser.__init__(self, scraper, browser)
+        SBrowser.__init__(self, scraper, browser, history=False, timeout=7)
         self.idstate = None
         self.detail = False         # No detailed torrent info by default
         self.browser.session.hooks['response'].append(self.gen_state())
@@ -61,7 +61,7 @@ class YggBrowser(SBrowser):
     def login(self, ygg_id=None, ygg_pass=None):
         self.browser.open(HOME_URL)
         if self.idstate == "authenticated":
-            raise YggException("Disconnect first")
+            raise YggException("Logout first")
         self._id = ygg_id if ygg_id else os.environ['ygg_id']
         self._pass = ygg_pass if ygg_id else os.environ['ygg_pass']
         for form in self.browser.get_forms():

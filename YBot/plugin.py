@@ -194,32 +194,37 @@ class YBot(callbacks.Plugin):
         irc.replySuccess()
     yresp = wrap(yresp)
 
-    def yping(self, irc, msg, args, n=1):
+    def yping(self, irc, msg, args, n):
         """
         GET /
         """
         t = []
         mmin, mmax, mmean = float("inf"), float("-inf"), float("inf")
+        if n is None or n < 1:
+            n=1
         for _ in range(n):
             try:
                 t1 = time()
                 self.yggb.ping()
                 t2 = time()
-                dt = t2-t1
+                dt = 1000*(t2-t1)
                 mmax = max(mmax, dt)
                 mmin = min(mmin, dt)
                 t.append(dt)
+                if n > 1:
+                    irc.reply("{:>2} ping {} time={:>7.2f}ms".format(1+_, self.yggb.browser.url, dt))
             except Exception as e:
                 pass
                 mmax = float("inf")
+                irc.reply("{:>2} timeout! [{}]".format(1+_, e))
         if t:
             mmean = sum(t)/len(t)
-        irc.reply("%d packets transmitted, %d received, %.2f:% packet loss".
-                  format(n, len(t), 100*(1-len(t)/n)))
-        irc.reply("rtt min/avg/max = %.2f/%.2f/%.2f ms".
+        irc.reply("{} packet{} transmitted, {} received, {:.2%} packet loss".
+                  format(n, "s" if n > 1 else "", len(t), 1-len(t)/n))
+        irc.reply("rtt min/avg/max = {:.2f}/{:.2f}/{:.2f} ms".
                   format(mmin, mmean, mmax))
 
-    yping = wrap(yping, [optional(int)])
+    yping = wrap(yping, [optional('int')])
 
     def colorize_user(self, user, group, w_colour):
 

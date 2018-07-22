@@ -195,8 +195,8 @@ class YBot(callbacks.Plugin):
     yresp = wrap(yresp)
 
     def yping(self, irc, msg, args, n):
-        """
-        GET /
+        """[n]
+        GET / n times
         """
         t = []
         mmin, mmax, mmean = float("inf"), float("-inf"), float("inf")

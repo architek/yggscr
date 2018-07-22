@@ -59,17 +59,12 @@ class YBot(callbacks.Plugin):
         """[https proxy]
         Sets or removes proxy (http, socks, ..)
         """
-        cuser = ircdb.users.getUser(msg.prefix)
-        isOwner = cuser._checkCapability('owner')
-        if not isOwner:
-            irc.error("Not my owner")
-            return
         if https_proxy:
             self.yggb.proxify(https_proxy)
         else:
             self.yggb.proxify(None)
         irc.replySuccess()
-    yprox = wrap(yprox, [optional('anything')])
+    yprox = wrap(yprox, ['owner', optional('anything')])
 
     def ysearch(self, irc, msg, args, q, n, detail):
         """q:pattern[,c:cat[,s:subcat]] [n:nmax] [detail True/False]
@@ -117,11 +112,6 @@ class YBot(callbacks.Plugin):
         """[user pass]
         Logins to ygg using given credentials or stored one
         """
-        cuser = ircdb.users.getUser(msg.prefix)
-        isOwner = cuser._checkCapability('owner')
-        if not isOwner:
-            irc.error("Not my owner")
-            return
         if not yuser and not ypass:
             yuser = self.registryValue('cred.user')
             ypass = self.registryValue('cred.pass')
@@ -145,20 +135,15 @@ class YBot(callbacks.Plugin):
             return
         irc.replySuccess()
         self.log.info("Connected as {}".format(yuser))
-    ylogin = wrap(ylogin, [optional('anything'), optional('anything')])
+    ylogin = wrap(ylogin, ['owner', optional('anything'), optional('anything')])
 
     def ylogout(self, irc, msg, args):
         """
         Logout from ygg
         """
-        cuser = ircdb.users.getUser(msg.prefix)
-        isOwner = cuser._checkCapability('owner')
-        if not isOwner:
-            irc.error("Not my owner")
-            return
         self.yggb.logout()
         irc.replySuccess()
-    ylogout = wrap(ylogout)
+    ylogout = wrap(ylogout, ['owner'])
 
     def ystats(self, irc, msg, args):
         """
@@ -194,7 +179,7 @@ class YBot(callbacks.Plugin):
         irc.replySuccess()
     yresp = wrap(yresp)
 
-    def yping(self, irc, msg, args, n):
+    def yping(self, irc, msg, args, n, quiet=False):
         """
         GET /
         """
@@ -202,6 +187,9 @@ class YBot(callbacks.Plugin):
         mmin, mmax, mmean = float("inf"), float("-inf"), float("inf")
         if n is None or n < 1:
             n=1
+        if quiet is None:
+            print("None!!")
+            quiet=False
         for _ in range(n):
             try:
                 t1 = time()
@@ -211,7 +199,7 @@ class YBot(callbacks.Plugin):
                 mmax = max(mmax, dt)
                 mmin = min(mmin, dt)
                 t.append(dt)
-                if n > 1:
+                if n > 1 and not quiet:
                     irc.reply("{:>2} ping {} time={:>7.2f}ms".format(1+_, self.yggb.browser.url, dt))
             except Exception as e:
                 pass
@@ -224,7 +212,7 @@ class YBot(callbacks.Plugin):
         irc.reply("rtt min/avg/max = {:.2f}/{:.2f}/{:.2f} ms".
                   format(mmin, mmean, mmax))
 
-    yping = wrap(yping, [optional('int')])
+    yping = wrap(yping, [optional('int'), optional('boolean')])
 
     def colorize_user(self, user, group, w_colour):
 
@@ -289,7 +277,7 @@ class YBot(callbacks.Plugin):
             irc.reply(
                     prefix + self.shoutify(shout, w_colour), prefixNick=False)
             sleep(1)
-    yshout = wrap(yshout, [optional('int'), optional('boolean'), optional('anything')])
+    yshout = wrap(yshout, ['owner', optional('int'), optional('boolean'), optional('anything')])
 
 
 Class = YBot

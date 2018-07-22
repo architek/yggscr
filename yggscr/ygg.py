@@ -61,7 +61,7 @@ class YggBrowser(SBrowser):
     def login(self, ygg_id=None, ygg_pass=None):
         self.browser.open(HOME_URL)
         if self.idstate == "authenticated":
-            raise YggException("Disconnect first")
+            raise YggException("Logout first")
         self._id = ygg_id if ygg_id else os.environ['ygg_id']
         self._pass = ygg_pass if ygg_id else os.environ['ygg_pass']
         for form in self.browser.get_forms():

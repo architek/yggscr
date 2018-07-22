@@ -200,7 +200,7 @@ class YBot(callbacks.Plugin):
         """
         t = []
         mmin, mmax, mmean = float("inf"), float("-inf"), float("inf")
-        if n is None:
+        if n is None or n < 1:
             n=1
         for _ in range(n):
             try:

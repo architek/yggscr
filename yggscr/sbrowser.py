@@ -11,11 +11,9 @@ from robobrowser import exceptions as robo
 class SBrowser:
 
     def __init__(self, scraper=None,
-                 browser=None):
+                 browser=None, **kwargs):
         self.scraper = scraper or cfscrape.create_scraper()
-        self.browser = browser or RoboBrowser(session=self.scraper,
-                                              history=False,
-                                              timeout=7)
+        self.browser = browser or RoboBrowser(session=self.scraper, **kwargs)
         self.proxy = None
 
     def __str__(self):

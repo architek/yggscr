@@ -36,7 +36,7 @@ class YggBrowser(SBrowser):
     """
     def __init__(self, scraper=None,
                  browser=None):
-        SBrowser.__init__(self, scraper, browser)
+        SBrowser.__init__(self, scraper, browser, history=False, timeout=7)
         self.idstate = None
         self.detail = False         # No detailed torrent info by default
         self.browser.session.hooks['response'].append(self.gen_state())

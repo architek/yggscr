@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 import re
 from itertools import cycle
-from base64 import b64encode
 from yggscr.ygg import YggBrowser
+from yggscr.client import rtorrent_add_torrent
 from configparser import ConfigParser
-from transmissionrpc import Client as tclient
 from bottle import route, run, template, response, static_file, request, \
                    default_app
 
@@ -17,15 +16,24 @@ host = config['app']['hostname']
 port = config['app']['port']
 thostname = config['transmission']['hostname']
 tport = config['transmission']['port']
+rpc_url = config['rtorrent']['rpc_url']
 cats = {'Films & Vidéos': 2145, 'Audio': 2139, 'Application': 2144,
         'Jeu vidéo': 2142, 'Ebook': 2140, 'Emulation': 2141,
         'GPS': 2143, 'XXX': 2188}
 BASE = "ww1.yggtorrent.is"
 RSS_LINK = "https://"+BASE+"/rss?type=1&parent_category=%(category)s"
 
-cyc = dict()
-for k in "cat", "title", "age", "nsize", "seeders", "leechers":
-    cyc[k] = cycle([True, False])
+state = {
+    'sorted_torrents': '',
+    'order' : {
+        'cat': cycle([True, False]),
+        'title': cycle([True, False]),
+        'age': cycle([True, False]),
+        'nsize': cycle([True, False]),
+        'seeders': cycle([True, False]),
+        'leechers': cycle([True, False]),
+    }
+}
 
 ygg = YggBrowser()
 ygg.login(ygg_id=username, ygg_pass=password)
@@ -35,7 +43,7 @@ print("Logged in as %s" % username)
 def results_opts(results, sort=''):
     return sorted(results,
                   key=lambda k: getattr(k, sort),
-                  reverse=next(cyc[sort])) if sort else results
+                  reverse=next(state['order'][sort])) if sort else results
 
 
 @route('/static/<filepath>')
@@ -61,47 +69,52 @@ def search_index():
         return template('index')
     else:
         torrents = ygg.search_torrents(search)
-        sorted_torrents = results_opts(torrents, sort)
-        return template('search_results', results=sorted_torrents)
+        state['sorted_torrents'] = results_opts(torrents, sort)
+        return template('search_results', results=state['sorted_torrents'])
 
 
 @route('/top/day')
 def top_day():
     sort = request.query.sort
     torrents = ygg.top_day()
-    sorted_torrents = results_opts(torrents, sort)
-    return template('search_results', results=sorted_torrents)
+    state['sorted_torrents'] = results_opts(torrents, sort)
+    return template('search_results', results=state['sorted_torrents'])
 
 
 @route('/top/week')
 def top_week():
     sort = request.query.sort
     torrents = ygg.top_week()
-    sorted_torrents = results_opts(torrents, sort)
-    return template('search_results', results=sorted_torrents)
+    state['sorted_torrents'] = results_opts(torrents, sort)
+    return template('search_results', results=state['sorted_torrents'])
 
 
 @route('/top/month')
 def top_month():
     sort = request.query.sort
     torrents = ygg.top_month()
-    sorted_torrents = results_opts(torrents, sort)
-    return template('search_results', results=sorted_torrents)
+    state['sorted_torrents'] = results_opts(torrents, sort)
+    return template('search_results', results=state['sorted_torrents'])
 
 
-@route('/get/<idtorrent>')
-def get_torrent(idtorrent):
+@route('/dl/<idtorrent:int>')
+def dl_torrent(idtorrent):
     head, resp = ygg.download_torrent(id=idtorrent)
     for k, v in head:
         response.set_header(k, v)
     return resp
-#    f = open('/tmp/test.torrent', 'wb')
-#    f.write(data)
-#    f.close()
-#    tc = tclient(thostname, tport)
-#    tc.add_torrent(b64encode(data).decode('ascii'))
-#    return data
 
+@route('/ts/<idtorrent:int>')
+def ts_torrent(idtorrent):
+    _, resp = ygg.download_torrent(id=idtorrent)
+    transmission_add_torrent(thostname, tport, resp)
+    return template('search_results', results=state['sorted_torrents'])
+
+@route('/rt/<idtorrent:int>')
+def rt_torrent(idtorrent):
+    _, resp = ygg.download_torrent(id=idtorrent)
+    rtorrent_add_torrent(rpc_url, resp)
+    return template('search_results', results=state['sorted_torrents'])
 
 @route('/rss')
 def rss():

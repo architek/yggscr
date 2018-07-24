@@ -1,0 +1,1 @@
+class YggException(Exception): pass

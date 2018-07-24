@@ -1,0 +1,62 @@
+image: python:3.6-slim
+
+before_script:
+    - python -V # Print out python version for debugging
+
+stages:
+    - test
+    - build
+    - deploy
+
+# NOT RUN FOR MASTER BRANCH
+job_test:
+    stage: test
+    script:
+        - echo "Running tests"
+        - python setup.py build
+        - python setup.py -q install
+        - pip install nose
+        - nosetests -w tests
+
+    only:
+        - branches
+#    except:
+#       - master
+
+# ONLY RUN FOR DEV BRANCH
+job_run:
+    stage: build
+    script:
+        - echo "Building the app"
+        - python setup.py build
+
+#   only:
+#       - Dev
+
+
+# ONLY MASTER
+job_deployment_staging:
+    stage: deploy
+    script:
+        - echo "Deploy MASTER BRANCH of the app into staging"
+        - python setup.py build
+        - python setup.py -q install
+    environment:
+        name: staging
+    only:
+        - master
+
+
+# ONLY MASTER
+job_deploy_prod:
+    stage: deploy
+    script:
+        - echo "Deploy MASTER BRANCH into the production server"
+        - python setup.py sdist
+    environment:
+        name: production
+#    allow_failure: false
+    when: manual
+    only:
+        - master
+

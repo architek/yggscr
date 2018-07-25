@@ -4,4 +4,4 @@ requests[socks]>=2.18.4
 cfscrape>=1.9.4
 pytest>=3.5.0
 bottle>=0.12.13
-transmissionrpc==0.11
+transmissionrpc>=0.11

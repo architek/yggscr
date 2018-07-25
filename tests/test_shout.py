@@ -3,7 +3,8 @@ from yggscr import shout
 from bs4 import BeautifulSoup
 
 case_files = "test.txt", "test2.txt", "test3.txt", \
-             "test4.txt", "test5.txt", "test6.txt"
+             "test4.txt", "test5.txt", "test6.txt" \
+             "test7.txt", "test8.txt"
 
 
 class ShoutTest(unittest.TestCase):

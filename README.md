@@ -53,13 +53,15 @@ Up (GB):306.66
 Symlink the YBot subdirectory in your supybot plugin directory.
 Ask the bot for help ;-)
 
-### As standalone wsgi server
-Fill in your settings in defaults.cfg
+### As standalone web server
+This server allows searching, downloading torrent file, sending to rtorrent or transmission client and authenticated RSS.
+
+Fill in your settings in defaults.cfg (at least Hostname, Port to listen to)
 
 ```bash
 yserver
 
 ```
 
-To access webapp, connect to http://localhost:8081
+To access webapp, connect to http://localhost:8081 (or any other config you've set)
 

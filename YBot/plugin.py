@@ -274,7 +274,11 @@ class YBot(callbacks.Plugin):
             irc.reply(
                     prefix + self.shoutify(shout, w_colour), prefixNick=False)
             sleep(1)
+<<<<<<< HEAD
     yshout = wrap(yshout, ['owner', optional('int'), optional('boolean'), optional('filename')])
+=======
+    yshout = wrap(yshout, ['owner', optional('int'), optional('boolean'), optional('anything')])
+>>>>>>> 441862316bd29cdc711d1d84d2fe80d9ca7faeff
 
 
 Class = YBot

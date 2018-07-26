@@ -2,7 +2,8 @@
 import re
 from itertools import cycle
 from yggscr.ygg import YggBrowser
-from yggscr.client import rtorrent_add_torrent
+from yggscr.client import rtorrent_add_torrent, transmission_add_torrent, \
+    deluge_add_torrent
 from configparser import ConfigParser
 from bottle import route, run, template, response, static_file, request, \
                    default_app
@@ -12,11 +13,21 @@ config.read('yserver.cfg')
 
 username = config['user']['username']
 password = config['user']['password']
+
 host = config['app']['hostname']
 port = config['app']['port']
+
 thostname = config['transmission']['hostname']
 tport = config['transmission']['port']
+
+deluge_ip = config['deluge']['host']
+deluge_port = config['deluge']['port']
+deluge_user = config['deluge']['user']
+deluge_pass = config['deluge']['password']
+
 rpc_url = config['rtorrent']['rpc_url']
+
+
 cats = {'Films & Vidéos': 2145, 'Audio': 2139, 'Application': 2144,
         'Jeu vidéo': 2142, 'Ebook': 2140, 'Emulation': 2141,
         'GPS': 2143, 'XXX': 2188}
@@ -25,7 +36,7 @@ RSS_LINK = "https://"+BASE+"/rss?type=1&parent_category=%(category)s"
 
 state = {
     'sorted_torrents': '',
-    'order' : {
+    'order': {
         'cat': cycle([True, False]),
         'title': cycle([True, False]),
         'age': cycle([True, False]),
@@ -104,17 +115,27 @@ def dl_torrent(idtorrent):
         response.set_header(k, v)
     return resp
 
+
 @route('/ts/<idtorrent:int>')
 def ts_torrent(idtorrent):
     _, resp = ygg.download_torrent(id=idtorrent)
     transmission_add_torrent(thostname, tport, resp)
     return template('search_results', results=state['sorted_torrents'])
 
+
 @route('/rt/<idtorrent:int>')
 def rt_torrent(idtorrent):
     _, resp = ygg.download_torrent(id=idtorrent)
     rtorrent_add_torrent(rpc_url, resp)
     return template('search_results', results=state['sorted_torrents'])
+
+
+@route('/dg/<idtorrent:int>')
+def dg_torrent(idtorrent):
+    _, resp = ygg.download_torrent(id=idtorrent)
+    deluge_add_torrent(deluge_ip, deluge_port, deluge_user, deluge_pass, resp)
+    return template('search_results', results=state['sorted_torrents'])
+
 
 @route('/rss')
 def rss():

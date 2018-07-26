@@ -131,16 +131,16 @@ class YggBrowser(SBrowser):
         for jcat in jres:
             for jtor in jres[jcat]:
                 torrent_list.append(Torrent(
-                    torrent_title=BeautifulSoup(jtor[1]).text.rstrip(),
+                    torrent_title=BeautifulSoup(jtor[1], parser='html.parser').text.rstrip(),
                     torrent_comm=jtor[3],
                     torrent_age=datetime.datetime.fromtimestamp(
-                        int(BeautifulSoup(jtor[4]).div.text)).strftime(
+                        int(BeautifulSoup(jtor[4], parser='html.parser').div.text)).strftime(
                             "%Y-%m-%d %H:%M:%S"),
                     torrent_size=jtor[5].split(">")[-1],
                     torrent_compl=jtor[6],
                     torrent_seed=jtor[7],
                     torrent_leech=jtor[8],
-                    href=BeautifulSoup(jtor[1]).find(
+                    href=BeautifulSoup(jtor[1], parser='html.parser').find(
                         'a', href=True)['href'],
                     cat=jcat
                 ))

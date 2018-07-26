@@ -54,7 +54,7 @@ Symlink the YBot subdirectory in your supybot plugin directory.
 Ask the bot for help ;-)
 
 ### As standalone web server
-This server allows searching, downloading torrent file, sending to rtorrent or transmission client and authenticated RSS.
+This server allows searching, downloading torrent file, sending to rtorrent,transmission or deluge client and authenticated RSS.
 
 Fill in your settings in defaults.cfg (at least Hostname, Port to listen to)
 

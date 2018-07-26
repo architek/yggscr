@@ -19,8 +19,8 @@ port = config['app']['port']
 
 thostname = config['transmission']['hostname']
 tport     = config['transmission']['port']
-tuser     = config['transmission']['user']
-tpassword = config['transmission']['password']
+tuser     = config['transmission']['user'] or None
+tpassword = config['transmission']['password'] or None
 
 deluge_ip   = config['deluge']['host']
 deluge_port = config['deluge']['port']

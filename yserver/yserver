@@ -9,7 +9,9 @@ from yggscr.client import rtorrent_add_torrent, transmission_add_torrent, \
     deluge_add_torrent
 
 config = ConfigParser()
-config.read('yserver.cfg')
+if not config.read('yserver.cfg'):
+    print("Configuration file yserver.cfg not found")
+    exit()
 
 username = config['user']['username']
 password = config['user']['password']

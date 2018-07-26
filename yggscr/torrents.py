@@ -14,7 +14,7 @@ def htn(hsize):
 class Torrent():
     def __init__(self, torrent_title, torrent_comm, torrent_age, torrent_size,
                  torrent_compl, torrent_seed, torrent_leech, href, thref=None,
-                 tid=None, cat=None):
+                 tid=None, cat=None, subcat=None):
         self.href = href
         self.title = torrent_title
         self.comm = int(torrent_comm)
@@ -25,7 +25,6 @@ class Torrent():
         self.seeders = int(torrent_seed)
         self.leechers = int(torrent_leech)
         self.thref = thref
-        self.cat = cat
         if tid:
             self.tid = int(tid)
         else:
@@ -35,6 +34,10 @@ class Torrent():
                 self.tid = int(id)
             except ValueError:
                 pass
+        if cat:
+            self.cat = cat
+        else:
+            self.cat, self.subcat = href.split('/')[4:6]
 
     def set_id(self, tid):
         self.tid = tid

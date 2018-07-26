@@ -1,7 +1,7 @@
 var timeout;
 var stats_element = "#stats_txt";
 var url = "/stats";
-var ms = 1000*60*1;
+var ms = 1000*60*15;
 var modp = 0;
 
 function loop () {

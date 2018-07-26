@@ -18,5 +18,5 @@
  <li><a class="menu" href="/rss">Rss</a></li>
  </ul>
  </div>
-% include('searchbox.tpl')
 % include('stats.tpl')
+% include('searchbox.tpl')

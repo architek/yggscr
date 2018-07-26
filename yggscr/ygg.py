@@ -108,7 +108,6 @@ class YggBrowser(SBrowser):
         if self.idstate != "authenticated":
             raise YggException("Not logged in")
 
-
         html = str(self.response().content)
         pos_r = html.find('Ratio')
         html = html[pos_r-500:pos_r+500]

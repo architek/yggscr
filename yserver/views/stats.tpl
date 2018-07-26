@@ -1,1 +1,2 @@
-<div id="stats" class="menu"></div>
+<div class="menu" id="stats_txt">
+</div>

@@ -16,7 +16,7 @@ class ShoutTest(unittest.TestCase):
                     html = fn.read()
             except FileNotFoundError:
                 continue
-            soup = BeautifulSoup(html, 'lxml')
+            soup = BeautifulSoup(html, 'html.parser')
             theshout = shout.ShoutMessage(shout=None, soup=soup)
             print("Parsing %s ==> Shout: <%s> (user <%s>, message <%s>)" %
                   (tfile, theshout, theshout.user, theshout.message))

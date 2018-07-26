@@ -5,6 +5,8 @@
   <title>Ygg interface</title>
   <link rel="stylesheet"  type="text/css"     href="/static/style.css">
   <link rel="icon"        type="image/png"    href="/images/transmission.png">
+  <script type="text/javascript" src="static/jquery.min.js"></script>
+  <script type="text/javascript" src="static/xhr.js"></script>
  </head>
 <body>
  <div class="menu">
@@ -16,4 +18,5 @@
  <li><a class="menu" href="/rss">Rss</a></li>
  </ul>
  </div>
+% include('stats.tpl')
 % include('searchbox.tpl')

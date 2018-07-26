@@ -182,6 +182,11 @@ def rss_cat(cat):
     return response_body
 
 
+@route('/stats')
+def stats():
+    return ygg.stats()
+
+
 if __name__ == "__main__":
     run(host=host, port=port)
 

@@ -244,7 +244,8 @@ class YBot(callbacks.Plugin):
         user = "{0: >12}".format(shout.user)
         user = self.colorize_user(user, shout.group, w_colour)
         fmt = self.registryValue('shout.fmt')
-        return  fmt.format(time=shout.mtime, fuser=user, user=shout.user, group=shout.group, message=shout.message)
+        msg = shout.message.replace('\n',' ').replace('\n',' ')
+        return  fmt.format(time=shout.mtime, id=shout.id, fuser=user, user=shout.user, group=shout.group, message=msg)
 
     def yshout(self, irc, msg, args, n, w_colour=False, hfile=None):
         """[int n] [boolean user_colorized] [injected html file]

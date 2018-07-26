@@ -22,7 +22,7 @@ class ShoutMessage(object):
             self.group = int(group)
             self.message = message
         elif soup:
-            self.mtime, self.user, \
+            self.mtime, self.id, self.user, \
                 self.group, self.message = self.parse_shout(soup)
 
     def __str__(self):
@@ -36,6 +36,7 @@ class ShoutMessage(object):
         if self.shout is not None and self.shout.debug:
             print("Parsing\n%s" % soup.prettify())
         message = ""
+        id = soup.get('data-id')
         username = soup.find("a", class_="username ").text.strip()
         group_id = soup.find("a", class_="username ")['user-group-id']
         mtime = soup.time['datetime'][:-5]
@@ -44,15 +45,13 @@ class ShoutMessage(object):
                 message = message + e.string.rstrip('\n\t')
             elif e.name == "img":
                 # TODO image with no alt needs at least a space
-                disp = e["alt"] if e["alt"] else " "
+                disp = " {} ".format(e["alt"]) if e["alt"] else " "
                 message = message + disp
             elif e.has_attr("class") and e.get("class")[0].strip() == "username":
                 message = message + e.string
             elif e.name == "a":
                 message = message + e["href"]
-        message = message.replace('\n', ' ')
-        message = message.replace('\r', ' ')
-        return mtime, username, int(group_id), str(message)
+        return mtime, id, username, int(group_id), str(message)
 
 
 class YggShout:

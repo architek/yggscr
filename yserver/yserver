@@ -2,11 +2,11 @@
 import re
 from itertools import cycle
 from yggscr.ygg import YggBrowser
-from yggscr.client import rtorrent_add_torrent, transmission_add_torrent, \
-    deluge_add_torrent
 from configparser import ConfigParser
 from bottle import route, run, template, response, static_file, request, \
                    default_app
+from yggscr.client import rtorrent_add_torrent, transmission_add_torrent, \
+    deluge_add_torrent
 
 config = ConfigParser()
 config.read('yserver.cfg')
@@ -18,9 +18,11 @@ host = config['app']['hostname']
 port = config['app']['port']
 
 thostname = config['transmission']['hostname']
-tport = config['transmission']['port']
+tport     = config['transmission']['port']
+tuser     = config['transmission']['user']
+tpassword = config['transmission']['password']
 
-deluge_ip = config['deluge']['host']
+deluge_ip   = config['deluge']['host']
 deluge_port = config['deluge']['port']
 deluge_user = config['deluge']['user']
 deluge_pass = config['deluge']['password']
@@ -120,8 +122,9 @@ def dl_torrent(idtorrent):
 def ts_torrent(idtorrent):
     try:
         _, resp = ygg.download_torrent(id=idtorrent)
-        print("Adding torrent to transmission {}:{}".format(thostname, tport))
-        transmission_add_torrent(thostname, tport, resp)
+        print("Adding torrent to transmission {}:{}@{}:{}".format(
+            tuser, tpassword, thostname, tport))
+        transmission_add_torrent(thostname, tport, tuser, tpassword, resp)
     except Exception as e:
         print("Failed")
         pass

@@ -20,9 +20,9 @@ def rtorrent_add_torrent(rpc_url, torrent_binary=None, torrent_file=None):
         print("Rtorrent Add torrent exception %s" % e)
 
 
-def transmission_add_torrent(ip, port, torrent_binary):
+def transmission_add_torrent(ip, port, user, password, torrent_binary):
     try:
-        tc = tclient(ip, port)
+        tc = tclient(ip, port, user, password)
         tc.add_torrent(b64encode(torrent_binary).decode('ascii'))
     except Exception as e:
         print("Transmission Add torrent exception %s" % e)

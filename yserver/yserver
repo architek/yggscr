@@ -118,22 +118,40 @@ def dl_torrent(idtorrent):
 
 @route('/ts/<idtorrent:int>')
 def ts_torrent(idtorrent):
-    _, resp = ygg.download_torrent(id=idtorrent)
-    transmission_add_torrent(thostname, tport, resp)
+    try:
+        _, resp = ygg.download_torrent(id=idtorrent)
+        print("Adding torrent to transmission {}:{}".format(thostname, tport))
+        transmission_add_torrent(thostname, tport, resp)
+    except Exception as e:
+        print("Failed")
+        pass
     return template('search_results', results=state['sorted_torrents'])
 
 
 @route('/rt/<idtorrent:int>')
 def rt_torrent(idtorrent):
-    _, resp = ygg.download_torrent(id=idtorrent)
-    rtorrent_add_torrent(rpc_url, resp)
+    try:
+        _, resp = ygg.download_torrent(id=idtorrent)
+        print("Adding torrent to rtorrent @ rpc_url {}".format(rpc_url))
+        rtorrent_add_torrent(rpc_url, resp)
+    except Exception:
+        print("Failed")
+        pass
     return template('search_results', results=state['sorted_torrents'])
 
 
 @route('/dg/<idtorrent:int>')
 def dg_torrent(idtorrent):
-    _, resp = ygg.download_torrent(id=idtorrent)
-    deluge_add_torrent(deluge_ip, deluge_port, deluge_user, deluge_pass, resp)
+    try:
+        _, resp = ygg.download_torrent(id=idtorrent)
+        print("Adding {}:{}@{}:{}".format(deluge_user, deluge_pass,
+                                          deluge_ip, deluge_port))
+        r = deluge_add_torrent(deluge_ip, deluge_port,
+                               deluge_user, deluge_pass, resp)
+        print("Deluged RPC returned {}".format(r))
+    except Exception:
+        print("Failed")
+        pass
     return template('search_results', results=state['sorted_torrents'])
 
 

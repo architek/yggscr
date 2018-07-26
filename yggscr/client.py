@@ -12,8 +12,8 @@ def rtorrent_add_torrent(rpc_url, torrent_binary=None, torrent_file=None):
         else:
             with open(torrent_file,"rb") as fh:
                 torrent_binary = fh.read()
-    server = xmlrpc.client.ServerProxy(rpc_url)
     try:
+        server = xmlrpc.client.ServerProxy(rpc_url)
         server.load.raw_start('', xmlrpc.client.Binary(torrent_binary))
     except (socket.error, xmlrpc.client.Error) as cause:
         print("ERROR: %s" % cause)

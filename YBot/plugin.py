@@ -179,17 +179,14 @@ class YBot(callbacks.Plugin):
         irc.replySuccess()
     yresp = wrap(yresp)
 
-    def yping(self, irc, msg, args, n, quiet=False):
+    def yping(self, irc, msg, args, n, quiet):
         """[n] [quiet: boolean]
         GET /
         """
         t = []
         mmin, mmax, mmean = float("inf"), float("-inf"), float("inf")
-        if n is None or n < 1:
+        if n is None:
             n=1
-        if quiet is None:
-            print("None!!")
-            quiet=False
         for _ in range(n):
             try:
                 t1 = time()
@@ -212,7 +209,7 @@ class YBot(callbacks.Plugin):
         irc.reply("rtt min/avg/max = {:.2f}/{:.2f}/{:.2f} ms".
                   format(mmin, mmean, mmax))
 
-    yping = wrap(yping, [optional('int'), optional('boolean')])
+    yping = wrap(yping, [optional('PositiveInt'), optional('boolean')])
 
     def colorize_user(self, user, group, w_colour):
 
@@ -277,7 +274,7 @@ class YBot(callbacks.Plugin):
             irc.reply(
                     prefix + self.shoutify(shout, w_colour), prefixNick=False)
             sleep(1)
-    yshout = wrap(yshout, ['owner', optional('int'), optional('boolean'), optional('anything')])
+    yshout = wrap(yshout, ['owner', optional('int'), optional('boolean'), optional('filename')])
 
 
 Class = YBot

@@ -46,8 +46,10 @@ class ShoutMessage(object):
                 # TODO image with no alt needs at least a space
                 disp = e["alt"] if e["alt"] else " "
                 message = message + disp
-            elif e.name == "a":
+            elif e.has_attr("class") and e.get("class")[0].strip() == "username":
                 message = message + e.string
+            elif e.name == "a":
+                message = message + e["href"]
         message = message.replace('\n', ' ')
         message = message.replace('\r', ' ')
         return mtime, username, int(group_id), str(message)

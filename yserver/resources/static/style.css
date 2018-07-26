@@ -176,6 +176,7 @@ a.header {
     font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
     font-size: 12px;
     text-align:center;
+    font-weight: bold;
 }
 .menu div {
     width: 100%;

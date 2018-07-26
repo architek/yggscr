@@ -8,6 +8,22 @@ from bottle import route, run, template, response, static_file, request, \
 from yggscr.client import rtorrent_add_torrent, transmission_add_torrent, \
     deluge_add_torrent
 
+state = {
+    'sorted_torrents': '',
+    'order': {
+        'cat': cycle([True, False]),
+        'title': cycle([True, False]),
+        'age': cycle([True, False]),
+        'nsize': cycle([True, False]),
+        'seeders': cycle([True, False]),
+        'leechers': cycle([True, False]),
+    },
+    'rtEn': False,
+    'tsEn': False,
+    'dgEn': False,
+}
+
+ygg = YggBrowser()
 config = ConfigParser()
 if not config.read('yserver.cfg'):
     print("Configuration file yserver.cfg not found")
@@ -31,26 +47,19 @@ deluge_pass = config['deluge']['password']
 
 rpc_url = config['rtorrent']['rpc_url']
 
-
 cats = {'Films & Vidéos': 2145, 'Audio': 2139, 'Application': 2144,
         'Jeu vidéo': 2142, 'Ebook': 2140, 'Emulation': 2141,
         'GPS': 2143, 'XXX': 2188}
 BASE = "ww1.yggtorrent.is"
 RSS_LINK = "https://"+BASE+"/rss?type=1&parent_category=%(category)s"
 
-state = {
-    'sorted_torrents': '',
-    'order': {
-        'cat': cycle([True, False]),
-        'title': cycle([True, False]),
-        'age': cycle([True, False]),
-        'nsize': cycle([True, False]),
-        'seeders': cycle([True, False]),
-        'leechers': cycle([True, False]),
-    }
-}
+if rpc_url:
+    state['rtEn'] = True
+if thostname:
+    state['tsEn'] = True
+if deluge_ip:
+    state['dgEn'] = True
 
-ygg = YggBrowser()
 ygg.login(ygg_id=username, ygg_pass=password)
 print("Logged in as %s" % username)
 
@@ -85,7 +94,7 @@ def search_index():
     else:
         torrents = ygg.search_torrents(search)
         state['sorted_torrents'] = results_opts(torrents, sort)
-        return template('search_results', results=state['sorted_torrents'])
+        return template('search_results', state=state)
 
 
 @route('/top/day')
@@ -93,7 +102,7 @@ def top_day():
     sort = request.query.sort
     torrents = ygg.top_day()
     state['sorted_torrents'] = results_opts(torrents, sort)
-    return template('search_results', results=state['sorted_torrents'])
+    return template('search_results', state=state)
 
 
 @route('/top/week')
@@ -101,7 +110,7 @@ def top_week():
     sort = request.query.sort
     torrents = ygg.top_week()
     state['sorted_torrents'] = results_opts(torrents, sort)
-    return template('search_results', results=state['sorted_torrents'])
+    return template('search_results', state=state)
 
 
 @route('/top/month')
@@ -109,7 +118,7 @@ def top_month():
     sort = request.query.sort
     torrents = ygg.top_month()
     state['sorted_torrents'] = results_opts(torrents, sort)
-    return template('search_results', results=state['sorted_torrents'])
+    return template('search_results', state=state)
 
 
 @route('/dl/<idtorrent:int>')
@@ -130,7 +139,7 @@ def ts_torrent(idtorrent):
     except Exception as e:
         print("Failed")
         pass
-    return template('search_results', results=state['sorted_torrents'])
+    return template('search_results', state=state)
 
 
 @route('/rt/<idtorrent:int>')

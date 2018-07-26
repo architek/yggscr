@@ -5,7 +5,7 @@ Gitlab (New repository)
 Ygg scraper with:
 * **Shell** interface - Any [cmd2](https://github.com/python-cmd2/cmd2 "Python cmd2") features can be used: completion, scripts and much more
 * **RSS** feed with torrent using passkey
-* **Transmission / rtorrent** add torrent directly from webapp
+* **Transmission / Rtorrent / Deluge** add torrent directly from webapp
 * **Irc** [limnoria](https://github.com/ProgVal/Limnoria "Limnoria") interface
 * Cloud Flare bypass using [cfscrape](https://github.com/Anorov/cloudflare-scrape "cfscrape")
 * Http and Socks proxy support

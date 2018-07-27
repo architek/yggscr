@@ -12,6 +12,7 @@ state = {
     'sorted_torrents': '',
     'order': {
         'cat': cycle([True, False]),
+        'subcat': cycle([True, False]),
         'title': cycle([True, False]),
         'age': cycle([True, False]),
         'nsize': cycle([True, False]),

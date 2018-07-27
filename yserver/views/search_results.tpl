@@ -14,12 +14,13 @@
 %if state['dgEn']:
    <td class="thead">D</td>
 %end
-   <td><a class="thead" href='?search={{request.query.search}}&sort=cat'>Categorie</a></td>
+   <td><a class="thead" href='?search={{request.query.search}}&sort=cat'>Cat</a></td>
+   <td><a class="thead" href='?search={{request.query.search}}&sort=subcat'>SubCat</a></td>
    <td><a class="thead" href='?search={{request.query.search}}&sort=title'>Titre</a></td>
-   <td><a class="thead" href='?search={{request.query.search}}&sort=age'>Age</a></td>
+   <td><a class="thead" href='?search={{request.query.search}}&sort=age'>Date</a></td>
    <td><a class="thead" href='?search={{request.query.search}}&sort=nsize'>Taille</a></td>
-   <td><a class="thead" href='?search={{request.query.search}}&sort=seeders'>Seeders</a></td>
-   <td><a class="thead" href='?search={{request.query.search}}&sort=leechers'>Leechers</a></td>
+   <td><a class="thead" href='?search={{request.query.search}}&sort=seeders'>Seed</a></td>
+   <td><a class="thead" href='?search={{request.query.search}}&sort=leechers'>Leech</a></td>
    <td class="thead">Lien</td>
   </tr>
 %for r in state['sorted_torrents']:
@@ -34,6 +35,7 @@
     <td><a href=/dg/{{r.tid}}>D</a></td>
 %end
     <td>{{r.cat}}</td>
+    <td>{{r.subcat}}</td>
     <td><a class="torrent" href=/dl/{{r.tid}}>{{r.title}}</a></td>
     <td>{{r.age}}</td>
     <td>{{r.size}}</td>

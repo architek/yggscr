@@ -36,7 +36,7 @@ class Torrent():
                 pass
         if cat:
             self.cat = cat
-        else:
+        if href:
             self.cat, self.subcat = href.split('/')[4:6]
 
     def set_id(self, tid):

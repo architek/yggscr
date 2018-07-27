@@ -259,7 +259,7 @@ class YBot(callbacks.Plugin):
             except:
                 irc.error("Can't read file %s" % hfile)
                 return
-            shout = ShoutMessage(shout=None, soup=BeautifulSoup(html, parser='html.parser'))
+            shout = ShoutMessage(shout=None, soup=BeautifulSoup(html,'html.parser'))
             irc.reply(self.shoutify(shout, False), prefixNick=False)
             return
         try:

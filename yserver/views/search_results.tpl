@@ -1,6 +1,5 @@
 % include('header.tpl')
 <div>
-<br />
 <div class="results">
 <table>
   <tr>

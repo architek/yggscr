@@ -152,7 +152,7 @@ def rt_torrent(idtorrent):
     except Exception:
         print("Failed")
         pass
-    return template('search_results', results=state['sorted_torrents'])
+    return template('search_results', state=state)
 
 
 @route('/dg/<idtorrent:int>')
@@ -167,7 +167,7 @@ def dg_torrent(idtorrent):
     except Exception:
         print("Failed")
         pass
-    return template('search_results', results=state['sorted_torrents'])
+    return template('search_results', state=state)
 
 
 @route('/rss')

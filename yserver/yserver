@@ -61,8 +61,12 @@ if thostname:
 if deluge_ip:
     state['dgEn'] = True
 
-ygg.login(ygg_id=username, ygg_pass=password)
-print("Logged in as %s" % username)
+def reco(func):
+    ygg.ping()
+    if ygg.idstate != "authenticated":
+        ygg.login(ygg_id=username, ygg_pass=password)
+        print("Logged in as %s" % username)
+    return func
 
 
 def results_opts(results, sort=''):
@@ -86,6 +90,7 @@ def index():
     return template('index')
 
 
+@reco
 @route('/search')
 def search_index():
     search = request.query.search
@@ -98,6 +103,7 @@ def search_index():
         return template('search_results', state=state)
 
 
+@reco
 @route('/top/day')
 def top_day():
     sort = request.query.sort
@@ -106,6 +112,7 @@ def top_day():
     return template('search_results', state=state)
 
 
+@reco
 @route('/top/week')
 def top_week():
     sort = request.query.sort
@@ -114,6 +121,7 @@ def top_week():
     return template('search_results', state=state)
 
 
+@reco
 @route('/top/month')
 def top_month():
     sort = request.query.sort
@@ -122,6 +130,7 @@ def top_month():
     return template('search_results', state=state)
 
 
+@reco
 @route('/dl/<idtorrent:int>')
 def dl_torrent(idtorrent):
     head, resp = ygg.download_torrent(id=idtorrent)
@@ -130,6 +139,7 @@ def dl_torrent(idtorrent):
     return resp
 
 
+@reco
 @route('/ts/<idtorrent:int>')
 def ts_torrent(idtorrent):
     try:
@@ -143,6 +153,7 @@ def ts_torrent(idtorrent):
     return template('search_results', state=state)
 
 
+@reco
 @route('/rt/<idtorrent:int>')
 def rt_torrent(idtorrent):
     try:
@@ -155,6 +166,7 @@ def rt_torrent(idtorrent):
     return template('search_results', state=state)
 
 
+@reco
 @route('/dg/<idtorrent:int>')
 def dg_torrent(idtorrent):
     try:
@@ -175,6 +187,7 @@ def rss():
     return template('rss', results=cats)
 
 
+@reco
 @route('/rss/<cat>')
 def rss_cat(cat):
     if cat in cats.keys():
@@ -192,6 +205,7 @@ def rss_cat(cat):
     return response_body
 
 
+@reco
 @route('/stats')
 def stats():
     return ygg.stats()

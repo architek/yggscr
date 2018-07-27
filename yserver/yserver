@@ -94,11 +94,13 @@ def index():
 @route('/search')
 def search_index():
     search = request.query.search
+    cat = request.query.cat
+    subcat = request.query.subcat
     sort = request.query.sort
     if search == '':
         return template('index')
     else:
-        torrents = ygg.search_torrents(search)
+        torrents = ygg.search_torrents(search, cat, subcat)
         state['sorted_torrents'] = results_opts(torrents, sort)
         return template('search_results', state=state)
 

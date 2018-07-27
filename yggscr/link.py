@@ -59,12 +59,13 @@ links = (
 
 def get_link(cat, subcat):
     for link in links:
-        if cat in link and (subcat is None or subcat in link):
+        if cat in link and (subcat or subcat in link):
             return link
     raise ygge.YggException("Cat or subcat not found")
 
 
 def get_cat_id(cat, subcat=None):
+    print("get_cat_id({},{})".format(cat, subcat))
     if cat == "filmvideo":
         cat = "filmvidéo"
     if cat == "jeu-video":
@@ -75,12 +76,12 @@ def get_cat_id(cat, subcat=None):
         if cat_id is None and re.findall('\d+-%s' % cat, link):
             cat_id = re.findall(r'\d+', link)[0]
             continue
-        if cat_id is not None and subcat is not None and subcat in link:
+        if cat_id is not None and subcat and "-{}".format(subcat) in link:
             subcat_id = re.findall(r'\d+', link)[0]
             break
-    if cat_id is None or (subcat is not None and subcat_id is None):
+    if cat_id is None or (subcat and subcat_id is None):
         raise ygge.YggException("Cat or subcat not found")
-    return {"category": cat_id, "subcategory": subcat_id}
+    return {"category": cat_id, "sub_category": subcat_id}
 
 
 def list_cat_subcat():

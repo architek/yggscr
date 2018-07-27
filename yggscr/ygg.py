@@ -208,12 +208,13 @@ class YggBrowser(SBrowser):
 
     def search_torrents(self, pattern, cat=None, subcat=None, detail=False):
         param = dict()
-        if cat is not None:
+        if cat:
             param = get_cat_id(cat, subcat)
         param['order'] = "desc"
         param['sort'] = "seed"
         param['name'] = pattern
         param['do'] = "search"
+        print(param)
         self.browser.open(SEARCH_URL, params=param)
         self.detail = detail
         return self._parse_torrents()

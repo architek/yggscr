@@ -4,7 +4,36 @@ var url = "/stats";
 var ms = 1000*60*15;
 var modp = 0;
 
+jQuery.fn.fade_inout = function(speed) {
+    console.log("Preparing fadeinout");
+    $(this).fadeIn('slow', function(){
+        $(this).fadeOut(speed,function(){
+            $(this).remove();
+        })
+    });
+}
+
+function disp_msg_fade(msg, idx) {
+    var mid = "modal-content-" + idx;
+    var msgModal = '<div id="' + mid + '">'+msg+'</div>';
+    console.log("div is "+msgModal + "!");
+    $('#modal').append(msgModal);
+    $('#'+mid).css({
+        'margin': '0px',
+        'padding': '0px',
+    });
+    $('#'+mid).fade_inout(2500);
+}
+
+function prog_fade(msg, idx) {
+    console.log("In "+5*idx+" printing "+msg);
+    setTimeout(function() {
+        disp_msg_fade(msg, idx);
+    }, 5000*idx);
+}
+
 function loop () {
+
     $.ajax(url, {
         dataType: 'json',
         cache: false,
@@ -31,7 +60,7 @@ function update_stats_text(data) {
     var time = date.getHours().toString().padStart(2,"0") + ":" + date.getMinutes().toString().padStart(2,"0")+ ":" + date.getSeconds().toString().padStart(2,"0");
     var progs = ["-", "\\","|","/"];
     var prog = progs[modp++%progs.length];
-    $(stats_element).text(prog+" Up(MB):"+data.up+" Down(MB):"+data.down+" Ratio:"+data.ratio+ " Mean Up:"+data.m_up+" Mean Down:"+data.m_down+" @ "+time);
+    $(stats_element).text(prog+" Up(MB):"+data.up+" Down(MB):"+data.down+" Ratio:"+data.ratio+ " Mean Up Speed (KBps):"+data.m_up+" Mean Down Speed (KBps):"+data.m_down+" @ "+time);
 }
 
 function error(what) {
@@ -50,6 +79,7 @@ $(document).ready(function () {
     window.onerror = error;
 
     /* Start */
+    tpl_disp_message();
     loop();
 });
 $(window).focus(function() {

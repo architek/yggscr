@@ -61,6 +61,7 @@ if thostname:
 if deluge_ip:
     state['dgEn'] = True
 
+
 def reco(func):
     ygg.ping()
     if ygg.idstate != "authenticated":
@@ -87,7 +88,7 @@ def server_images(filepath):
 
 @route('/')
 def index():
-    return template('index')
+    return template('index', rtn=["Welcome "+username])
 
 
 @reco
@@ -97,12 +98,12 @@ def search_index():
     cat = request.query.cat
     subcat = request.query.subcat
     sort = request.query.sort
-    if search == '':
-        return template('index')
-    else:
+    if search:
         torrents = ygg.search_torrents(search, cat, subcat)
         state['sorted_torrents'] = results_opts(torrents, sort)
-        return template('search_results', state=state)
+        return template('search_results', state=state, rtn=["Search Ok"])
+    else:
+        return template('index')
 
 
 @reco
@@ -111,7 +112,7 @@ def top_day():
     sort = request.query.sort
     torrents = ygg.top_day()
     state['sorted_torrents'] = results_opts(torrents, sort)
-    return template('search_results', state=state)
+    return template('search_results', state=state, rtn=["Top Day Ok"])
 
 
 @reco
@@ -120,7 +121,7 @@ def top_week():
     sort = request.query.sort
     torrents = ygg.top_week()
     state['sorted_torrents'] = results_opts(torrents, sort)
-    return template('search_results', state=state)
+    return template('search_results', state=state, rtn=["Top Week Ok"])
 
 
 @reco
@@ -129,7 +130,7 @@ def top_month():
     sort = request.query.sort
     torrents = ygg.top_month()
     state['sorted_torrents'] = results_opts(torrents, sort)
-    return template('search_results', state=state)
+    return template('search_results', state=state, rtn=["Top Month Ok"])
 
 
 @reco
@@ -144,44 +145,51 @@ def dl_torrent(idtorrent):
 @reco
 @route('/ts/<idtorrent:int>')
 def ts_torrent(idtorrent):
+    rtn = []
     try:
         _, resp = ygg.download_torrent(id=idtorrent)
-        print("Adding torrent to transmission {}:{}@{}:{}".format(
-            tuser, tpassword, thostname, tport))
+        msg = "Adding torrent to transmission {}:{}@{}:{}".format(
+            tuser, tpassword, thostname, tport)
+        rtn.append(msg)
         transmission_add_torrent(thostname, tport, tuser, tpassword, resp)
+        rtn.append("Ok")
     except Exception as e:
-        print("Failed")
+        msg = "Failed {}".format(e)
+        rtn.append(msg)
         pass
-    return template('search_results', state=state)
+    return template('search_results', state=state, rtn=rtn)
 
 
 @reco
 @route('/rt/<idtorrent:int>')
 def rt_torrent(idtorrent):
+    rtn = []
     try:
         _, resp = ygg.download_torrent(id=idtorrent)
-        print("Adding torrent to rtorrent @ rpc_url {}".format(rpc_url))
+        rtn.append("Adding torrent to rtorrent @ rpc_url {}".format(rpc_url))
         rtorrent_add_torrent(rpc_url, resp)
+        rtn.append("Ok")
     except Exception:
-        print("Failed")
+        rtn.append("Failed")
         pass
-    return template('search_results', state=state)
+    return template('search_results', state=state, rtn=rtn)
 
 
 @reco
 @route('/dg/<idtorrent:int>')
 def dg_torrent(idtorrent):
+    rtn = []
     try:
         _, resp = ygg.download_torrent(id=idtorrent)
-        print("Adding {}:{}@{}:{}".format(deluge_user, deluge_pass,
-                                          deluge_ip, deluge_port))
+        rtn.append("Adding {}:{}@{}:{}".format(deluge_user, deluge_pass,
+                                               deluge_ip, deluge_port))
         r = deluge_add_torrent(deluge_ip, deluge_port,
                                deluge_user, deluge_pass, resp)
-        print("Deluged RPC returned {}".format(r))
+        rtn.append("Deluged RPC returned {}".format(r))
     except Exception:
-        print("Failed")
+        rtn.append("Failed")
         pass
-    return template('search_results', state=state)
+    return template('search_results', state=state, rtn=rtn)
 
 
 @route('/rss')

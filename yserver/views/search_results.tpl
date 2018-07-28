@@ -1,5 +1,4 @@
 % include('header.tpl')
-<div>
 <div class="results">
 <table>
   <tr>
@@ -46,4 +45,5 @@
  </table>
  </div>
 </div>
+
 % include('footer.tpl')

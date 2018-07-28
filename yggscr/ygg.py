@@ -214,7 +214,6 @@ class YggBrowser(SBrowser):
         param['sort'] = "seed"
         param['name'] = pattern
         param['do'] = "search"
-        print(param)
         self.browser.open(SEARCH_URL, params=param)
         self.detail = detail
         return self._parse_torrents()

@@ -174,7 +174,6 @@ def rt_torrent(idtorrent):
     rtn = []
     try:
         _, resp = ygg.download_torrent(id=idtorrent)
-        rtn.append("Got torrent for id {}".format(idtorrent))
         rtn.append("Adding torrent to rtorrent @ rpc_url {}".format(rpc_url))
         rtorrent_add_torrent(rpc_url, resp)
         rtn.append("Ok")
@@ -203,7 +202,7 @@ def dg_torrent(idtorrent):
 
 @route('/rss')
 def rss():
-    return template('rss', results=cats)
+    return template('rss', results=cats, rtn=[])
 
 
 @reco

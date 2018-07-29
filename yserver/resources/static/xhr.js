@@ -5,7 +5,6 @@ var ms = 1000*60*15;
 var modp = 0;
 
 jQuery.fn.fade_inout = function(speed) {
-    console.log("Preparing fadeinout");
     $(this).fadeIn('slow', function(){
         $(this).fadeOut(speed,function(){
             $(this).remove();
@@ -13,23 +12,17 @@ jQuery.fn.fade_inout = function(speed) {
     });
 }
 
-function disp_msg_fade(msg, idx) {
-    var mid = "modal-content-" + idx;
-    var msgModal = '<div id="' + mid + '">'+msg+'</div>';
-    console.log("div is "+msgModal + "!");
+var off=0;
+function disp_msg_fade(msg) {
+    var msgModal = '<div id="mod-cont">'+msg+'</div>';
     $('#modal').append(msgModal);
-    $('#'+mid).css({
-        'margin': '0px',
-        'padding': '0px',
-    });
-    $('#'+mid).fade_inout(2500);
+    $('#mod-cont').fade_inout(2500);
 }
-
-function prog_fade(msg, idx) {
-    console.log("In "+5*idx+" printing "+msg);
+function prog_fade(msg, ndelay) {
     setTimeout(function() {
-        disp_msg_fade(msg, idx);
-    }, 5000*idx);
+        disp_msg_fade(msg);
+    }, off);
+    off = off + ndelay;
 }
 
 function loop () {

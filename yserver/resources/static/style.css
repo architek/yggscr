@@ -11,6 +11,9 @@
     font-size: 12px;
     text-align:center;
 }
+#modal {
+    height:1em;
+}
 .searchbox {
     border-bottom: 1px solid #EEE;
     background-color: #b9c9fe;

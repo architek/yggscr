@@ -177,8 +177,8 @@ def rt_torrent(idtorrent):
         rtn.append("Adding torrent to rtorrent @ rpc_url {}".format(rpc_url))
         rtorrent_add_torrent(rpc_url, resp)
         rtn.append("Ok")
-    except Exception:
-        rtn.append("Failed")
+    except Exception as e:
+        rtn.append("Failed {}".format(e))
         pass
     return template('search_results', state=state, rtn=rtn)
 
@@ -194,8 +194,8 @@ def dg_torrent(idtorrent):
         r = deluge_add_torrent(deluge_ip, deluge_port,
                                deluge_user, deluge_pass, resp)
         rtn.append("Deluged RPC returned {}".format(r))
-    except Exception:
-        rtn.append("Failed")
+    except Exception as e:
+        rtn.append("Failed {}".format(e))
         pass
     return template('search_results', state=state, rtn=rtn)
 

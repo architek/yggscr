@@ -9,8 +9,8 @@ def rtorrent_add_torrent(rpc_url, torrent_binary=None, torrent_file=None):
     if torrent_binary is None:
         if torrent_file is None:
             raise ValueError("Missing parameter")
-    with open(torrent_file, "rb") as fh:
-        torrent_binary = fh.read()
+        with open(torrent_file, "rb") as fh:
+            torrent_binary = fh.read()
     server = xmlrpc.client.ServerProxy(rpc_url)
     server.load.raw_start('', xmlrpc.client.Binary(torrent_binary))
 

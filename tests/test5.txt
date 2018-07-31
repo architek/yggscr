@@ -1,0 +1,12 @@
+<li use="2" data-id="144" style="">
+		
+			<a href="/forum/index.php?members/ltdan74.306/" class="avatar avatar--xxs" data-user-id="306" data-xf-init="member-tooltip" id="js-XFUniqueId110">
+			<img src="/forum/data/avatars/s/0/306.jpg?1528617416" alt="LtDan74" class="avatar-u306-s" itemprop="image"> 
+		</a>
+		
+		<a href="/forum/index.php?members/ltdan74.306/" class="username " dir="auto" data-user-id="306" data-xf-init="member-tooltip" user-group-id="2" id="js-XFUniqueId111">LtDan74</a>:
+		<span><div class="bbWrapper"><a href="https://ww1.yggtorrent.is/forum/index.php?members/522/" class="username" data-xf-init="member-tooltip" data-user-id="522" data-username="Allain6610" id="js-XFUniqueId112">Allain6610</a> <span style="text-decoration: underline"><a href="https://www.youtube.com/watch?v=7jhJ1mxASUc" target="_blank" class="link link--external" rel="nofollow noopener">Ouaip !</a></span></div></span>
+		<time class="u-dt" dir="auto" datetime="2018-07-13T20:56:02+0100" data-time="1531511762" data-date-string="13/7/18" data-time-string="20:56" title="13/7/18, à 20:56">il y a 1 minute</time>
+		
+		
+	</li>

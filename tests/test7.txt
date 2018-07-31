@@ -1,0 +1,17 @@
+<li use="2" data-id="3087">
+		
+			<a href="/forum/index.php?members/allain6610.522/" class="avatar avatar--xxs" data-user-id="522" data-xf-init="member-tooltip" id="js-XFUniqueId20">
+			<img src="/forum/data/avatars/s/0/522.jpg?1530742137" alt="Allain6610" class="avatar-u522-s" itemprop="image"> 
+		</a>
+		
+		<a href="/forum/index.php?members/allain6610.522/" class="username " dir="auto" data-user-id="522" data-xf-init="member-tooltip" user-group-id="2" id="js-XFUniqueId21">Allain6610</a>:
+		<span><div class="bbWrapper"><a href="https://ww1.yggtorrent.is/forum/index.php?members/18575/" class="username" data-xf-init="member-tooltip" data-user-id="18575" data-username="Mycke3131" id="js-XFUniqueId22">Mycke3131</a> <b>Fonctions en attente de mise a jour :</b><ul>
+<li>Les MP sur le forum</li>
+<li>Les Trophees sur le forum auront une utilité</li>
+<li>Le bouton "Signaler" dans les torrents (ecrire a <a href="mailto:contact@ygg.is">contact@ygg.is</a> ou voir un TP sur la shout)</li>
+<li>Editer/Supprimer dans l'historique de telechargement</li>
+</ul></div></span>
+		<time class="u-dt" dir="auto" datetime="2018-07-16T14:58:54+0100" data-time="1531749534" data-date-string="16/7/18" data-time-string="14:58" title="16/7/18, à 14:58">il y a 33 minutes</time>
+		
+		
+	</li>

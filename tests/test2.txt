@@ -1,0 +1,12 @@
+<li  use="2" data-id="1394">
+		
+			<a href="/forum/index.php?members/dyonisos5.1102/" class="avatar avatar--xxs" data-user-id="1102" data-xf-init="member-tooltip">
+			<img src="/forum/data/avatars/s/1/1102.jpg?1531039666"  alt="Dyonisos5" class="avatar-u1102-s" itemprop="image" /> 
+		</a>
+		
+		<a href="/forum/index.php?members/dyonisos5.1102/" class="username " dir="auto" data-user-id="1102" data-xf-init="member-tooltip" user-group-id="2">Dyonisos5</a>:
+		<span><div class="bbWrapper">Bonne question <a href="https://ww1.yggtorrent.is/forum/index.php?members/15975/" class="username" data-xf-init="member-tooltip" data-user-id="15975" data-username="WalterWhitee">WalterWhitee</a>. Pareil je vois que ça bouge pas depuis plusieurs jours</div></span>
+		<time  class="u-dt" dir="auto" datetime="2018-07-12T13:40:16+0100" data-time="1531399216" data-date-string="12/7/18" data-time-string="13:40" title="12/7/18, à 13:40">il y a 4 minutes</time>
+		
+		
+	</li>

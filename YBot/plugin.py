@@ -14,6 +14,7 @@ import supybot.callbacks as callbacks
 from .yggscr.ygg import YggBrowser
 from .yggscr.shout import (YggShout, ShoutMessage)
 from .yggscr.exceptions import YggException
+from collections import defaultdict
 # import supybot.utils as utils
 # import supybot.plugins as plugins
 import supybot.ircutils as ircutils
@@ -184,28 +185,31 @@ class YBot(callbacks.Plugin):
         GET /
         """
         t = []
+        statuses = defaultdict(int)
         mmin, mmax, mmean = float("inf"), float("-inf"), float("inf")
         if n is None:
             n=1
         for _ in range(n):
             try:
                 t1 = time()
-                self.yggb.ping()
+                sts = self.yggb.ping()
                 t2 = time()
                 dt = 1000*(t2-t1)
                 mmax = max(mmax, dt)
                 mmin = min(mmin, dt)
                 t.append(dt)
                 if n > 1 and not quiet:
-                    irc.reply("{:>2} ping {} time={:>7.2f}ms".format(1+_, self.yggb.browser.url, dt))
+                    irc.reply("{:>2} ping {} time={:>7.2f}ms http {}".format(1+_, self.yggb.browser.url, dt, sts))
+                statuses[sts] += 1
             except Exception as e:
                 pass
                 mmax = float("inf")
                 irc.reply("{:>2} timeout! [{}]".format(1+_, e))
         if t:
             mmean = sum(t)/len(t)
-        irc.reply("{} packet{} transmitted, {} received, {:.2%} packet loss".
-                  format(n, "s" if n > 1 else "", len(t), 1-len(t)/n))
+        str_statuses = ' | '.join('{}:{}'.format(key, value) for key, value in statuses.items())
+        irc.reply("{} packet{} transmitted, {} received, {:.2%} packet loss, http codes {}".
+                  format(n, "s" if n > 1 else "", len(t), 1-len(t)/n, str_statuses))
         irc.reply("rtt min/avg/max = {:.2f}/{:.2f}/{:.2f} ms".
                   format(mmin, mmean, mmax))
 

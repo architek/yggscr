@@ -231,6 +231,7 @@ class YggBrowser(SBrowser):
 
     def ping(self):
         self.browser.open(HOME_URL)
+        return self.response().status_code
 
     def id2href(self, id):
         return DL_TMPL % id

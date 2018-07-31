@@ -6,7 +6,7 @@
     <tr> <th> Choose RSS category </th> </tr>
 %for t in results:
    <tr>
-    <td><a class="torrent" href="/rss/{{!t}}">{{!t}}</a></td>
+    <td style="text-align:left;"><a class="torrent" href="/rss/{{!t}}">{{!t}}</a></td>
    </tr>
 %end
  </table>

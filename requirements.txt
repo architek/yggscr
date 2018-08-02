@@ -6,3 +6,4 @@ pytest>=3.5.0
 bottle>=0.12.13
 transmissionrpc>=0.11
 deluge_client>=1.6.0
+configparser>=3.5.0

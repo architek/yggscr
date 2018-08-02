@@ -78,18 +78,18 @@ upstream _bottle {
 }
 
 server {
-        server_name ygg.com;
-        root /var/www;
-        
-	listen 80;
-        listen [::]:80;
-	location / {
-		uwsgi_read_timeout 20s;
-		uwsgi_send_timeout 20s;
-        	include uwsgi_params;
-        	uwsgi_pass _bottle;
-	}
+    server_name ygg.com;
+    root /var/www;
 
+    listen 80;
+    listen [::]:80;
+    
+    location / {
+        uwsgi_read_timeout 20s;
+        uwsgi_send_timeout 20s;
+        include uwsgi_params;
+        uwsgi_pass _bottle;
+    }
 }
 ```
 Create file /etc/uwsgi/apps-available/yserver.ini
@@ -102,9 +102,9 @@ master = true
 file = yserver
 uid = www-data
 gid = www-data
-debug = true
-reloader = true
-catch-all = false
+;debug = true
+;reloader = true
+;catch-all = false
 workers = 2
 threads = 4
 plugins = python3

@@ -124,9 +124,9 @@ class YggBrowser(SBrowser):
         return {'down': down, 'up': up, 'ratio': ratio,
                 'i_up': i_up, 'm_up': m_up, 'i_down': i_down, 'm_down': m_down}
 
-    def _get_torrents_xhr(self, url, method="get"):
+    def _get_torrents_xhr(self, url, method="get", timeout=None):
         torrent_list = []
-        self.browser.open(url, method=method)
+        self.browser.open(url, method=method, timeout=timeout)
         jres = json.loads(self.response().content.decode('utf-8'))
         for jcat in jres:
             for jtor in jres[jcat]:
@@ -147,13 +147,13 @@ class YggBrowser(SBrowser):
         return torrent_list
 
     def top_day(self):
-        return self._get_torrents_xhr(TOP_DAY_URL)
+        return self._get_torrents_xhr(TOP_DAY_URL, timeout=15)
 
     def top_week(self):
-        return self._get_torrents_xhr(TOP_WEEK_URL)
+        return self._get_torrents_xhr(TOP_WEEK_URL, timeout=15)
 
     def top_month(self):
-        return self._get_torrents_xhr(TOP_MONTH_URL)
+        return self._get_torrents_xhr(TOP_MONTH_URL, timeout=15)
 
     def top_seeded(self):
         return self._get_torrents_xhr(TOP_SEED_URL, method="post")
@@ -230,8 +230,7 @@ class YggBrowser(SBrowser):
         return list_cat_subcat()
 
     def ping(self):
-        # self.browser.open(HOME_URL)
-        self.browser.open("http://blabladezfadflzdflsd.com")
+        self.browser.open(HOME_URL)
         return self.response().status_code
 
     def id2href(self, id):

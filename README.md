@@ -65,3 +65,71 @@ yserver
 
 To access webapp, connect to http://localhost:8081 (or any other config you've set)
 
+### Behind nginx using wsgi
+
+```bash
+apt install uwsgi uwsgi-plugin-python3
+```
+
+Create nginx vhost
+```
+upstream _bottle {
+    server unix:/run/uwsgi/app/yserver/socket;
+}
+
+server {
+        server_name ygg.com;
+        root /var/www;
+        
+	listen 80;
+        listen [::]:80;
+	location / {
+		uwsgi_read_timeout 20s;
+		uwsgi_send_timeout 20s;
+        	include uwsgi_params;
+        	uwsgi_pass _bottle;
+	}
+
+}
+```
+Create file /etc/uwsgi/apps-available/yserver.ini
+
+```
+[uwsgi]
+socket = /run/uwsgi/app/yserver/socket
+chdir = /var/www/bottle/yserver/
+master = true
+file = yserver
+uid = www-data
+gid = www-data
+debug = true
+reloader = true
+catch-all = false
+workers = 2
+threads = 4
+plugins = python3
+harakiri = 20
+socket-timeout = 60
+
+```
+
+Create directories
+
+```bash
+mkdir -p /run/uwsgi/app/yserver
+chown www-data:www-data /run/uwsgi/app/yserver
+mkdir -p /var/www/bottle/yserver/   # or wherever the tree yserver/ is 
+```
+
+Enable uwsgi app and reload nginx
+
+```bash
+cd /etc/uwsgi/apps-enabled
+ln -s ../apps-available/yserver.ini
+systemctl restart uwsgi.service
+systemctl restart nginx
+```
+
+
+
+

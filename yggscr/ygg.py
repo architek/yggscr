@@ -10,6 +10,7 @@ from bs4 import BeautifulSoup
 from .torrents import Torrent
 from .sbrowser import SBrowser
 from .exceptions import YggException
+from .const import *
 from .link import get_link, get_cat_id, list_cat_subcat
 
 try:
@@ -19,17 +20,6 @@ except ImportError:
 
 # from pprint import (PrettyPrinter, pprint)
 # pp = PrettyPrinter(indent=4)
-
-SITE = "ww1.yggtorrent.is"
-HOME_URL = "https://" + SITE
-TORRENT_URL = HOME_URL + "/torrents/"
-SEARCH_URL = HOME_URL + "/engine/search"
-TOP_DAY_URL = HOME_URL + "/engine/ajax_top_query/day"
-TOP_WEEK_URL = HOME_URL + "/engine/ajax_top_query/week"
-TOP_MONTH_URL = HOME_URL + "/engine/ajax_top_query/month"
-TOP_SEED_URL = HOME_URL + "/engine/mostseeded"
-DL_TMPL = HOME_URL + "/engine/download_torrent?id=%s"
-
 
 class YggBrowser(SBrowser):
     """Ygg Scrapper with CloudFlare bypass
@@ -59,7 +49,7 @@ class YggBrowser(SBrowser):
         return upd_state
 
     def login(self, ygg_id=None, ygg_pass=None):
-        self.browser.open(HOME_URL)
+        self.browser.open(YGG_HOME)
         if self.idstate == "authenticated":
             raise YggException("Logout first")
         self._id = ygg_id if ygg_id else os.environ['ygg_id']
@@ -74,7 +64,7 @@ class YggBrowser(SBrowser):
         login_form['id'].value = self._id
         login_form['pass'].value = self._pass
         self.browser.submit_form(login_form)
-        self.browser.open(HOME_URL)
+        self.browser.open(YGG_HOME)
         if self.idstate != "authenticated":
             raise YggException("Login failed")
 
@@ -104,7 +94,7 @@ class YggBrowser(SBrowser):
         return i_up, m_up, i_down, m_down
 
     def stats(self):
-        self.browser.open(HOME_URL)
+        self.browser.open(YGG_HOME)
         if self.idstate != "authenticated":
             raise YggException("Not logged in")
 
@@ -147,13 +137,13 @@ class YggBrowser(SBrowser):
         return torrent_list
 
     def top_day(self):
-        return self._get_torrents_xhr(TOP_DAY_URL, timeout=15)
+        return self._get_torrents_xhr(TOP_DAY_URL, timeout=30)
 
     def top_week(self):
-        return self._get_torrents_xhr(TOP_WEEK_URL, timeout=15)
+        return self._get_torrents_xhr(TOP_WEEK_URL, timeout=30)
 
     def top_month(self):
-        return self._get_torrents_xhr(TOP_MONTH_URL, timeout=15)
+        return self._get_torrents_xhr(TOP_MONTH_URL, timeout=30)
 
     def top_seeded(self):
         return self._get_torrents_xhr(TOP_SEED_URL, method="post")
@@ -202,6 +192,7 @@ class YggBrowser(SBrowser):
         return torrent_list
 
     def list_torrents(self, cat, subcat, detail=False):
+        "This doesn't exist anymore on website"
         self.browser.open(TORRENT_URL + get_link(cat, subcat))
         self.detail = detail
         return self._parse_torrents()
@@ -230,11 +221,11 @@ class YggBrowser(SBrowser):
         return list_cat_subcat()
 
     def ping(self):
-        self.browser.open(HOME_URL)
+        self.browser.open(YGG_HOME)
         return self.response().status_code
 
     def id2href(self, id):
-        return DL_TMPL % id
+        return DL_TPL.format(id=id)
 
     def download_torrent(self, torrent=None, id=None):
         href = torrent.get_dl_link() if torrent is not None \

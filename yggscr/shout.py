@@ -6,8 +6,7 @@ import time
 import yggscr.ygg
 from bs4 import NavigableString
 
-SHOUT_URL = "https://ww1.yggtorrent.is/forum/index.php?shoutbox/refresh"
-
+from .const import SHOUT_URL
 
 class ShoutMessage(object):
 

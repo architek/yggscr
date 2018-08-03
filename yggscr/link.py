@@ -59,7 +59,7 @@ links = (
 
 def get_link(cat, subcat):
     for link in links:
-        if cat in link and (subcat or subcat in link):
+        if cat in link and (not subcat or subcat in link):
             return link
     raise ygge.YggException("Cat or subcat not found")
 

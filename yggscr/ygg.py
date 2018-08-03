@@ -204,7 +204,7 @@ class YggBrowser(SBrowser):
         if cat:
             param = get_cat_id(cat, subcat)
         param['order'] = "desc"
-        param['sort'] = "seed"
+        param['sort'] = "publish_date"
         param['name'] = pattern
         param['do'] = "search"
         self.browser.open(SEARCH_URL, params=param)

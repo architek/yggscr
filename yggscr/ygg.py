@@ -96,7 +96,8 @@ class YggBrowser(SBrowser):
     def stats(self):
         self.browser.open(YGG_HOME)
         if self.idstate != "authenticated":
-            raise YggException("Not logged in")
+            raise YggException(
+                "Not logged in, idstate is {}".format(self.idstate))
 
         html = str(self.response().content)
         pos_r = html.find('Ratio')

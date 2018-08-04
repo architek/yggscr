@@ -12,7 +12,7 @@ from yggscr.client import rtorrent_add_torrent, transmission_add_torrent, \
 
 from yggscr.const import RSS_TPL
 
-DEBUG = False
+DEBUG = True
 
 state = {
     'sorted_torrents': '',
@@ -67,6 +67,7 @@ if deluge_ip:
     state['dgEn'] = True
 
 ygg = YggBrowser()
+ygg.login(ygg_id=username, ygg_pass=password)
 if proxy:
     ygg.proxify(proxy)
     print("Proxied through {}".format(proxy))
@@ -112,24 +113,31 @@ def index():
     return template('index', rtn=["Welcome "+username])
 
 
-@reco
 @app.route('/search')
 def search_index():
     search = request.query.search
     cat = request.query.cat
     subcat = request.query.subcat
     sort = request.query.sort
-    if search:
-        torrents = ygg.search_torrents(search, cat, subcat)
-        state['sorted_torrents'] = results_opts(torrents, sort)
+    rtn = []
+    if search or cat:
+        try:
+            torrents = ygg.search_torrents(search, cat, subcat)
+        except Exception as e:
+            state['sorted_torrents']=[]
+            msg = "Failed: {}".format(e)
+            rtn.append(msg)
+        else:
+            state['sorted_torrents'] = results_opts(torrents, sort)
+            msg = "Search returned {} torrents".format(len(torrents))
+            rtn.append(msg)
         return template('search_results',
                         state=state,
-                        rtn=["Search returned {} torrents".format(len(torrents))])
+                        rtn=rtn)
     else:
-        return template('index')
+        return template('index', rtn=['Fail, need at least pattern or cat'])
 
 
-@reco
 @app.route('/top/day')
 def top_day():
     sort = request.query.sort
@@ -140,7 +148,6 @@ def top_day():
                     rtn=["Search returned {} torrents".format(len(torrents))])
 
 
-@reco
 @app.route('/top/week')
 def top_week():
     sort = request.query.sort
@@ -151,7 +158,6 @@ def top_week():
                     rtn=["Search returned {} torrents".format(len(torrents))])
 
 
-@reco
 @app.route('/top/month')
 def top_month():
     sort = request.query.sort
@@ -162,7 +168,6 @@ def top_month():
                     rtn=["Search returned {} torrents".format(len(torrents))])
 
 
-@reco
 @app.route('/dl/<idtorrent:int>')
 def dl_torrent(idtorrent):
     head, resp = ygg.download_torrent(id=idtorrent)
@@ -171,7 +176,6 @@ def dl_torrent(idtorrent):
     return resp
 
 
-@reco
 @app.route('/ts/<idtorrent:int>')
 def ts_torrent(idtorrent):
     rtn = []
@@ -189,7 +193,6 @@ def ts_torrent(idtorrent):
     return template('search_results', state=state, rtn=rtn)
 
 
-@reco
 @app.route('/rt/<idtorrent:int>')
 def rt_torrent(idtorrent):
     rtn = []
@@ -204,7 +207,6 @@ def rt_torrent(idtorrent):
     return template('search_results', state=state, rtn=rtn)
 
 
-@reco
 @app.route('/dg/<idtorrent:int>')
 def dg_torrent(idtorrent):
     rtn = []
@@ -226,7 +228,6 @@ def rss():
     return template('rss', results=cats, rtn=[])
 
 
-@reco
 @app.route('/rss/<cat>')
 def rss_cat(cat):
     if cat in cats.keys():
@@ -244,10 +245,12 @@ def rss_cat(cat):
     return response_body
 
 
-@reco
 @app.route('/stats')
 def stats():
-    return ygg.stats()
+    try:
+        return ygg.stats()
+    except:
+        return "{'Up': 'Not connected'}"
 
 
 if __name__ == '__main__':

@@ -4,16 +4,16 @@ from . import exceptions as ygge
 
 links = (
     "2145-filmvidéo",
-    "filmvideo/2178-animation",
-    "filmvideo/2179-animation-serie",
-    "filmvideo/2180-concert",
-    "filmvideo/2181-documentaire",
-    "filmvideo/2182-emission-tv",
-    "filmvideo/2183-film",
-    "filmvideo/2184-serie-tv",
-    "filmvideo/2185-spectacle",
-    "filmvideo/2186-sport",
-    "filmvideo/2187-video-clips",
+    "filmvidéo/2178-animation",
+    "filmvidéo/2179-animation-serie",
+    "filmvidéo/2180-concert",
+    "filmvidéo/2181-documentaire",
+    "filmvidéo/2182-emission-tv",
+    "filmvidéo/2183-film",
+    "filmvidéo/2184-serie-tv",
+    "filmvidéo/2185-spectacle",
+    "filmvidéo/2186-sport",
+    "filmvidéo/2187-video-clips",
     "2139-audio",
     "audio/2147-karaoke",
     "audio/2148-musique",
@@ -28,15 +28,15 @@ links = (
     "application/2175-tablette",
     "application/2173-windows",
     "2142-jeu+vidéo",
-    "jeu-video/2167-autre",
-    "jeu-video/2159-linux",
-    "jeu-video/2160-macos",
-    "jeu-video/2162-microsoft",
-    "jeu-video/2163-nintendo",
-    "jeu-video/2165-smartphone",
-    "jeu-video/2164-sony",
-    "jeu-video/2166-tablette",
-    "jeu-video/2161-windows",
+    "jeu+vidéo/2167-autre",
+    "jeu+vidéo/2159-linux",
+    "jeu+vidéo/2160-macos",
+    "jeu+vidéo/2162-microsoft",
+    "jeu+vidéo/2163-nintendo",
+    "jeu+vidéo/2165-smartphone",
+    "jeu+vidéo/2164-sony",
+    "jeu+vidéo/2166-tablette",
+    "jeu+vidéo/2161-windows",
     "2140-ebook",
     "ebook/2151-audio",
     "ebook/2152-bds",
@@ -61,26 +61,31 @@ def get_link(cat, subcat):
     for link in links:
         if cat in link and (not subcat or subcat in link):
             return link
-    raise ygge.YggException("Cat or subcat not found")
+    raise ygge.YggException("Cat or subcat not found in get_link")
 
 
 def get_cat_id(cat, subcat=None):
     print("get_cat_id({},{})".format(cat, subcat))
-    if cat == "filmvideo":
+    if cat == "filmvideo" or cat == "film-vidéo":
         cat = "filmvidéo"
-    if cat == "jeu-video":
+    if cat == "jeu-video" or cat == "jeu-vidéo":
         cat = "jeu+vidéo"
+    if subcat == "série-tv":
+        subcat = "serie-tv"
+
     cat_id = None
     subcat_id = None
     for link in links:
-        if cat_id is None and re.findall('\d+-%s' % cat, link):
+        if cat_id is None and re.findall(r'\d+-%s' % re.escape(cat), link):
             cat_id = re.findall(r'\d+', link)[0]
+            print('cat_id {}'.format(cat_id))
             continue
         if cat_id is not None and subcat and "-{}".format(subcat) in link:
             subcat_id = re.findall(r'\d+', link)[0]
+            print('subcat_id {}'.format(subcat_id))
             break
     if cat_id is None or (subcat and subcat_id is None):
-        raise ygge.YggException("Cat or subcat not found")
+        raise ygge.YggException("Cat or subcat not found in get_cat_id")
     return {"category": cat_id, "sub_category": subcat_id}
 
 

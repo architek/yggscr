@@ -9,7 +9,7 @@
   <script type="text/javascript" src="/static/xhr.js"></script>
  </head>
 <body>
- <div class="menu" id="modal""> </div>
+ <div class="menu" id="modal"> </div>
  <div class="menu">
  <ul>
  <li><a class="menu" href="/top/day">Torrents du jour</a></li>

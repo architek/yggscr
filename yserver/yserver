@@ -120,10 +120,13 @@ def search_index():
     cat = request.query.cat
     subcat = request.query.subcat
     sort = request.query.sort
+    uploader = request.query.uploader
     rtn = []
-    if search or cat:
+    if search or cat or uploader:
         try:
-            torrents = ygg.search_torrents(search, cat, subcat)
+            torrents = ygg.search_torrents(
+                search=search, cat=cat, subcat=subcat,
+                uploader=uploader)
         except Exception as e:
             state['sorted_torrents']=[]
             msg = "Failed: {}".format(e)
@@ -136,7 +139,7 @@ def search_index():
                         state=state,
                         rtn=rtn)
     else:
-        return template('index', rtn=['Fail, need at least pattern or cat'])
+        return template('index', rtn=['Fail'])
 
 
 @app.route('/top/day')

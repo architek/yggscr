@@ -28,7 +28,7 @@
     font-size: 12px;
     text-align:center;
 }
-#search,#cat,#subcat {
+#search,#cat,#subcat,#uploader {
     border: 1px solid grey; 
     -webkit-box-shadow: 
       inset 0 0 8px  rgba(0,0,0,0.1),

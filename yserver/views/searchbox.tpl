@@ -7,6 +7,8 @@
   <input type='text' name='cat' id='cat' value='{{request.query.cat}}'/>
   SubCat
   <input type='text' name='subcat' id='subcat' value='{{request.query.subcat}}'/>
+  Uploader
+  <input type='text' name='uploader' id='uploader' value='{{request.query.uploader}}'/>
   <input type='submit' value='Rechercher' id='search'/>
   </form>
   </div>

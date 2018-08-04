@@ -85,6 +85,9 @@ server {
     listen [::]:80;
     
     location / {
+        # restrict to 192.168.1.0/24
+        allow 192.168.1.1/24;
+        deny all;
         uwsgi_read_timeout 20s;
         uwsgi_send_timeout 20s;
         include uwsgi_params;
@@ -108,8 +111,7 @@ gid = www-data
 workers = 2
 threads = 4
 plugins = python3
-harakiri = 20
-socket-timeout = 60
+socket-timeout = 6000000
 
 ```
 

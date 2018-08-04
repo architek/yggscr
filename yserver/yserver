@@ -80,7 +80,15 @@ if DEBUG :
     werkzeug = werkzeug.Plugin()
     app.install(werkzeug)
 
-def reco(func):
+
+def results_opts(results, sort=''):
+    return sorted(results,
+                  key=lambda k: getattr(k, sort),
+                  reverse=next(state['order'][sort])) if sort else results
+
+
+@app.hook('before_request')
+def reco():
     if DEBUG:
         print("Reconnecting to ygg")
     ygg.ping()
@@ -89,13 +97,6 @@ def reco(func):
         print("Logged in as %s" % username)
     elif DEBUG:
         print("Already authenticated")
-    return func
-
-
-def results_opts(results, sort=''):
-    return sorted(results,
-                  key=lambda k: getattr(k, sort),
-                  reverse=next(state['order'][sort])) if sort else results
 
 
 @app.route('/static/<filepath>')

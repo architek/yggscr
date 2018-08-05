@@ -118,16 +118,16 @@ def index():
 
 @app.route('/search')
 def search_index():
-    search = request.query.search
+    name = request.query.name
     cat = request.query.cat
     subcat = request.query.subcat
     sort = request.query.sort
     uploader = request.query.uploader
     rtn = []
-    if search or cat or uploader:
+    if name or cat or uploader:
         try:
             torrents = ygg.search_torrents(
-                search=search, cat=cat, subcat=subcat,
+                name=name, cat=cat, subcat=subcat,
                 uploader=uploader)
         except Exception as e:
             state['sorted_torrents']=[]

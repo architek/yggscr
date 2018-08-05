@@ -2,7 +2,7 @@
   <div class="searchbox">
   <form method="GET" action="/search">
   Texte
-  <input type='text' name='search' id='search' value='{{request.query.search}}'/>
+  <input type='text' name='name' id='name' value='{{request.query.name}}'/>
   Cat
   <input type='text' name='cat' id='cat' value='{{request.query.cat}}'/>
   SubCat

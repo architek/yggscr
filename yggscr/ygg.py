@@ -27,7 +27,7 @@ class YggBrowser(SBrowser):
     def __init__(self, scraper=None,
                  browser=None):
         SBrowser.__init__(self, scraper, browser,
-                          history=False, timeout=7, parser='html.parser')
+                          history=False, timeout=10, parser='html.parser')
         self.idstate = None
         self.detail = False         # No detailed torrent info by default
         self.browser.session.hooks['response'].append(self.gen_state())
@@ -158,7 +158,7 @@ class YggBrowser(SBrowser):
             detail = self.detail
         try:
             if "Aucun résultat" in sup.text:
-                return None
+                return []
             table = sup.find_all('table')[1]
             if table is None:
                 raise YggException("Couldn't decode web page")
@@ -210,7 +210,9 @@ class YggBrowser(SBrowser):
         param['do'] = "search"
         for k,v in kwargs.items():
             param[k] = v
+        print("Searching...")
         self.browser.open(SEARCH_URL, params=param)
+        print("Searched on this url {}".format(self.response().url))
         self.detail = detail
         return self._parse_torrents()
 

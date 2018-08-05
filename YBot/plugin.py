@@ -231,7 +231,7 @@ class YBot(callbacks.Plugin):
                    'light gray')
 
         # 1: unknown, 3: supermod, 4: mod, 5: tp
-        gcolours = {1: 'blue', 3: 'orange', 4: 'green', 5: 'pink'}
+        gcolours = {1: 'blue', 3: 'orange', 4: 'green', 5: 'pink', 9: 'brown'}
 
         if group != 2:
             user = ircutils.bold(
@@ -270,7 +270,7 @@ class YBot(callbacks.Plugin):
             diff = self.shout.do_diff()
         except Exception as e:
             self.log.info("Could not dump shout, aborting. Error %s" % e)
-            #irc.error("Shout: Can't get shout (%s)" % e)
+#            irc.error("Shout: Can't get shout (%s)" % e)
             return
         if n is None:
             n = len(diff)

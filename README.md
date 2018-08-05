@@ -1,6 +1,4 @@
-Gitlab (New repository)
-
-[![master branch status](https://gitlab.teebee.n0n3m.com/yggscr/badges/master/pipeline.svg)](https://gitlab.teebee.n0n3m.com/yggscr/commits/master)
+![alt text](https://user-images.githubusercontent.com/490053/43690510-8dc22da8-990b-11e8-902a-ba135ed9e449.png "YggScraper")
 
 Ygg scraper with:
 * **Shell** interface - Any [cmd2](https://github.com/python-cmd2/cmd2 "Python cmd2") features can be used: completion, scripts and much more

@@ -12,13 +12,13 @@
 %if state['dgEn']:
    <td class="thead">D</td>
 %end
-   <td><a class="thead" href='?search={{request.query.search}}&sort=cat'>Cat</a></td>
-   <td><a class="thead" href='?search={{request.query.search}}&sort=subcat'>SubCat</a></td>
-   <td><a class="thead" href='?search={{request.query.search}}&sort=title'>Titre</a></td>
-   <td><a class="thead" href='?search={{request.query.search}}&sort=age'>Date</a></td>
-   <td><a class="thead" href='?search={{request.query.search}}&sort=nsize'>Taille</a></td>
-   <td><a class="thead" href='?search={{request.query.search}}&sort=seeders'>Seed</a></td>
-   <td><a class="thead" href='?search={{request.query.search}}&sort=leechers'>Leech</a></td>
+   <td><a class="thead" href='?search={{request.query.search}}&cat={{request.query.cat}}&subcat={{request.query.subcat}}&sort=cat'>Cat</a></td>
+   <td><a class="thead" href='?search={{request.query.search}}&cat={{request.query.cat}}&subcat={{request.query.subcat}}&sort=subcat'>SubCat</a></td>
+   <td><a class="thead" href='?search={{request.query.search}}&cat={{request.query.cat}}&subcat={{request.query.subcat}}&sort=title'>Titre</a></td>
+   <td><a class="thead" href='?search={{request.query.search}}&cat={{request.query.cat}}&subcat={{request.query.subcat}}&sort=age'>Date</a></td>
+   <td><a class="thead" href='?search={{request.query.search}}&cat={{request.query.cat}}&subcat={{request.query.subcat}}&sort=nsize'>Taille</a></td>
+   <td><a class="thead" href='?search={{request.query.search}}&cat={{request.query.cat}}&subcat={{request.query.subcat}}&sort=seeders'>Seed</a></td>
+   <td><a class="thead" href='?search={{request.query.search}}&cat={{request.query.cat}}&subcat={{request.query.subcat}}&sort=leechers'>Leech</a></td>
    <td class="thead">Lien</td>
   </tr>
 %for r in state['sorted_torrents']:

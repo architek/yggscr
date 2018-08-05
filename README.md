@@ -1,6 +1,4 @@
-Gitlab (New repository)
-
-[![master branch status](https://gitlab.teebee.n0n3m.com/yggscr/badges/master/pipeline.svg)](https://gitlab.teebee.n0n3m.com/yggscr/commits/master)
+![alt text](https://user-images.githubusercontent.com/490053/43690510-8dc22da8-990b-11e8-902a-ba135ed9e449.png "YggScraper")
 
 Ygg scraper with:
 * **Shell** interface - Any [cmd2](https://github.com/python-cmd2/cmd2 "Python cmd2") features can be used: completion, scripts and much more
@@ -56,12 +54,84 @@ Ask the bot for help ;-)
 ### As standalone web server
 This server allows searching, downloading torrent file, sending to rtorrent,transmission or deluge client and authenticated RSS.
 
-Fill in your settings in defaults.cfg (at least Hostname, Port to listen to)
+Fill in your settings in defaults.cfg (at least Hostname, Port to listen to, username and password) and launch the server
 
 ```bash
-yserver
+./yserver
 
 ```
 
 To access webapp, connect to http://localhost:8081 (or any other config you've set)
+
+### Behind nginx using wsgi
+
+```bash
+apt install uwsgi uwsgi-plugin-python3
+```
+
+Create nginx vhost
+```
+upstream _bottle {
+    server unix:/run/uwsgi/app/yserver/socket;
+}
+
+server {
+    server_name ygg.com;
+    root /var/www;
+
+    listen 80;
+    listen [::]:80;
+    
+    location / {
+        # restrict to 192.168.1.0/24
+        allow 192.168.1.1/24;
+        deny all;
+        uwsgi_read_timeout 20s;
+        uwsgi_send_timeout 20s;
+        include uwsgi_params;
+        uwsgi_pass _bottle;
+    }
+}
+```
+Create file /etc/uwsgi/apps-available/yserver.ini
+
+```
+[uwsgi]
+socket = /run/uwsgi/app/yserver/socket
+chdir = /var/www/bottle/yserver/
+master = true
+file = yserver
+uid = www-data
+gid = www-data
+;debug = true
+;reloader = true
+;catch-all = false
+workers = 2
+threads = 4
+plugins = python3
+socket-timeout = 6000000
+
+```
+
+Create directories
+
+```bash
+mkdir -p /run/uwsgi/app/yserver
+chown www-data:www-data /run/uwsgi/app/yserver
+mkdir -p /var/www/bottle/yserver/   # or wherever the tree yserver/ is 
+```
+
+Edit yserver.cfg to fit to your need
+
+Enable uwsgi app and reload nginx
+
+```bash
+cd /etc/uwsgi/apps-enabled
+ln -s ../apps-available/yserver.ini
+systemctl restart uwsgi.service
+systemctl restart nginx
+```
+
+
+
 

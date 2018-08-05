@@ -163,7 +163,8 @@ class YggShell(Cmd):
 
     def do_ping(self, line):
         'perform a connection to /'
-        self.ygg_browser.ping()
+        r = self.ygg_browser.ping()
+        print("Return code {}".format(r))
 
     def do_response(self, line):
         'get last response'

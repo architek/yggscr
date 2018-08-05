@@ -6,8 +6,7 @@ import time
 import yggscr.ygg
 from bs4 import NavigableString
 
-SHOUT_URL = "https://ww1.yggtorrent.is/forum/index.php?shoutbox/refresh"
-
+from .const import SHOUT_URL
 
 class ShoutMessage(object):
 
@@ -73,9 +72,9 @@ class YggShout:
 
     def do_diff(self):
         """ Http Get new shouts, compute and return list of new shouts """
-        newshouts = self.get_shouts()
         last_index = None
         self.diffshouts = []
+        newshouts = self.get_shouts()
         for shout in newshouts:
             try:
                 index = self.last_shouts.index(shout)

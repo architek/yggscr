@@ -53,7 +53,7 @@ function update_stats_text(data) {
     var time = date.getHours().toString().padStart(2,"0") + ":" + date.getMinutes().toString().padStart(2,"0")+ ":" + date.getSeconds().toString().padStart(2,"0");
     var progs = ["-", "\\","|","/"];
     var prog = progs[modp++%progs.length];
-    $(stats_element).text(prog+" Up(MB):"+data.up+" Down(MB):"+data.down+" Ratio:"+data.ratio+ " Mean Up Speed (KBps):"+data.m_up+" Mean Down Speed (KBps):"+data.m_down+" @ "+time);
+    $(stats_element).text(prog+" Up:"+data.up+"GB Down:"+data.down+"GB Ratio:"+data.ratio+ " Mean Up Speed:"+data.m_up+"KBps Mean Down Speed:"+data.m_down+"KBps  @ "+time);
 }
 
 function error(what) {

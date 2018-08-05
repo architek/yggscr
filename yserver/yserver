@@ -1,12 +1,18 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import re
 from itertools import cycle
 from yggscr.ygg import YggBrowser
 from configparser import ConfigParser
-from bottle import route, run, template, response, static_file, request, \
-                   default_app
+from bottle import route, hook, run, template, response, static_file, request, \
+                   redirect, Bottle
 from yggscr.client import rtorrent_add_torrent, transmission_add_torrent, \
     deluge_add_torrent
+
+from yggscr.const import RSS_TPL
+
+DEBUG = True
 
 state = {
     'sorted_torrents': '',
@@ -24,17 +30,18 @@ state = {
     'dgEn': False,
 }
 
-ygg = YggBrowser()
 config = ConfigParser()
 if not config.read('yserver.cfg'):
     print("Configuration file yserver.cfg not found")
     exit()
 
-username = config['user']['username']
-password = config['user']['password']
+username = config['ygg']['username']
+password = config['ygg']['password']
 
 host = config['app']['hostname']
 port = config['app']['port']
+
+proxy     = config['net']['proxy']
 
 thostname = config['transmission']['hostname']
 tport     = config['transmission']['port']
@@ -51,8 +58,6 @@ rpc_url = config['rtorrent']['rpc_url']
 cats = {'Films & Vidéos': 2145, 'Audio': 2139, 'Application': 2144,
         'Jeu vidéo': 2142, 'Ebook': 2140, 'Emulation': 2141,
         'GPS': 2143, 'XXX': 2188}
-BASE = "ww1.yggtorrent.is"
-RSS_LINK = "https://"+BASE+"/rss?type=1&parent_category=%(category)s"
 
 if rpc_url:
     state['rtEn'] = True
@@ -61,13 +66,19 @@ if thostname:
 if deluge_ip:
     state['dgEn'] = True
 
+ygg = YggBrowser()
+ygg.login(ygg_id=username, ygg_pass=password)
+if proxy:
+    ygg.proxify(proxy)
+    print("Proxied through {}".format(proxy))
 
-def reco(func):
-    ygg.ping()
-    if ygg.idstate != "authenticated":
-        ygg.login(ygg_id=username, ygg_pass=password)
-        print("Logged in as %s" % username)
-    return func
+app = application = Bottle()
+#from werkzeug.debug import DebuggedApplication
+#app = DebuggedApplication(app, evalex=True)
+if DEBUG :
+    from bottle.ext import werkzeug
+    werkzeug = werkzeug.Plugin()
+    app.install(werkzeug)
 
 
 def results_opts(results, sort=''):
@@ -76,40 +87,96 @@ def results_opts(results, sort=''):
                   reverse=next(state['order'][sort])) if sort else results
 
 
-@route('/static/<filepath>')
+@app.hook('before_request')
+def reco():
+    if request.path.startswith('/static/'):
+        return
+    if DEBUG:
+        print("Reconnecting to ygg")
+    try:
+        ygg.ping()
+    except Exception as e:
+        print("Ping failed, can't check state, exception is {}".format(e))
+    if ygg.idstate != "authenticated":
+        ygg.login(ygg_id=username, ygg_pass=password)
+        print("Logged in as %s" % username)
+    elif DEBUG:
+        print("Already authenticated")
+
+
+@app.route('/static/<filepath>')
 def server_static(filepath):
     return static_file(filepath, root='resources/static')
 
 
-@route('/images/<filepath>')
+@app.route('/images/<filepath>')
 def server_images(filepath):
     return static_file(filepath, root='resources/images')
 
 
-@route('/')
+@app.route('/')
 def index():
     return template('index', rtn=["Welcome "+username])
 
 
-@reco
-@route('/search')
+@app.route('/search')
 def search_index():
-    search = request.query.search
+    if request.query.act == "Rssize":
+        redirect("/rssearch?" + request.query_string)
+    name = request.query.name
     cat = request.query.cat
     subcat = request.query.subcat
     sort = request.query.sort
-    if search:
-        torrents = ygg.search_torrents(search, cat, subcat)
-        state['sorted_torrents'] = results_opts(torrents, sort)
+    uploader = request.query.uploader
+    rtn = []
+    if name or cat or uploader:
+        try:
+            torrents = ygg.search_torrents(
+                name=name, cat=cat, subcat=subcat,
+                uploader=uploader)
+        except Exception as e:
+            state['sorted_torrents']=[]
+            msg = "Failed: {}".format(e)
+            rtn.append(msg)
+        else:
+            state['sorted_torrents'] = results_opts(torrents, sort)
+            msg = "Search returned {} torrents".format(len(torrents))
+            rtn.append(msg)
         return template('search_results',
                         state=state,
-                        rtn=["Search returned {} torrents".format(len(torrents))])
+                        rtn=rtn)
     else:
-        return template('index')
+        return template('index', rtn=['Fail'])
+
+def rssize(torrents, base):
+    rss_tpl="""<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+<channel>
+<title>YggTorrent RSS</title>
+<link>https://yggtorrent.is</link>
+<description>Better than Official YggTorrent RSS Feed</description>
+{items_str}
+</channel>
+</rss>"""
+    rss_item="""<item><title>{torrent.title}</title><description>Size: {torrent.size}, Uploaded by: TODO, Seeders: {torrent.seeders}, Leechers: {torrent.leechers}</description>
+<link>{torrent.href}</link><pubDate>{torrent.age}</pubDate>
+<enclosure url="{uri}/dl/{torrent.tid}"/></item>"""
+
+    response.set_header('Content-type', 'application/xml')
+    items_str = ""
+    for torrent in torrents:
+        items_str += rss_item.format(torrent=torrent, uri=base)
+    return rss_tpl.format(items_str=items_str)
 
 
-@reco
-@route('/top/day')
+@app.route('/rssearch')
+def rssearch():
+    params = request.query.decode()
+    torrents = ygg.search_torrents(**params)
+    return rssize(torrents, request.urlparts.scheme+"://"+request.urlparts.netloc)
+
+
+@app.route('/top/day')
 def top_day():
     sort = request.query.sort
     torrents = ygg.top_day()
@@ -119,8 +186,7 @@ def top_day():
                     rtn=["Search returned {} torrents".format(len(torrents))])
 
 
-@reco
-@route('/top/week')
+@app.route('/top/week')
 def top_week():
     sort = request.query.sort
     torrents = ygg.top_week()
@@ -130,8 +196,7 @@ def top_week():
                     rtn=["Search returned {} torrents".format(len(torrents))])
 
 
-@reco
-@route('/top/month')
+@app.route('/top/month')
 def top_month():
     sort = request.query.sort
     torrents = ygg.top_month()
@@ -141,8 +206,7 @@ def top_month():
                     rtn=["Search returned {} torrents".format(len(torrents))])
 
 
-@reco
-@route('/dl/<idtorrent:int>')
+@app.route('/dl/<idtorrent:int>')
 def dl_torrent(idtorrent):
     head, resp = ygg.download_torrent(id=idtorrent)
     for k, v in head:
@@ -150,8 +214,7 @@ def dl_torrent(idtorrent):
     return resp
 
 
-@reco
-@route('/ts/<idtorrent:int>')
+@app.route('/ts/<idtorrent:int>')
 def ts_torrent(idtorrent):
     rtn = []
     try:
@@ -168,8 +231,7 @@ def ts_torrent(idtorrent):
     return template('search_results', state=state, rtn=rtn)
 
 
-@reco
-@route('/rt/<idtorrent:int>')
+@app.route('/rt/<idtorrent:int>')
 def rt_torrent(idtorrent):
     rtn = []
     try:
@@ -183,8 +245,7 @@ def rt_torrent(idtorrent):
     return template('search_results', state=state, rtn=rtn)
 
 
-@reco
-@route('/dg/<idtorrent:int>')
+@app.route('/dg/<idtorrent:int>')
 def dg_torrent(idtorrent):
     rtn = []
     try:
@@ -200,22 +261,22 @@ def dg_torrent(idtorrent):
     return template('search_results', state=state, rtn=rtn)
 
 
-@route('/rss')
+@app.route('/rss')
 def rss():
     return template('rss', results=cats, rtn=[])
 
 
-@reco
-@route('/rss/<cat>')
+@app.route('/rss/<cat>')
 def rss_cat(cat):
     if cat in cats.keys():
         cat = cats[cat]
     elif cat not in cats.values():
         return rss()
-    ygg.get(RSS_LINK % {'category': cat})
+    ygg.get(RSS_TPL.format(category=cat))
+    uri = request.urlparts.scheme+"://"+request.urlparts.netloc
     response_body = re.sub(
             r'https:[^"]*torrent_generator[^"0-9]*([0-9]*).*"',
-            r'http://%s:%s/get/\1"' % (host, port),
+            r'%s/dl/\1"' % uri,
             ygg.response().content.decode('utf-8'))
     response.set_header('Content-type', 'application/xml')
     response_body = re.sub(r'(Official YggTorrent)', r'Better than \1',
@@ -223,13 +284,21 @@ def rss_cat(cat):
     return response_body
 
 
-@reco
-@route('/stats')
+@app.route('/stats')
 def stats():
-    return ygg.stats()
+    try:
+        return ygg.stats()
+    except:
+        return "{'Up': 'Not connected'}"
 
 
-if __name__ == "__main__":
-    run(host=host, port=port)
+if __name__ == '__main__':
+    run(
+        app=app,
+        host=host,
+        port=port,
+#        reloader=True,
+#        debug=True,
+        server='wsgiref',
+        )
 
-app = default_app()

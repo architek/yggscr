@@ -1,6 +1,7 @@
 # from pprint import (PrettyPrinter, pprint)
 # pp = PrettyPrinter(indent=4)
 
+from .const import DL_TPL
 
 def htn(hsize):
     hsize = hsize.upper()
@@ -46,8 +47,7 @@ class Torrent():
         self.thref = thref
 
     def get_dl_link(self, id=None):
-        tmpl = "https://ww1.yggtorrent.is/engine/download_torrent?id=%s"
-        return tmpl % id if id is not None else tmpl % self.tid
+        return DL_TPL.format(id=id or self.tid)
 
     def download(self):
         pass

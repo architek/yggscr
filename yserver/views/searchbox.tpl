@@ -9,7 +9,8 @@
   <input type='text' name='subcat' id='subcat' value='{{request.query.subcat}}'/>
   Uploader
   <input type='text' name='uploader' id='uploader' value='{{request.query.uploader}}'/>
-  <input type='submit' value='Rechercher' id='search'/>
+  <input type='submit' name="act" value='Rechercher' id='search'/>
+  <input type='submit' name="act" value='Rssize' id='rssize'/>
   </form>
   </div>
 %end

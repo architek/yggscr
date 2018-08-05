@@ -6,7 +6,7 @@ from itertools import cycle
 from yggscr.ygg import YggBrowser
 from configparser import ConfigParser
 from bottle import route, hook, run, template, response, static_file, request, \
-                   default_app, Bottle
+                   redirect, Bottle
 from yggscr.client import rtorrent_add_torrent, transmission_add_torrent, \
     deluge_add_torrent
 
@@ -93,7 +93,10 @@ def reco():
         return
     if DEBUG:
         print("Reconnecting to ygg")
-    ygg.ping()
+    try:
+        ygg.ping()
+    except Exception as e:
+        print("Ping failed, can't check state, exception is {}".format(e))
     if ygg.idstate != "authenticated":
         ygg.login(ygg_id=username, ygg_pass=password)
         print("Logged in as %s" % username)
@@ -118,6 +121,8 @@ def index():
 
 @app.route('/search')
 def search_index():
+    if request.query.act == "Rssize":
+        redirect("/rssearch?" + request.query_string)
     name = request.query.name
     cat = request.query.cat
     subcat = request.query.subcat

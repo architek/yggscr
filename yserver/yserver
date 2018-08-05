@@ -141,6 +141,33 @@ def search_index():
     else:
         return template('index', rtn=['Fail'])
 
+def rssize(torrents, base):
+    rss_tpl="""<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+<channel>
+<title>YggTorrent RSS</title>
+<link>https://yggtorrent.is</link>
+<description>Better than Official YggTorrent RSS Feed</description>
+{items_str}
+</channel>
+</rss>"""
+    rss_item="""<item><title>{torrent.title}</title><description>Size: {torrent.size}, Uploaded by: TODO, Seeders: {torrent.seeders}, Leechers: {torrent.leechers}</description>
+<link>{torrent.href}</link><pubDate>{torrent.age}</pubDate>
+<enclosure url="{uri}/dl/{torrent.tid}"/></item>"""
+
+    response.set_header('Content-type', 'application/xml')
+    items_str = ""
+    for torrent in torrents:
+        items_str += rss_item.format(torrent=torrent, uri=base)
+    return rss_tpl.format(items_str=items_str)
+
+
+@app.route('/rssearch')
+def rssearch():
+    params = request.query.decode()
+    torrents = ygg.search_torrents(**params)
+    return rssize(torrents, request.urlparts.scheme+"://"+request.urlparts.netloc)
+
 
 @app.route('/top/day')
 def top_day():
@@ -239,9 +266,10 @@ def rss_cat(cat):
     elif cat not in cats.values():
         return rss()
     ygg.get(RSS_TPL.format(category=cat))
+    uri = request.urlparts.scheme+"://"+request.urlparts.netloc
     response_body = re.sub(
             r'https:[^"]*torrent_generator[^"0-9]*([0-9]*).*"',
-            r'http://%s:%s/get/\1"' % (host, port),
+            r'%s/dl/\1"' % uri,
             ygg.response().content.decode('utf-8'))
     response.set_header('Content-type', 'application/xml')
     response_body = re.sub(r'(Official YggTorrent)', r'Better than \1',

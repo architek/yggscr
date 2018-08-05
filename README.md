@@ -123,6 +123,8 @@ chown www-data:www-data /run/uwsgi/app/yserver
 mkdir -p /var/www/bottle/yserver/   # or wherever the tree yserver/ is 
 ```
 
+Edit yserver.cfg to fit to your need
+
 Enable uwsgi app and reload nginx
 
 ```bash

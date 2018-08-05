@@ -89,6 +89,8 @@ def results_opts(results, sort=''):
 
 @app.hook('before_request')
 def reco():
+    if request.path.startswith('/static/'):
+        return
     if DEBUG:
         print("Reconnecting to ygg")
     ygg.ping()
@@ -288,8 +290,8 @@ def stats():
 if __name__ == '__main__':
     run(
         app=app,
-        host='0.0.0.0',
-        port=8333,
+        host=host,
+        port=port,
 #        reloader=True,
 #        debug=True,
         server='wsgiref',

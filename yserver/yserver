@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+import html
 from itertools import cycle
 from yggscr.ygg import YggBrowser
 from configparser import ConfigParser
@@ -158,14 +159,14 @@ def rssize(torrents, base):
 {items_str}
 </channel>
 </rss>"""
-    rss_item="""<item><title>{torrent.title}</title><description>Size: {torrent.size}, Uploaded by: TODO, Seeders: {torrent.seeders}, Leechers: {torrent.leechers}</description>
+    rss_item="""<item><title>{title}</title><description>Size: {torrent.size}, Seeders: {torrent.seeders}, Leechers: {torrent.leechers}</description>
 <link>{torrent.href}</link><pubDate>{torrent.age}</pubDate>
 <enclosure url="{uri}/dl/{torrent.tid}"/></item>"""
 
     response.set_header('Content-type', 'application/xml')
     items_str = ""
     for torrent in torrents:
-        items_str += rss_item.format(torrent=torrent, uri=base)
+        items_str += rss_item.format(torrent=torrent, uri=base, title = html.escape(torrent.title))
     return rss_tpl.format(items_str=items_str)
 
 

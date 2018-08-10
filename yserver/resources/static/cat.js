@@ -4,6 +4,7 @@ for c in yggscr.link.list_cats():
      print('cat["'+c+'"]=['+a+'];')
 */
 var cat = new Object();
+cat[""]=[""];
 cat["filmvidéo"]=["animation","animation","concert","documentaire","emission","film","serie","spectacle","sport","video"];
 cat["audio"]=["karaoke","musique","podcast","samples"];
 cat["application"]=["autre","formation","linux","macos","smartphone","tablette","windows"];
@@ -14,18 +15,20 @@ cat["gps"]=["applications","cartes","divers"];
 cat["xxx"]=["films","hentai","images"];
 
 function subcat_select() {
-    $.each( cat, function( key, value ) { 
-        $('#cat').append('<option value="'+key+'">'+key+'</option>');
-    });
-    $.each( cat["filmvidéo"], function( key, value ) {
-        $('#subcat').append('<option value="'+value+'">'+value+'</option>');
-    });
     $('#cat').change(function() {
         var sel = $( this ).val();
         $('#subcat').empty();
         $.each( cat[sel], function( key, value ) {
             $('#subcat').append('<option value="'+value+'">'+value+'</option>');
         });
+        $('#subcat').val($SUBCAT);
     });
+    $.each( cat[""], function( key, value ) {
+        $('#subcat').append('<option value="'+value+'">'+value+'</option>');
+    });
+    $.each( cat, function( key, value ) {
+        $('#cat').append('<option value="'+key+'">'+key+'</option>')
+    });
+    $('#cat').val($CAT).change();
 }
 

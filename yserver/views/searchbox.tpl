@@ -4,9 +4,9 @@
   Texte
   <input type='text' name='name' id='name' value='{{request.query.name}}'/>
   Cat
-  <input type='text' name='cat' id='cat' value='{{request.query.cat}}'/>
+  <select id="cat"></select>
   SubCat
-  <input type='text' name='subcat' id='subcat' value='{{request.query.subcat}}'/>
+  <select id="subcat"></select>
   Uploader
   <input type='text' name='uploader' id='uploader' value='{{request.query.uploader}}'/>
   <input type='submit' name="act" value='Rechercher' id='search'/>

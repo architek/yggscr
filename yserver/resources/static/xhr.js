@@ -71,6 +71,8 @@ function text_stats(thetext) {
 $(document).ready(function () {
     window.onerror = error;
 
+    subcat_select();
+
     /* Start */
     tpl_disp_message();
     loop();

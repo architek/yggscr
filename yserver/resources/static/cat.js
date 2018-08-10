@@ -17,6 +17,9 @@ function subcat_select() {
     $.each( cat, function( key, value ) { 
         $('#cat').append('<option value="'+key+'">'+key+'</option>');
     });
+    $.each( cat["filmvidéo"], function( key, value ) {
+        $('#subcat').append('<option value="'+value+'">'+value+'</option>');
+    });
     $('#cat').change(function() {
         var sel = $( this ).val();
         $('#subcat').empty();

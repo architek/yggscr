@@ -43,7 +43,6 @@
    </tr>
 %end
  </table>
- </div>
 </div>
 
 % include('footer.tpl')

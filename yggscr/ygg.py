@@ -13,10 +13,7 @@ from .exceptions import YggException
 from .const import *
 from .link import get_link, get_cat_id, list_cat_subcat
 
-try:
-    from urllib.parse import urlparse
-except ImportError:
-    from urlparse import urlparse
+from urllib.parse import urlparse, parse_qs
 
 # from pprint import (PrettyPrinter, pprint)
 # pp = PrettyPrinter(indent=4)
@@ -181,7 +178,7 @@ class YggBrowser(SBrowser):
                         attrs={'href': re.compile("download_torrent")})['href']
                     date = re.findall(r'\d+/\d+/\d+ \d+:\d+',
                                       str(self.response().content))[0]
-                    tid = parse.parse_qs(parse.urlparse(thref).query)['id'][0]
+                    tid = parse_qs(urlparse(thref).query)['id'][0]
                     torrent_list.append(Torrent(
                         name, comm, age, size, compl, seeders, leechers, href,
                         thref, tid))

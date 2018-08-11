@@ -19,12 +19,12 @@ class Torrent():
         self.href = href
         self.title = torrent_title
         self.comm = int(torrent_comm)
-        self.age = torrent_age
+        self.publish_date = torrent_age
         self.size = torrent_size
         self.nsize = htn(self.size)
         self.compl = int(torrent_compl)
-        self.seeders = int(torrent_seed)
-        self.leechers = int(torrent_leech)
+        self.seed = int(torrent_seed)
+        self.leech = int(torrent_leech)
         self.thref = thref
         if tid:
             self.tid = int(tid)

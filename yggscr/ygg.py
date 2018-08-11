@@ -199,14 +199,12 @@ class YggBrowser(SBrowser):
         self.detail = detail
         return self._parse_torrents()
 
-    def search_torrents(self, detail=False, pattern=None, cat=None,
-                        subcat=None, **kwargs):
+    def search_torrents(self, detail=False, **kwargs):
         param = dict()
-        if cat:
-            param = get_cat_id(cat, subcat)
-        param['order'] = "desc"
-        param['sort'] = "publish_date"
-        param['name'] = pattern
+        if kwargs.get('category',''):
+            param = get_cat_id(kwargs['category'], kwargs.get('sub_category',''))
+            kwargs.pop('category', None)
+            kwargs.pop('sub_category', None)
         param['do'] = "search"
         for k,v in kwargs.items():
             param[k] = v

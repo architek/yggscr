@@ -13,7 +13,7 @@
  <div class="menu" style="overflow:hidden;margin:0px;padding:0px">
  <div style="float:left;margin:0px;padding:0px;">
  <a href="/">
- <img border="0" alt="YggScr" src="/images/pirate.gif" width="30" height="20" style="border-radius: 50%;"></a></div>
+ <img border="0" src="/images/pirate.gif" width="30" height="20" style="border-radius: 50%;"></a></div>
  <div class="menu" id="modal"> </div>
  </div>
  <div class="menu">

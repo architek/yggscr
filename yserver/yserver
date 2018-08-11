@@ -15,17 +15,11 @@ from yggscr.const import RSS_TPL
 
 DEBUG = True
 
+cyc = cycle(['asc', 'desc'])
+
 state = {
     'sorted_torrents': '',
-    'order': {
-        'cat': cycle([True, False]),
-        'subcat': cycle([True, False]),
-        'title': cycle([True, False]),
-        'age': cycle([True, False]),
-        'nsize': cycle([True, False]),
-        'seeders': cycle([True, False]),
-        'leechers': cycle([True, False]),
-    },
+    'order': 'desc',
     'rtEn': False,
     'tsEn': False,
     'dgEn': False,
@@ -83,14 +77,19 @@ if DEBUG :
 
 
 def results_opts(results, sort=''):
+    """ client side sort """
+    rev = True if state['order'] == 'desc' else False
+    if sort == 'size':
+        sort = 'nsize'
+    state['order'] = next(cyc)
     return sorted(results,
                   key=lambda k: getattr(k, sort),
-                  reverse=next(state['order'][sort])) if sort else results
+                  reverse=rev ) if sort else results
 
 
 @app.hook('before_request')
 def reco():
-    if request.path.startswith('/static/'):
+    if request.path.startswith('/static/') or request.path.startswith('/images/'):
         return
     if DEBUG:
         print("Reconnecting to ygg")
@@ -124,25 +123,27 @@ def index():
 def search_index():
     if request.query.act == "Rssize":
         redirect("/rssearch?" + request.query_string)
-    name = request.query.name
-    cat = request.query.cat
-    subcat = request.query.subcat
-    sort = request.query.sort
-    uploader = request.query.uploader
+    qs = {k: v for k,v in request.query.decode().items() if v}
+    qs.pop('act', None)
+    name = qs.get('name','')
+    cat = qs.get('category','')
+    uploader = qs.get('uploader','')
     rtn = []
     if name or cat or uploader:
         try:
-            torrents = ygg.search_torrents(
-                name=name, cat=cat, subcat=subcat,
-                uploader=uploader)
+            torrents = ygg.search_torrents(**(qs))
         except Exception as e:
             state['sorted_torrents']=[]
             msg = "Failed: {}".format(e)
             rtn.append(msg)
         else:
-            state['sorted_torrents'] = results_opts(torrents, sort)
             msg = "Search returned {} torrents".format(len(torrents))
             rtn.append(msg)
+        qs.pop('sort', None)
+        qs['order'] = next(state['order'])
+        state['qs'] = '/search?' + '&'.join("{k}={v}".format(k=k,v=v)
+                               for k,v in qs.items() if v)
+        state['sorted_torrents'] = torrents
         return template('search_results',
                         state=state,
                         rtn=rtn)
@@ -182,6 +183,7 @@ def top_day():
     sort = request.query.sort
     torrents = ygg.top_day()
     state['sorted_torrents'] = results_opts(torrents, sort)
+    state['qs'] = '/top/day?'
     return template('search_results',
                     state=state,
                     rtn=["Search returned {} torrents".format(len(torrents))])
@@ -192,6 +194,7 @@ def top_week():
     sort = request.query.sort
     torrents = ygg.top_week()
     state['sorted_torrents'] = results_opts(torrents, sort)
+    state['qs'] = '/top/week?'
     return template('search_results',
                     state=state,
                     rtn=["Search returned {} torrents".format(len(torrents))])
@@ -202,6 +205,7 @@ def top_month():
     sort = request.query.sort
     torrents = ygg.top_month()
     state['sorted_torrents'] = results_opts(torrents, sort)
+    state['qs'] = '/top/month?'
     return template('search_results',
                     state=state,
                     rtn=["Search returned {} torrents".format(len(torrents))])

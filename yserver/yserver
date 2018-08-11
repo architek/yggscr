@@ -140,7 +140,7 @@ def search_index():
             msg = "Search returned {} torrents".format(len(torrents))
             rtn.append(msg)
         qs.pop('sort', None)
-        qs['order'] = next(state['order'])
+        qs['order'] = next(cyc)
         state['qs'] = '/search?' + '&'.join("{k}={v}".format(k=k,v=v)
                                for k,v in qs.items() if v)
         state['sorted_torrents'] = torrents

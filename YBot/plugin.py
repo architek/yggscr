@@ -80,7 +80,7 @@ class YBot(callbacks.Plugin):
             return
         try:
             torrents = self.yggb.search_torrents(
-                p["q"], p.get("c"), p.get("s"), detail)
+                name=p["q"], category=p.get("c"), sub_category=p.get("s"), detail)
         except (requests.exceptions.ProxyError,
                 requests.exceptions.ConnectionError) as e:
             irc.error("Network Error: %s" % e)
@@ -96,8 +96,8 @@ class YBot(callbacks.Plugin):
         for idx, torrent in enumerate(torrents[:n]):
             sleep(1)
             irc.reply("%2d - %s [%s Size:%s C:%s S:%s L:%s Comm:%s] : %s" %
-                      (1+idx, torrent.title, torrent.age, torrent.size,
-                       torrent.compl, torrent.seeders, torrent.leechers,
+                      (1+idx, torrent.title, torrent.publish_date, torrent.size,
+                       torrent.completed, torrent.seed, torrent.leech,
                        torrent.comm, torrent.href))
     ysearch = wrap(ysearch,
                    ['anything', optional('int'), optional('boolean')])

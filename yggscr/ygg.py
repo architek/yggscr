@@ -126,7 +126,7 @@ class YggBrowser(SBrowser):
                         int(BeautifulSoup(jtor[4], 'html.parser').div.text)).strftime(
                             "%Y-%m-%d %H:%M:%S"),
                     torrent_size=jtor[5].split(">")[-1],
-                    torrent_compl=jtor[6],
+                    torrent_completed=jtor[6],
                     torrent_seed=jtor[7],
                     torrent_leech=jtor[8],
                     href=BeautifulSoup(jtor[1], 'html.parser').find(

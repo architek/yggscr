@@ -123,7 +123,7 @@ class YggShell(Cmd):
                 "q:<pattern> [c:<category>] [s:<subcategory>] [d:True]")
         try:
             torrents = self.ygg_browser.search_torrents(
-                p['q'], p.get('c'), p.get('s'), p.get('d'))
+                name=p['q'], category=p.get('c',''), sub_category=p.get('s',''), detail=p.get('d', 'False'))
         except (requests.exceptions.RequestException) as e:
             print("Network error:%s" % e)
             return

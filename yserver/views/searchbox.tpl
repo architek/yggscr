@@ -13,6 +13,8 @@
   <select id="subcat" name="sub_category"></select>
   Uploader
   <input type='text' name='uploader' id='uploader' value='{{request.query.uploader}}'/>
+  <input type='hidden' name='order' value='{{request.query.order}}'/>
+  <input type='hidden' name='sort' value='{{request.query.sort}}'/>
   <input type='submit' name="act" value='Rechercher' id='search'/>
   <input type='submit' name="act" value='Rssize' id='rssize'/>
   </form>

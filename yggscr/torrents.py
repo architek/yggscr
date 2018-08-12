@@ -1,7 +1,7 @@
 # from pprint import (PrettyPrinter, pprint)
 # pp = PrettyPrinter(indent=4)
 
-from .const import DL_TPL
+from .const import get_dl_link
 
 def htn(hsize):
     hsize = hsize.upper()
@@ -47,7 +47,7 @@ class Torrent():
         self.thref = thref
 
     def get_dl_link(self, id=None):
-        return DL_TPL.format(id=id or self.tid)
+        return get_dl_link(id=id or self.tid)
 
     def download(self):
         pass

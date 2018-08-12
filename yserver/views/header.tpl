@@ -34,5 +34,7 @@ function tpl_disp_message() {
 }
 </script>
 
-% include('stats.tpl')
+%if not state['ano']:
+    % include('stats.tpl')
+%end
 % include('searchbox.tpl')

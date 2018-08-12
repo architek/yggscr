@@ -135,5 +135,31 @@ systemctl restart nginx
 ```
 Note that it's possible to run the webapp without any credentials (see uwsgi 'ano' option). The realtime stats will not be shown and its up to the consumer application to provide the authentication cookie (e.g. the browser itself).
 
+You can have as many instances of the webapp running as you have .ini files. An example can be different configurations (anonymous, user1, user2). Nginx can connect to the correct application depending on criteria. 
+
+Example for 2 configuration (internal LAN/external WAN):
+```
+http {
+	geo $client { 
+		default extra;
+    		192.168.1.1/24 intra;
+  	}
+}
+
+	location / {
+		uwsgi_read_timeout 20s;
+		uwsgi_send_timeout 20s;
+        	include uwsgi_params;
+		if ( $client = "extra" ) {
+        		uwsgi_pass _bottle_ano;
+		}
+		if ( $client = "intra" ) {
+        		uwsgi_pass _bottle;
+		}
+	}
+```
+
+
+
 
 

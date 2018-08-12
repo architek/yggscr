@@ -15,11 +15,12 @@ from yggscr.const import RSS_TPL
 
 DEBUG = True
 
-cyc = cycle(['asc', 'desc'])
+bcyc = cycle([True, False])
+cyc = cycle(['asc','desc'])
 
 state = {
     'sorted_torrents': '',
-    'order': 'desc',
+    'order': 'asc',
     'rtEn': False,
     'tsEn': False,
     'dgEn': False,
@@ -32,6 +33,7 @@ if not config.read('yserver.cfg'):
 
 username = config['ygg']['username']
 password = config['ygg']['password']
+state['auth'] = True if username and password else False
 
 host = config['app']['hostname']
 port = config['app']['port']
@@ -62,7 +64,8 @@ if deluge_ip:
     state['dgEn'] = True
 
 ygg = YggBrowser()
-ygg.login(ygg_id=username, ygg_pass=password)
+if state['auth']:
+    ygg.login(ygg_id=username, ygg_pass=password)
 if proxy:
     ygg.proxify(proxy)
     print("Proxied through {}".format(proxy))
@@ -78,13 +81,11 @@ if DEBUG :
 
 def results_opts(results, sort=''):
     """ client side sort """
-    rev = True if state['order'] == 'desc' else False
     if sort == 'size':
         sort = 'nsize'
-    state['order'] = next(cyc)
     return sorted(results,
                   key=lambda k: getattr(k, sort),
-                  reverse=rev ) if sort else results
+                  reverse=next(bcyc)) if sort else results
 
 
 @app.hook('before_request')
@@ -123,13 +124,23 @@ def index():
 def search_index():
     if request.query.act == "Rssize":
         redirect("/rssearch?" + request.query_string)
+    rtn = []
+
+    # url parameters to transmit
     qs = {k: v for k,v in request.query.decode().items() if v}
-    qs.pop('act', None)
+
     name = qs.get('name','')
     cat = qs.get('category','')
     uploader = qs.get('uploader','')
-    rtn = []
+
     if name or cat or uploader:
+        qs.pop('act', None)
+        if qs.pop('revorder', False):
+            print("Flip Flop order")
+            qs['order'] = next(cyc)
+        else:
+            qs['order'] = state['order']
+        state['order'] = qs['order']
         try:
             torrents = ygg.search_torrents(**(qs))
         except Exception as e:
@@ -139,8 +150,10 @@ def search_index():
         else:
             msg = "Search returned {} torrents".format(len(torrents))
             rtn.append(msg)
+        # sort is handled seperately
         qs.pop('sort', None)
-        qs['order'] = next(cyc)
+        # page is handled in template
+        qs.pop('page', None)
         state['qs'] = '/search?' + '&'.join("{k}={v}".format(k=k,v=v)
                                for k,v in qs.items() if v)
         state['sorted_torrents'] = torrents
@@ -160,8 +173,8 @@ def rssize(torrents, base):
 {items_str}
 </channel>
 </rss>"""
-    rss_item="""<item><title>{title}</title><description>Size: {torrent.size}, Seeders: {torrent.seeders}, Leechers: {torrent.leechers}</description>
-<link>{torrent.href}</link><pubDate>{torrent.age}</pubDate>
+    rss_item="""<item><title>{title}</title><description>Size: {torrent.size}, Seeders: {torrent.seed}, Leechers: {torrent.leech}</description>
+<link>{torrent.href}</link><pubDate>{torrent.publish_date}</pubDate>
 <enclosure url="{uri}/dl/{torrent.tid}"/></item>"""
 
     response.set_header('Content-type', 'application/xml')

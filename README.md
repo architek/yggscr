@@ -110,6 +110,8 @@ workers = 2
 threads = 4
 plugins = python3
 socket-timeout = 6000000
+;set-placeholder = ano=true
+
 
 ```
 
@@ -131,7 +133,7 @@ ln -s ../apps-available/yserver.ini
 systemctl restart uwsgi.service
 systemctl restart nginx
 ```
-
+Note that it's possible to run the webapp without any credentials (see uwsgi 'ano' option). The realtime stats will not be shown and its up to the consumer application to provide the authentication cookie (e.g. the browser itself).
 
 
 

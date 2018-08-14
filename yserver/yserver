@@ -180,20 +180,20 @@ def rssize(torrents, base):
 <title>YggTorrent RSS</title>
 <link>https://yggtorrent.is</link>
 <description>Better than Official YggTorrent RSS Feed</description>
-{items_str}
+{items}
 </channel>
 </rss>"""
-    rss_item="""<item><title>{title}</title><description>Size: {torrent.nsize}, Seeders: {torrent.seed}, Leechers: {torrent.leech}</description>
+    item_tpl="""<item><title>{title}</title><description>Size: {torrent.nsize}, Seeders: {torrent.seed}, Leechers: {torrent.leech}</description>
 <link>{torrent.href}</link><pubDate>{torrent.publish_date}</pubDate>
 <enclosure url="{uri}"/></item>"""
 
     response.set_header('Content-type', 'application/xml')
-    items_str = ""
-    for torrent in torrents:
-        uri = base.format(id=torrent.tid)
-        items_str += rss_item.format(torrent=torrent, uri=uri, title = html.escape(torrent.title))
-    return rss_tpl.format(items_str=items_str)
-
+    return rss_tpl.format( items = ''.join(
+                 item_tpl.format(
+                     torrent=torrent,
+                     uri = base.format(id=torrent.tid),
+                     title = html.escape(torrent.title))
+            for torrent in torrents))
 
 @app.route('/rssearch')
 def rssearch():

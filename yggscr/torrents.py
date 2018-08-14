@@ -20,8 +20,8 @@ class Torrent():
         self.title = torrent_title
         self.comm = int(torrent_comm)
         self.publish_date = torrent_age
-        self.size = torrent_size
-        self.nsize = htn(self.size)
+        self.nsize = torrent_size
+        self.size = htn(self.nsize)
         self.completed = int(torrent_completed)
         self.seed = int(torrent_seed)
         self.leech = int(torrent_leech)
@@ -53,6 +53,6 @@ class Torrent():
         pass
 
     def __str__(self):
-        return "{self.title} [{self.publish_date} Size:{self.size} C:{self.completed} "\
+        return "{self.title} [{self.publish_date} Size:{self.nsize} C:{self.completed} "\
             "S:{self.seed} L:{self.leech} Comm:{self.comm}] : "\
             "{self.href} [id {self.tid}]".format(self=self)

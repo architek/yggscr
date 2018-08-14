@@ -92,8 +92,6 @@ if DEBUG :
 
 def results_opts(results, sort=''):
     """ client side sort """
-    if sort == 'size':
-        sort = 'nsize'
     return sorted(results,
                   key=lambda k: getattr(k, sort),
                   reverse=next(bcyc)) if sort else results
@@ -185,7 +183,7 @@ def rssize(torrents, base):
 {items_str}
 </channel>
 </rss>"""
-    rss_item="""<item><title>{title}</title><description>Size: {torrent.size}, Seeders: {torrent.seed}, Leechers: {torrent.leech}</description>
+    rss_item="""<item><title>{title}</title><description>Size: {torrent.nsize}, Seeders: {torrent.seed}, Leechers: {torrent.leech}</description>
 <link>{torrent.href}</link><pubDate>{torrent.publish_date}</pubDate>
 <enclosure url="{uri}"/></item>"""
 

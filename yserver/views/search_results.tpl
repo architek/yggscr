@@ -35,7 +35,7 @@
     <td>{{r.cat}}</td>
     <td>{{r.subcat}}</td>
 %if state['ano']:
-    <td><a class="torrent" href={{r.get_dl_link()}}>{{r.title}}</a></td>
+    <td><a class="torrent" href="{{r.get_dl_link()}}">{{r.title}}</a></td>
 %else:
     <td><a class="torrent" href=/dl/{{r.tid}}>{{r.title}}</a></td>
 %end

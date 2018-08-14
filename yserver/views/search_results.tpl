@@ -12,8 +12,8 @@
 %if state['dgEn']:
    <td class="thead">D</td>
 %end
-   <td class="thead">Cat</td>
-   <td class="thead">SubCat</td>
+   <td><a class="thead" href='{{state['qs']}}&sort=name&order={{state['norder']}}'>Cat</a></td>
+   <td><a class="thead" href='{{state['qs']}}&sort=name&order={{state['norder']}}'>SubCat</a></td>
    <td><a class="thead" href='{{state['qs']}}&sort=name&order={{state['norder']}}'>Titre</a></td>
    <td><a class="thead" href='{{state['qs']}}&sort=publish_date&order={{state['norder']}}'>Date</a></td>
    <td><a class="thead" href='{{state['qs']}}&sort=size&order={{state['norder']}}'>Taille</a></td>

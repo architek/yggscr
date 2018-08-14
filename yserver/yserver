@@ -173,7 +173,7 @@ def search_index():
                         state=state,
                         rtn=rtn)
     else:
-        return template('index', rtn=['Fail'])
+        return template('index', state=state, rtn=['Missing inputs...'])
 
 def rssize(torrents, base):
     rss_tpl="""<?xml version="1.0" encoding="utf-8"?>
@@ -214,6 +214,8 @@ def top_day():
     torrents = ygg.top_day()
     state['sorted_torrents'] = results_opts(torrents, sort)
     state['qs'] = '/top/day?'
+    state['corder'] = 'desc'
+    state['norder'] = 'desc'
     return template('search_results',
                     state=state,
                     rtn=["Search returned {} torrents".format(len(torrents))])

@@ -141,32 +141,25 @@ def search_index():
     if q.pop('act', "") == "Rssize":
         redirect("/rssearch?" + request.query_string)
 
-    name = q.get('name','')
-    cat = q.pop('category','')
-    scat = q.pop('sub_category','')
-    uploader = q.get('uploader','')
     rtn = []
-
-    if any((name, cat, uploader)):
-        try:
-            torrents = ygg.search_torrents(category=cat,
-                                           sub_category=scat, fmt=q)
-        except Exception as e:
-            state['sorted_torrents']=[]
-            rtn.append("Failed: {}".format(e))
-        else:
-            state['sorted_torrents'] = torrents
-            rtn.append("Search returned {} torrents".format(len(torrents)))
-        q.pop('sort', None)
-        q.pop('page', None)
-        state['corder'] = q.pop('order', 'asc')
-        state['norder'] = 'desc' if state['corder'] == 'asc' else 'asc'
-        state['qs'] = '/search?' + urlencode(q,True)
-        return template('search_results',
-                        state=state,
-                        rtn=rtn)
+    try:
+        torrents = ygg.search_torrents( q=q)
+    except Exception as e:
+        state['sorted_torrents']=[]
+        rtn.append("Failed: {}".format(e))
     else:
-        return template('index', state=state, rtn=['Missing inputs...'])
+        state['sorted_torrents'] = torrents
+        rtn.append("Search returned {} torrents".format(len(torrents)))
+
+    q.pop('sort', None)
+    q.pop('page', None)
+    state['corder'] = q.pop('order', 'asc')
+    state['norder'] = 'desc' if state['corder'] == 'asc' else 'asc'
+
+    state['qs'] = '/search?' + urlencode(q,True)
+    return template('search_results',
+                    state=state,
+                    rtn=rtn)
 
 def rssize(torrents, base):
     rss_tpl="""<?xml version="1.0" encoding="utf-8"?>
@@ -194,8 +187,7 @@ def rssize(torrents, base):
 def rssearch():
     q = request.query.decode()
     q.pop('act', None)
-    torrents = ygg.search_torrents(category=q.pop('category',''),
-                                   sub_category=q.pop('sub_category',''), fmt=q)
+    torrents = ygg.search_torrents(q=q)
     if state['ano']:
         return rssize(torrents,DL_TPL)
     else:

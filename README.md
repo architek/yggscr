@@ -63,7 +63,8 @@ Fill in your settings in defaults.cfg (at least Hostname, Port to listen to, use
 
 To access webapp, connect to http://localhost:8081 (or any other config you've set)
 
-### Behind nginx using wsgi
+### Behind apache or nginx using wsgi
+The same can be run behind any webserver, here is nginx described:
 
 ```bash
 apt install uwsgi uwsgi-plugin-python3
@@ -98,6 +99,7 @@ Create file /etc/uwsgi/apps-available/yserver.ini
 ```
 [uwsgi]
 socket = /run/uwsgi/app/yserver/socket
+route-run = fixpathinfo:
 chdir = /var/www/bottle/yserver/
 master = true
 file = yserver

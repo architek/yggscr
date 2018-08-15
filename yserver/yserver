@@ -192,9 +192,9 @@ def rssize(torrents, base):
 
 @app.route('/rssearch')
 def rssearch():
-    params = request.query.decode()
-    params.pop('act', 'False')
-    torrents = ygg.search_torrents(**params)
+    q = request.query
+    q.pop('act', None)
+    torrents = ygg.search_torrents(fmt=q)
     if state['ano']:
         return rssize(torrents,DL_TPL)
     else:

@@ -1,10 +1,10 @@
 % from bottle import request
-  <script type="text/javascript">
+  <script>
     var $CAT = "{{ request.query.category }}";
     var $SUBCAT = "{{ request.query.sub_category }}";
   </script>
   <div class="searchbox">
-  <form action="/search">
+  <form action="search">
   Texte
   <input type='text' name='name' id='name' value='{{request.query.name}}'/>
   Cat

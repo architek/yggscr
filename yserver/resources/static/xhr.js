@@ -1,6 +1,6 @@
 var timeout;
 var stats_element = "#stats_txt";
-var url = "/stats";
+var url = $('head base').attr('href') + "stats";
 var ms = 1000*60*15;
 var modp = 0;
 
@@ -26,7 +26,6 @@ function prog_fade(msg, ndelay) {
 }
 
 function loop () {
-
     $.ajax(url, {
         dataType: 'json',
         cache: false,

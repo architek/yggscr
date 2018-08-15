@@ -130,8 +130,12 @@ def server_images(filepath):
 @app.route('/')
 def index():
     return template('index',
+                    request=request,
                     state=state,
-                    rtn=["Welcome "+ "Anonymous - Connect for more options" if state['ano'] else username])
+                    rtn=["Welcome "+ (
+                        "Anonymous - Connect for more options"
+                        if state['ano'] else username)]
+                    )
 
 
 @app.route('/search')
@@ -156,8 +160,9 @@ def search_index():
     state['corder'] = q.pop('order', 'asc')
     state['norder'] = 'desc' if state['corder'] == 'asc' else 'asc'
 
-    state['qs'] = '/search?' + urlencode(q,True)
+    state['qs'] = 'search?' + urlencode(q,True)
     return template('search_results',
+                    request=request,
                     state=state,
                     rtn=rtn)
 
@@ -199,10 +204,11 @@ def top_day():
     sort = request.query.sort
     torrents = ygg.top_day()
     state['sorted_torrents'] = results_opts(torrents, sort)
-    state['qs'] = '/top/day?'
+    state['qs'] = 'top/day?'
     state['corder'] = 'desc'
     state['norder'] = 'desc'
     return template('search_results',
+                    request=request,
                     state=state,
                     rtn=["Search returned {} torrents".format(len(torrents))])
 
@@ -212,8 +218,9 @@ def top_week():
     sort = request.query.sort
     torrents = ygg.top_week()
     state['sorted_torrents'] = results_opts(torrents, sort)
-    state['qs'] = '/top/week?'
+    state['qs'] = 'top/week?'
     return template('search_results',
+                    request=request,
                     state=state,
                     rtn=["Search returned {} torrents".format(len(torrents))])
 
@@ -223,8 +230,9 @@ def top_month():
     sort = request.query.sort
     torrents = ygg.top_month()
     state['sorted_torrents'] = results_opts(torrents, sort)
-    state['qs'] = '/top/month?'
+    state['qs'] = 'top/month?'
     return template('search_results',
+                    request=request,
                     state=state,
                     rtn=["Search returned {} torrents".format(len(torrents))])
 
@@ -251,7 +259,7 @@ def ts_torrent(idtorrent):
         msg = "Failed {}".format(e)
         rtn.append(msg)
         pass
-    return template('search_results', state=state, rtn=rtn)
+    return template('search_results', request=request, state=state, rtn=rtn)
 
 
 @app.route('/rt/<idtorrent:int>')
@@ -265,7 +273,7 @@ def rt_torrent(idtorrent):
     except Exception as e:
         rtn.append("Failed {}".format(e))
         pass
-    return template('search_results', state=state, rtn=rtn)
+    return template('search_results', request=request, state=state, rtn=rtn)
 
 
 @app.route('/dg/<idtorrent:int>')
@@ -281,7 +289,7 @@ def dg_torrent(idtorrent):
     except Exception as e:
         rtn.append("Failed {}".format(e))
         pass
-    return template('search_results', state=state, rtn=rtn)
+    return template('search_results', request=request, state=state, rtn=rtn)
 
 
 @app.route('/rss')

@@ -201,15 +201,15 @@ class YggBrowser(SBrowser):
         return self._parse_torrents()
 
     def search_torrents(self, detail=False, q=None, **kwargs):
-        category=q.get('category','')
-        sub_category=q.get('sub_category','')
-
+        qx = dict(q)
+        category = q.get('category','')
+        sub_category = q.get('sub_category','')
         if category and not category.isdigit():
-                q.update( get_cat_id(category, sub_category) )
+                qx.update( get_cat_id(category, sub_category) )
 
-        q['do'] = 'search'
+        qx['do'] = 'search'
         print("Searching...")
-        self.browser.open(SEARCH_URL, params=q)
+        self.browser.open(SEARCH_URL, params=qx)
         print("Searched on this url {}".format(self.response().url))
 
         self.detail = detail

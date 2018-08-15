@@ -204,8 +204,13 @@ class YggBrowser(SBrowser):
                         fmt=None,**kwargs):
         param = dict()
 
-        if category and not category.isdigit():
-            param = get_cat_id(category, sub_category)
+        if category:
+            if category.isdigit():
+                param['category'] = category
+                param['sub_category'] = sub_category
+            else:
+                param = get_cat_id(category, sub_category)
+
 
         for k,v in kwargs.items():
             param[k] = v

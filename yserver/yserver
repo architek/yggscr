@@ -136,14 +136,14 @@ def index():
 
 @app.route('/search')
 def search_index():
-    q = request.query
+    q = request.query.decode()
 
     if q.pop('act', "") == "Rssize":
         redirect("/rssearch?" + request.query_string)
 
     name = q.get('name','')
-    cat = q.get('category','')
-    scat = q.get('sub_category','')
+    cat = q.pop('category','')
+    scat = q.pop('sub_category','')
     uploader = q.get('uploader','')
     rtn = []
 
@@ -192,9 +192,10 @@ def rssize(torrents, base):
 
 @app.route('/rssearch')
 def rssearch():
-    q = request.query
+    q = request.query.decode()
     q.pop('act', None)
-    torrents = ygg.search_torrents(fmt=q)
+    torrents = ygg.search_torrents(category=q.pop('category',''),
+                                   sub_category=q.pop('sub_category',''), fmt=q)
     if state['ano']:
         return rssize(torrents,DL_TPL)
     else:

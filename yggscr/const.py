@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # Normally not needed because of http redirect
-YGG_HOST = "ww3.yggtorrent.is"
+YGG_HOST = "ww4.yggtorrent.is"
 
 YGG_HOME = "https://" + YGG_HOST
 

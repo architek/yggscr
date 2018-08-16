@@ -63,7 +63,8 @@ Fill in your settings in defaults.cfg (at least Hostname, Port to listen to, use
 
 To access webapp, connect to http://localhost:8081 (or any other config you've set)
 
-### Behind nginx using wsgi
+### Behind apache or nginx using wsgi
+The same can be run behind any webserver, here is nginx described:
 
 ```bash
 apt install uwsgi uwsgi-plugin-python3
@@ -98,6 +99,7 @@ Create file /etc/uwsgi/apps-available/yserver.ini
 ```
 [uwsgi]
 socket = /run/uwsgi/app/yserver/socket
+route-run = fixpathinfo:
 chdir = /var/www/bottle/yserver/
 master = true
 file = yserver
@@ -110,6 +112,8 @@ workers = 2
 threads = 4
 plugins = python3
 socket-timeout = 6000000
+;set-placeholder = ano=true
+
 
 ```
 
@@ -131,7 +135,40 @@ ln -s ../apps-available/yserver.ini
 systemctl restart uwsgi.service
 systemctl restart nginx
 ```
+Note that it's possible to run the webapp without any credentials (see uwsgi 'ano' option). The realtime stats will not be shown and its up to the consumer application to provide the authentication cookie (e.g. the browser itself).
 
+You can have as many instances of the webapp running as you have .ini files. An example can be different configurations (anonymous, user1, user2). Each application has its own configuration and nginx can connect to the correct application through the relevant unix socket.
 
+Example for 2 configurations (internal LAN/external WAN):
+```
+http {
+    [...]
+	geo $client { 
+		default extra;
+    		192.168.1.1/24 intra;
+  	}
+}
 
+upstream _bottle {
+    server unix:/run/uwsgi/app/yserver/socket;
+}
 
+upstream _bottle_ano {
+    server unix:/run/uwsgi/app/yserver-ano/socket;
+}
+
+server {
+    [...]
+	location / {
+		uwsgi_read_timeout 20s;
+		uwsgi_send_timeout 20s;
+        	include uwsgi_params;
+		if ( $client = "extra" ) {
+        		uwsgi_pass _bottle_ano;
+		}
+		if ( $client = "intra" ) {
+        		uwsgi_pass _bottle;
+		}
+	}
+}
+```

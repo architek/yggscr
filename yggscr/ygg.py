@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import re
@@ -119,20 +118,25 @@ class YggBrowser(SBrowser):
         jres = json.loads(self.response().content.decode('utf-8'))
         for jcat in jres:
             for jtor in jres[jcat]:
-                torrent_list.append(Torrent(
-                    torrent_title=BeautifulSoup(jtor[1], 'html.parser').text.rstrip(),
-                    torrent_comm=jtor[3],
-                    torrent_age=datetime.datetime.fromtimestamp(
-                        int(BeautifulSoup(jtor[4], 'html.parser').div.text)).strftime(
+                try:
+                    torrent_list.append(Torrent(
+                        torrent_title=BeautifulSoup(jtor[1], 'html.parser').text.rstrip(),
+                        torrent_comm=jtor[3],
+                        torrent_age=datetime.datetime.fromtimestamp(
+                            int(BeautifulSoup(jtor[4], 'html.parser').div.text)).strftime(
                             "%Y-%m-%d %H:%M:%S"),
-                    torrent_size=jtor[5].split(">")[-1],
-                    torrent_compl=jtor[6],
-                    torrent_seed=jtor[7],
-                    torrent_leech=jtor[8],
-                    href=BeautifulSoup(jtor[1], 'html.parser').find(
-                        'a', href=True)['href'],
-                    cat=jcat
-                ))
+                        torrent_size=jtor[5].split(">")[-1],
+                        torrent_completed=jtor[6],
+                        torrent_seed=jtor[7],
+                        torrent_leech=jtor[8],
+                        href=BeautifulSoup(jtor[1], 'html.parser').find(
+                            'a', href=True)['href'],
+                        cat=jcat
+                    ))
+                except Exception as e:
+                    # unknown elements
+                    pass
+                    #print("Exception while getting xhr: {}, jtor={}".format(e, jtor))
         return torrent_list
 
     def top_day(self):
@@ -196,18 +200,18 @@ class YggBrowser(SBrowser):
         self.detail = detail
         return self._parse_torrents()
 
-    def search_torrents(self, detail=False, **kwargs):
-        param = dict()
-        if kwargs.get('category',''):
-            param = get_cat_id(kwargs['category'], kwargs.get('sub_category',''))
-            kwargs.pop('category', None)
-            kwargs.pop('sub_category', None)
-        param['do'] = "search"
-        for k,v in kwargs.items():
-            param[k] = v
+    def search_torrents(self, detail=False, q=None, **kwargs):
+        qx = dict(q)
+        category = q.get('category','')
+        sub_category = q.get('sub_category','')
+        if category and not category.isdigit():
+                qx.update( get_cat_id(category, sub_category) )
+
+        qx['do'] = 'search'
         print("Searching...")
-        self.browser.open(SEARCH_URL, params=param)
+        self.browser.open(SEARCH_URL, params=qx)
         print("Searched on this url {}".format(self.response().url))
+
         self.detail = detail
         return self._parse_torrents()
 

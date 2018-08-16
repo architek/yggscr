@@ -12,37 +12,49 @@
 %if state['dgEn']:
    <td class="thead">D</td>
 %end
-   <td class="thead">Cat</td>
-   <td class="thead">SubCat</td>
-   <td><a class="thead" href='{{state['qs']}}&sort=name'>Titre</a></td>
-   <td><a class="thead" href='{{state['qs']}}&sort=publish_date'>Date</a></td>
-   <td><a class="thead" href='{{state['qs']}}&sort=size'>Taille</a></td>
-   <td><a class="thead" href='{{state['qs']}}&sort=seed'>Seed</a></td>
-   <td><a class="thead" href='{{state['qs']}}&sort=seed'>Leech</a></td>
+   <td><a class="thead" href='{{state['qs']}}&sort=name&order={{state['norder']}}'>Cat</a></td>
+   <td><a class="thead" href='{{state['qs']}}&sort=name&order={{state['norder']}}'>SubCat</a></td>
+   <td><a class="thead" href='{{state['qs']}}&sort=name&order={{state['norder']}}'>Titre</a></td>
+   <td><a class="thead" href='{{state['qs']}}&sort=publish_date&order={{state['norder']}}'>Date</a></td>
+   <td><a class="thead" href='{{state['qs']}}&sort=size&order={{state['norder']}}'>Taille</a></td>
+   <td><a class="thead" href='{{state['qs']}}&sort=seed&order={{state['norder']}}'>Seed</a></td>
+   <td><a class="thead" href='{{state['qs']}}&sort=leech&order={{state['norder']}}'>Leech</a></td>
    <td class="thead">Lien</td>
   </tr>
 %for r in state['sorted_torrents']:
    <tr>
 %if state['rtEn']:
-    <td><a href=/rt/{{r.tid}}>R</a></td>
+    <td><a href="rt/{{r.tid}}">R</a></td>
 %end
 %if state['tsEn']:
-    <td><a href=/ts/{{r.tid}}>T</a></td>
+    <td><a href="ts/{{r.tid}}">T</a></td>
 %end
 %if state['dgEn']:
-    <td><a href=/dg/{{r.tid}}>D</a></td>
+    <td><a href="dg/{{r.tid}}">D</a></td>
 %end
     <td>{{r.cat}}</td>
     <td>{{r.subcat}}</td>
-    <td><a class="torrent" href=/dl/{{r.tid}}>{{r.title}}</a></td>
+%if state['ano']:
+    <td><a class="torrent" href="{{r.get_dl_link()}}">{{r.title}}</a></td>
+%else:
+    <td><a class="torrent" href="dl/{{r.tid}}">{{r.title}}</a></td>
+%end
     <td>{{r.publish_date}}</td>
     <td>{{r.size}}</td>
     <td>{{r.seed}}</td>
     <td>{{r.leech}}</td>
-    <td><a href='{{r.href}}'>X</a></td>
+    <td><a href="{{r.href}}">X</a></td>
    </tr>
 %end
  </table>
+</div>
+<div>
+%if request.query.page:
+<a href="{{state["qs"]}}&sort={{request.query.sort}}&order={{state['corder']}}&page={{str(int(request.query.page)-50)}}">&laquo;</a>
+%end
+%page = int(request.query.page) if request.query.page else 0
+<a href="{{state["qs"]}}&sort={{request.query.sort}}&order={{state['corder']}}&page={{page+50}}">&raquo;</a>
+%end
 </div>
 
 % include('footer.tpl')

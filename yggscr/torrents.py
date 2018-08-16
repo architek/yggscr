@@ -1,7 +1,7 @@
 # from pprint import (PrettyPrinter, pprint)
 # pp = PrettyPrinter(indent=4)
 
-from .const import DL_TPL
+from .const import get_dl_link
 
 def htn(hsize):
     hsize = hsize.upper()
@@ -20,8 +20,8 @@ class Torrent():
         self.title = torrent_title
         self.comm = int(torrent_comm)
         self.publish_date = torrent_age
-        self.size = torrent_size
-        self.nsize = htn(self.size)
+        self.nsize = torrent_size
+        self.size = htn(self.nsize)
         self.completed = int(torrent_completed)
         self.seed = int(torrent_seed)
         self.leech = int(torrent_leech)
@@ -47,12 +47,12 @@ class Torrent():
         self.thref = thref
 
     def get_dl_link(self, id=None):
-        return DL_TPL.format(id=id or self.tid)
+        return get_dl_link(id=id or self.tid)
 
     def download(self):
         pass
 
     def __str__(self):
-        return "{self.title} [{self.publish_date} Size:{self.size} C:{self.completed} "\
+        return "{self.title} [{self.publish_date} Size:{self.nsize} C:{self.completed} "\
             "S:{self.seed} L:{self.leech} Comm:{self.comm}] : "\
             "{self.href} [id {self.tid}]".format(self=self)

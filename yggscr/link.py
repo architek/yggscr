@@ -56,6 +56,10 @@ links = (
     "xxx/2190-hentai",
     "xxx/2191-images")
 
+cats = {'Films & Vidéos': 2145, 'Audio': 2139, 'Application': 2144,
+        'Jeu vidéo': 2142, 'Ebook': 2140, 'Emulation': 2141,
+        'GPS': 2143, 'XXX': 2188}
+
 
 def get_link(cat, subcat):
     for link in links:

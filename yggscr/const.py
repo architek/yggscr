@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # Normally not needed because of http redirect
-YGG_HOST = "ww3.yggtorrent.is"
+YGG_HOST = "ww4.yggtorrent.is"
 
 YGG_HOME = "https://" + YGG_HOST
 
@@ -15,3 +15,5 @@ TOP_SEED_URL = YGG_HOME     + "/engine/mostseeded"
 RSS_TPL = YGG_HOME          + "/rss?type=1&parent_category={category}"
 SHOUT_URL = YGG_HOME        + "/forum/index.php?shoutbox/refresh"
 
+def get_dl_link(id):
+    return DL_TPL.format(id=id)

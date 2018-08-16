@@ -7,6 +7,7 @@ from urllib.parse import urlencode
 from itertools import cycle
 from yggscr.ygg import YggBrowser
 from yggscr.const import DL_TPL, get_dl_link
+from yggscr.link import cats
 from configparser import ConfigParser
 from bottle import route, hook, run, template, response, static_file, request, \
                    redirect, Bottle
@@ -19,7 +20,6 @@ import uwsgi
 DEBUG = True
 
 bcyc = cycle([True, False])
-cyc = cycle(['desc','asc'])
 
 state = {
     'sorted_torrents': '',
@@ -64,10 +64,6 @@ deluge_pass = config['deluge']['password']
 
 rpc_url = config['rtorrent']['rpc_url']
 
-cats = {'Films & Vidéos': 2145, 'Audio': 2139, 'Application': 2144,
-        'Jeu vidéo': 2142, 'Ebook': 2140, 'Emulation': 2141,
-        'GPS': 2143, 'XXX': 2188}
-
 if rpc_url and not state['ano']:
     state['rtEn'] = True
 if thostname and not state['ano']:
@@ -97,6 +93,9 @@ def results_opts(results, sort=''):
                   key=lambda k: getattr(k, sort),
                   reverse=next(bcyc)) if sort else results
 
+def mtemplate(tpl, **kwargs):
+    rtn = kwargs.pop('rtn',[])
+    return template(tpl, request=request, state=state, rtn=rtn, **kwargs)
 
 @app.hook('before_request')
 def reco():
@@ -129,9 +128,7 @@ def server_images(filepath):
 
 @app.route('/')
 def index():
-    return template('index',
-                    request=request,
-                    state=state,
+    return mtemplate('index',
                     rtn=["Welcome "+ (
                         "Anonymous - Connect for more options"
                         if state['ano'] else username)]
@@ -161,9 +158,7 @@ def search_index():
     state['norder'] = 'desc' if state['corder'] == 'asc' else 'asc'
 
     state['qs'] = 'search?' + urlencode(q,True)
-    return template('search_results',
-                    request=request,
-                    state=state,
+    return mtemplate('search_results',
                     rtn=rtn)
 
 def rssize(torrents, base):
@@ -207,9 +202,7 @@ def top_day():
     state['qs'] = 'top/day?'
     state['corder'] = 'desc'
     state['norder'] = 'desc'
-    return template('search_results',
-                    request=request,
-                    state=state,
+    return mtemplate('search_results',
                     rtn=["Search returned {} torrents".format(len(torrents))])
 
 
@@ -219,9 +212,7 @@ def top_week():
     torrents = ygg.top_week()
     state['sorted_torrents'] = results_opts(torrents, sort)
     state['qs'] = 'top/week?'
-    return template('search_results',
-                    request=request,
-                    state=state,
+    return mtemplate('search_results',
                     rtn=["Search returned {} torrents".format(len(torrents))])
 
 
@@ -231,9 +222,7 @@ def top_month():
     torrents = ygg.top_month()
     state['sorted_torrents'] = results_opts(torrents, sort)
     state['qs'] = 'top/month?'
-    return template('search_results',
-                    request=request,
-                    state=state,
+    return mtemplate('search_results',
                     rtn=["Search returned {} torrents".format(len(torrents))])
 
 
@@ -259,7 +248,7 @@ def ts_torrent(idtorrent):
         msg = "Failed {}".format(e)
         rtn.append(msg)
         pass
-    return template('search_results', request=request, state=state, rtn=rtn)
+    return mtemplate('search_results', rtn=rtn)
 
 
 @app.route('/rt/<idtorrent:int>')
@@ -273,7 +262,7 @@ def rt_torrent(idtorrent):
     except Exception as e:
         rtn.append("Failed {}".format(e))
         pass
-    return template('search_results', request=request, state=state, rtn=rtn)
+    return mtemplate('search_results', rtn=rtn)
 
 
 @app.route('/dg/<idtorrent:int>')
@@ -289,12 +278,12 @@ def dg_torrent(idtorrent):
     except Exception as e:
         rtn.append("Failed {}".format(e))
         pass
-    return template('search_results', request=request, state=state, rtn=rtn)
+    return mtemplate('search_results', rtn=rtn)
 
 
 @app.route('/rss')
 def rss():
-    return template('rss', results=cats, rtn=[])
+    return mtemplate('rss', results=cats)
 
 def rep_f(match):
     return str(get_dl_link(match.group(1)) + '"')

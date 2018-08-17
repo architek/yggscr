@@ -3,19 +3,19 @@
 
 import re
 import html
-from urllib.parse import urlencode
-from itertools import cycle
-from yggscr.ygg import YggBrowser
-from yggscr.const import DL_TPL, get_dl_link
-from yggscr.link import cats
-from configparser import ConfigParser
-from bottle import route, hook, run, template, response, static_file, request, \
-                   redirect, Bottle
-from yggscr.client import rtorrent_add_torrent, transmission_add_torrent, \
-    deluge_add_torrent
-
-from yggscr.const import RSS_TPL
 import uwsgi
+from itertools import cycle
+from yggscr.link import cats
+from yggscr.const import RSS_TPL
+from yggscr.ygg import YggBrowser
+from urllib.parse import urlencode
+from yggscr.const import DL_TPL, get_dl_link
+from configparser import ConfigParser
+from yggscr.client import \
+    rtorrent_add_torrent, transmission_add_torrent, deluge_add_torrent
+from bottle import route, hook, run, template, response, \
+                   static_file, request, redirect, Bottle
+
 
 DEBUG = True
 
@@ -64,12 +64,10 @@ deluge_pass = config['deluge']['password']
 
 rpc_url = config['rtorrent']['rpc_url']
 
-if rpc_url and not state['ano']:
-    state['rtEn'] = True
-if thostname and not state['ano']:
-    state['tsEn'] = True
-if deluge_ip and not state['ano']:
-    state['dgEn'] = True
+if not state['ano']:
+    if rpc_url: state['rtEn'] = True
+    if thostname: state['tsEn'] = True
+    if deluge_ip: state['dgEn'] = True
 
 ygg = YggBrowser()
 if not state['ano']:
@@ -82,9 +80,12 @@ app = application = Bottle()
 #from werkzeug.debug import DebuggedApplication
 #app = DebuggedApplication(app, evalex=True)
 if DEBUG :
-    from bottle.ext import werkzeug
-    werkzeug = werkzeug.Plugin()
-    app.install(werkzeug)
+    try:
+        from bottle.ext import werkzeug
+        werkzeug = werkzeug.Plugin()
+        app.install(werkzeug)
+    except Exception as e:
+        print("Couldn't start werkzeug debug middleware")
 
 
 def results_opts(results, sort=''):
@@ -137,7 +138,7 @@ def index():
 
 @app.route('/search')
 def search_index():
-    q = request.query.decode()
+    q = request.copy().query.decode()
 
     if q.pop('act', "") == "Rssize":
         redirect("/rssearch?" + request.query_string)
@@ -185,8 +186,10 @@ def rssize(torrents, base):
 
 @app.route('/rssearch')
 def rssearch():
-    q = request.query.decode()
+    q = request.copy().query.decode()
     q.pop('act', None)
+    q['sort'] = 'publish_date'
+    q['order'] = 'desc'
     torrents = ygg.search_torrents(q=q)
     if state['ano']:
         return rssize(torrents,DL_TPL)
@@ -317,9 +320,9 @@ def stats():
     if state['ano']:
         return "{'Up': 'Connect to get real time stats'}"
     try:
-        return ygg.stats()
-    except:
-        return "{'Up': 'Not connected'}"
+        return ygg.get_stats()
+    except Exception as e:
+        return {'Error': str(e)}
 
 
 if __name__ == '__main__':

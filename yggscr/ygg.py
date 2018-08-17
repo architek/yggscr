@@ -17,6 +17,43 @@ from urllib.parse import urlparse, parse_qs
 # from pprint import (PrettyPrinter, pprint)
 # pp = PrettyPrinter(indent=4)
 
+class Stats():
+    def __init__(self):
+        self.first = {"time": None,
+                      "up": None, "down": None}
+        self.last = {"time": None,
+                     "up": None, "down": None}
+
+    def upd_speed(self):
+        GiB = 1024*1024
+        ctime = time.time()
+        if self.last["time"] is None:
+            i_up = i_down = "?"
+        else:
+            i_up = round(GiB*(self.up-self.last["up"])/(
+                ctime-self.last["time"]))
+            i_down = round(GiB*(self.down-self.last["down"])/(
+                ctime-self.last["time"]))
+        self.last = {"time": ctime, "up": self.up, "down": self.down}
+        if self.first["time"] is None:
+            self.first = {"time": time.time(), "up": self.up, "down": self.down}
+            m_up = m_down = "?"
+        else:
+            m_up = round(GiB*(self.up-self.first["up"])/(
+                ctime-self.first["time"]))
+            m_down = round(GiB*(self.down-self.first["down"])/(
+                ctime-self.first["time"]))
+        return i_up, m_up, i_down, m_down
+
+    # Will only work for ratio above 1 but makes the search more robust
+    # Note that website is inconsistent (TiB vs TB, GiB vs GB)
+    def add(self, vals):
+        self.down, self.up = sorted(float(e[0]) if e[1] == 'G' else float(e[0]) * 1024
+                          for e in vals)
+        self.iup, self.mup, self.idown, self.mdown = self.upd_speed()
+        self.ratio = round(self.up/self.down, 4)
+
+
 class YggBrowser(SBrowser):
     """Ygg Scrapper with CloudFlare bypass
     """
@@ -26,9 +63,8 @@ class YggBrowser(SBrowser):
                           history=False, timeout=10, parser='html.parser')
         self.idstate = None
         self.detail = False         # No detailed torrent info by default
+        self.stats = Stats()
         self.browser.session.hooks['response'].append(self.gen_state())
-        self.first = {"time": None, "up": None, "down": None}
-        self.last = {"time": None, "up": None, "down": None}
 
     def __str__(self):
         return "{} | [YGG] Auth {}".format(
@@ -69,28 +105,7 @@ class YggBrowser(SBrowser):
         self.browser.session.cookies.clear()
         self.idstate = "anonymous"
 
-    def upd_speed(self, up, down):
-        GiB = 1024*1024
-        ctime = time.time()
-        if self.last["time"] is None:
-            i_up = i_down = "?"
-        else:
-            i_up = round(GiB*(up-self.last["up"])/(
-                ctime-self.last["time"]))
-            i_down = round(GiB*(down-self.last["down"])/(
-                ctime-self.last["time"]))
-        self.last = {"time": ctime, "up": up, "down": down}
-        if self.first["time"] is None:
-            self.first = {"time": time.time(), "up": up, "down": down}
-            m_up = m_down = "?"
-        else:
-            m_up = round(GiB*(up-self.first["up"])/(
-                ctime-self.first["time"]))
-            m_down = round(GiB*(down-self.first["down"])/(
-                ctime-self.first["time"]))
-        return i_up, m_up, i_down, m_down
-
-    def stats(self):
+    def get_stats(self):
         self.browser.open(YGG_HOME)
         if self.idstate != "authenticated":
             raise YggException(
@@ -102,15 +117,13 @@ class YggBrowser(SBrowser):
         vals = re.findall(r'\b([0-9\.]+)([GT])[oB]\b', html)
         if len(vals) != 2:
             raise YggException("Can't find ratio information")
+        else :
+            self.stats.add(vals)
 
-        # Will only work for ratio above 1 but makes the search more robust
-        # Note that website is inconsistent (TiB vs TB, GiB vs GB)
-        down, up = sorted(float(e[0]) if e[1] == 'G' else float(e[0]) * 1024
-                          for e in vals)
-        i_up, m_up, i_down, m_down = self.upd_speed(up, down)
-        ratio = round(up/down, 4)
-        return {'down': down, 'up': up, 'ratio': ratio,
-                'i_up': i_up, 'm_up': m_up, 'i_down': i_down, 'm_down': m_down}
+        return {'down': self.stats.down, 'up': self.stats.up, 'ratio': self.stats.ratio,
+                'i_up': self.stats.iup, 'i_down': self.stats.idown,
+                'm_up': self.stats.mup, 'm_down': self.stats.mdown
+                }
 
     def _get_torrents_xhr(self, url, method="get", timeout=None):
         torrent_list = []

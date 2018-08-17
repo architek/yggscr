@@ -80,7 +80,7 @@ class YBot(callbacks.Plugin):
             return
         try:
             torrents = self.yggb.search_torrents(
-                name=p["q"], category=p.get("c"), sub_category=p.get("s"), detail)
+                detail, name=p["q"], category=p.get("c"), sub_category=p.get("s"))
         except (requests.exceptions.ProxyError,
                 requests.exceptions.ConnectionError) as e:
             irc.error("Network Error: %s" % e)
@@ -230,18 +230,28 @@ class YBot(callbacks.Plugin):
                    'dark gray',
                    'light gray')
 
-        # 1: unknown, 3: supermod, 4: mod, 5: tp
-        gcolours = {1: 'blue', 3: 'orange', 4: 'green', 5: 'pink', 9: 'brown'}
+        # 1: unknown, 2: Membre, 3: supermod, 4: mod, 5: tp, 8: nouveau membre, 9: desactivé
+        gcolours = {1: 'blue', 3: 'orange', 4: 'green', 5: 'pink', 8: 'purple', 9: 'brown'}
 
-        if group != 2:
-            user = ircutils.bold(
-                        ircutils.mircColor(user, gcolours[group]))
-        elif w_colour:
-            hash = sha256()
-            hash.update(user.encode())
-            hash = hash.digest()[0]
-            hash = hash % len(colours)
-            user = ircutils.mircColor(user, colours[hash])
+
+        # Don't colorize members unless w_colour for color tracking
+        if group == 2:
+            if w_colour:
+                hash = sha256()
+                hash.update(user.encode())
+                hash = hash.digest()[0]
+                hash = hash % len(colours)
+                user = ircutils.mircColor(user, colours[hash])
+            else:
+                pass
+        elif group not in gcolours.keys():
+            user = ircutils.mircColor(user, gcolours[1])
+        else:
+            user = ircutils.mircColor(user, gcolours[group])
+        
+        # High grade in bold
+        if group in [1, 3, 4, 5]:
+            user = ircutils.bold(user)
         return user
 
     def shoutify(self, shout, w_colour):

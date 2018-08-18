@@ -318,11 +318,11 @@ def rss_cat(cat):
 @app.route('/stats')
 def stats():
     if state['ano']:
-        return "{'Up': 'Connect to get real time stats'}"
+        return {'error': 'Connect to get your stats in real time'}
     try:
         return ygg.get_stats()
     except Exception as e:
-        return {'Error': str(e)}
+        return {'error': 'Error Exception {}'.format(e)}
 
 
 if __name__ == '__main__':

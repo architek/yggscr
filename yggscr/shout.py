@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 import time
 import yggscr.ygg
 from bs4 import NavigableString
+import threading
 
 from .const import SHOUT_URL
 
@@ -63,7 +64,9 @@ class YggShout:
 
     def get_shouts(self):
         """ Return current shouts from website """
-        self.robs.get(SHOUT_URL)
+        print("Getting shout tid {}".format(threading.get_ident()))
+        self.robs.get(SHOUT_URL, timeout=3)
+        print("Getting shout done tid {}".format(threading.get_ident()))
         return [ShoutMessage(soup=li, shout=self)
                 for li in list(reversed(
                      [li for li in self.robs.parsed().find_all("li")

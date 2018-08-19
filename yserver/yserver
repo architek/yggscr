@@ -94,9 +94,15 @@ def results_opts(results, sort=''):
                   key=lambda k: getattr(k, sort),
                   reverse=next(bcyc)) if sort else results
 
+
 def mtemplate(tpl, **kwargs):
     rtn = kwargs.pop('rtn',[])
+    if 'corder' not in state.keys():
+        state['corder'] = 'desc'
+    if 'norder' not in state.keys():
+        state['norder'] = 'desc'
     return template(tpl, request=request, state=state, rtn=rtn, **kwargs)
+
 
 @app.hook('before_request')
 def reco():
@@ -162,6 +168,7 @@ def search_index():
     return mtemplate('search_results',
                     rtn=rtn)
 
+
 def rssize(torrents, base):
     rss_tpl="""<?xml version="1.0" encoding="utf-8"?>
 <rss version="2.0">
@@ -184,6 +191,7 @@ def rssize(torrents, base):
                      title = html.escape(torrent.title))
             for torrent in torrents))
 
+
 @app.route('/rssearch')
 def rssearch():
     q = request.copy().query.decode()
@@ -197,34 +205,15 @@ def rssearch():
         return rssize(torrents, request.urlparts.scheme+"://"+request.urlparts.netloc+"/dl/{id}")
 
 
-@app.route('/top/day')
-def top_day():
-    sort = request.query.sort
-    torrents = ygg.top_day()
-    state['sorted_torrents'] = results_opts(torrents, sort)
+@app.route('/top/<name:re:(day|week|month)>')
+def top_day(name):
+    torrents = {
+        'day': ygg.top_day,
+        'week': ygg.top_week,
+        'month': ygg.top_month
+    }.get(name, lambda: [])()
+    state['sorted_torrents'] = results_opts(torrents, request.query.sort)
     state['qs'] = 'top/day?'
-    state['corder'] = 'desc'
-    state['norder'] = 'desc'
-    return mtemplate('search_results',
-                    rtn=["Search returned {} torrents".format(len(torrents))])
-
-
-@app.route('/top/week')
-def top_week():
-    sort = request.query.sort
-    torrents = ygg.top_week()
-    state['sorted_torrents'] = results_opts(torrents, sort)
-    state['qs'] = 'top/week?'
-    return mtemplate('search_results',
-                    rtn=["Search returned {} torrents".format(len(torrents))])
-
-
-@app.route('/top/month')
-def top_month():
-    sort = request.query.sort
-    torrents = ygg.top_month()
-    state['sorted_torrents'] = results_opts(torrents, sort)
-    state['qs'] = 'top/month?'
     return mtemplate('search_results',
                     rtn=["Search returned {} torrents".format(len(torrents))])
 
@@ -237,50 +226,38 @@ def dl_torrent(idtorrent):
     return resp
 
 
-@app.route('/ts/<idtorrent:int>')
-def ts_torrent(idtorrent):
+@app.route('/<client:re:(ts|rt|dg)>/<idtorrent:int>')
+def send_torrent(client, idtorrent):
     rtn = []
+
     try:
         _, resp = ygg.download_torrent(id=idtorrent)
-        msg = "Adding torrent to transmission {}:{}@{}:{}".format(
-            tuser, tpassword, thostname, tport)
-        rtn.append(msg)
-        transmission_add_torrent(thostname, tport, tuser, tpassword, resp)
-        rtn.append("Ok")
+        rtn.append("Torrent downloaded, sending to client...")
     except Exception as e:
-        msg = "Failed {}".format(e)
-        rtn.append(msg)
-        pass
-    return mtemplate('search_results', rtn=rtn)
+        rtn.append("Couldn't download torrent [{}]".format(e))
 
-
-@app.route('/rt/<idtorrent:int>')
-def rt_torrent(idtorrent):
-    rtn = []
     try:
-        _, resp = ygg.download_torrent(id=idtorrent)
-        rtn.append("Adding torrent to rtorrent @ rpc_url {}".format(rpc_url))
-        rtorrent_add_torrent(rpc_url, resp)
-        rtn.append("Ok")
-    except Exception as e:
-        rtn.append("Failed {}".format(e))
-        pass
-    return mtemplate('search_results', rtn=rtn)
-
-
-@app.route('/dg/<idtorrent:int>')
-def dg_torrent(idtorrent):
-    rtn = []
-    try:
-        _, resp = ygg.download_torrent(id=idtorrent)
-        rtn.append("Adding {}:{}@{}:{}".format(deluge_user, deluge_pass,
+        if client == "ts":
+            msg = "Adding torrent to transmission {}:{}@{}:{}".format(
+                tuser, tpassword, thostname, tport)
+            rtn.append(msg)
+            transmission_add_torrent(thostname, tport, tuser, tpassword, resp)
+        elif client == "rt":
+            rtn.append("Adding torrent to rtorrent @ rpc_url {}".format(rpc_url))
+            rtorrent_add_torrent(rpc_url, resp)
+        elif client == "dg":
+            rtn.append("Adding {}:{}@{}:{}".format(deluge_user, deluge_pass,
                                                deluge_ip, deluge_port))
-        r = deluge_add_torrent(deluge_ip, deluge_port,
+            r = deluge_add_torrent(deluge_ip, deluge_port,
                                deluge_user, deluge_pass, resp)
-        rtn.append("Deluged RPC returned {}".format(r))
+            rtn.append("Deluged RPC returned {}".format(r))
     except Exception as e:
-        rtn.append("Failed {}".format(e))
+        msg = "Adding torrent failed [{}]".format(e)
+        rtn.append(msg)
         pass
+    else:
+        rtn.append("Ok")
+    state['qs'] = 'search?'
     return mtemplate('search_results', rtn=rtn)
 
 
@@ -288,8 +265,10 @@ def dg_torrent(idtorrent):
 def rss():
     return mtemplate('rss', results=cats)
 
+
 def rep_f(match):
     return str(get_dl_link(match.group(1)) + '"')
+
 
 @app.route('/rss/<cat>')
 def rss_cat(cat):

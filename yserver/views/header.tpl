@@ -22,8 +22,6 @@
  <li><a class="menu" href="top/day">Torrents du jour</a></li>
  <li><a class="menu" href="top/week">Torrents de la semaine</a></li>
  <li><a class="menu" href="top/month">Torrents du mois</a></li>
- <li><a class="menu" href="top/mostseeded">Torrents rapides</a></li>
- <li><a class="menu" href="rss">Rss</a></li>
  </ul>
  </div>
 

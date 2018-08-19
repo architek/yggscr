@@ -266,12 +266,11 @@ def rss():
     return mtemplate('rss', results=cats)
 
 
-def rep_f(match):
-    return str(get_dl_link(match.group(1)) + '"')
-
-
 @app.route('/rss/<cat>')
 def rss_cat(cat):
+    def rep_f(match):
+        return str(get_dl_link(match.group(1)) + '"')
+
     if cat in cats.keys():
         cat = cats[cat]
     elif cat not in cats.values():

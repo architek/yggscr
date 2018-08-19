@@ -6,6 +6,7 @@
 
 import yggscr
 import requests
+import threading
 from time import sleep, time
 from hashlib import sha256
 import supybot.ircdb as ircdb
@@ -29,17 +30,21 @@ except ImportError:
     def _(x):
         return x
 
+shout_err = 0
 
 class YBot(callbacks.Plugin):
     """sup ygg bot"""
     threaded = True
 
     def __init__(self, irc):
+        global shout_err
+
         self.__parent = super(YBot, self)
         self.__parent.__init__(irc)
         self.yggb = YggBrowser()
         self.yggb.proxify("socks5h://192.168.1.9:9100")
         self.shout = YggShout(self.yggb)
+        shout_err = 0
         self.col = dict()
 
     def yggv(self, irc, msg, args):
@@ -266,6 +271,8 @@ class YBot(callbacks.Plugin):
         Print last shout messages and detects gap. Time is UTC.
         User will be colorized if boolean is True.
         """
+        global shout_err
+        rate_err = self.registryValue('shout.rate_err')
         if hfile:
             try:
                 with open(hfile,"r") as fn:
@@ -278,9 +285,12 @@ class YBot(callbacks.Plugin):
             return
         try:
             diff = self.shout.do_diff()
+            shout_err = 0
         except Exception as e:
-            self.log.info("Could not dump shout, aborting. Error %s" % e)
-#            irc.error("Shout: Can't get shout (%s)" % e)
+            self.log.info("Could not dump shout, aborting. Error %s. Tid %s" % (e, threading.get_ident()))
+            shout_err += 1
+            if shout_err % rate_err == 0:
+                irc.error("Shout: Can't get shout ({} messages suppressed) (Exception {}) - Connection details: {}".format(rate_err,e,self.yggb))
             return
         if n is None:
             n = len(diff)

@@ -29,6 +29,8 @@ ybot = conf.registerPlugin('YBot')
 shout = conf.registerGroup(ybot,'shout')
 conf.registerGlobalValue(ybot.shout, 'fmt',
         registry.String('{time} {fuser} : {message}', _("""Shout format( time, fuser, user, group, message)""")))
+conf.registerGlobalValue(ybot.shout, 'rate_err',
+        registry.PositiveInteger(30, _("""Error rate limit""")))
 cred = conf.registerGroup(ybot,'cred')
 conf.registerGlobalValue(ybot.cred, 'user',
         registry.String('', _("""Ygg user name."""), private=True))

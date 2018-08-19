@@ -290,7 +290,8 @@ class YBot(callbacks.Plugin):
             self.log.info("Could not dump shout, aborting. Error %s. Tid %s" % (e, threading.get_ident()))
             shout_err += 1
             if shout_err % rate_err == 0:
-                irc.error("Shout: Can't get shout ({} messages suppressed) (Exception {}) - Connection details: {}".format(rate_err,e,self.yggb))
+                irc.error("Shout ({} messages suppressed) (Exception {})".format(rate_err,e))
+                irc.error("Connection details: {}".format(self.yggb))
             return
         if n is None:
             n = len(diff)

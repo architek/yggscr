@@ -40,7 +40,7 @@
     <td><a class="torrent" href="dl/{{r.tid}}">{{r.title}}</a></td>
 %end
     <td>{{r.publish_date}}</td>
-    <td>{{r.size}}</td>
+    <td>{{r.nsize}}</td>
     <td>{{r.seed}}</td>
     <td>{{r.leech}}</td>
     <td><a href="{{r.href}}">X</a></td>

@@ -13,11 +13,12 @@ class SBrowser:
 
     def __init__(self, scraper=None,
                  browser=None, proxy=None, loglevel=logging.INFO, **kwargs):
+        self.log = self.consolelog(loglevel)
+        self.log.info("Starting Ygg Scraper")
         self.scraper = scraper or cfscrape.create_scraper()
         self.browser = browser or RoboBrowser(session=self.scraper, **kwargs)
         self.proxify(proxy)
-        self.log = self.consolelog(loglevel)
-        self.log.info("D:Created SBrowser")
+        self.log.debug("Created SBrowser")
 
     def __str__(self):
         cd = self.connection_details()
@@ -54,6 +55,7 @@ class SBrowser:
         """
         self.proxy = https_proxy
         self.browser.session.proxies = {'https': self.proxy}
+        self.log.debug("Proxy set to {}".format(self.browser.session.proxies))
 
     def connection_details(self):
         """

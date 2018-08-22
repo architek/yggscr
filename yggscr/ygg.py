@@ -9,11 +9,12 @@ import datetime
 from bs4 import BeautifulSoup
 from .torrents import Torrent
 from .sbrowser import SBrowser
+from urllib3._collections import HTTPHeaderDict
 from .exceptions import YggException
 from .const import *
 from .link import get_link, get_cat_id, list_cat_subcat
 
-from urllib.parse import urlparse, parse_qs
+from urllib.parse import urlparse, parse_qs, urlencode
 
 # from pprint import (PrettyPrinter, pprint)
 # pp = PrettyPrinter(indent=4)
@@ -67,7 +68,7 @@ class YggBrowser(SBrowser):
         self.detail = False         # No detailed torrent info by default
         self.stats = Stats()
         self.browser.session.hooks['response'].append(self.gen_state())
-        self.log.info("Created YggBrowser")
+        self.log.debug("Created YggBrowser")
 
     def __str__(self):
         return "{} | [YGG] Auth {}".format(
@@ -222,14 +223,24 @@ class YggBrowser(SBrowser):
         return self._parse_torrents()
 
     def search_torrents(self, detail=False, q=None, **kwargs):
-        qx = dict(q)
         category = q.get('category','')
         sub_category = q.get('sub_category','')
         if category and not category.isdigit():
-                qx.update( get_cat_id(self.log, category, sub_category) )
+                q.update( get_cat_id(self.log, category, sub_category) )
 
-        qx['do'] = 'search'
+        q['do'] = 'search'
         self.log.debug("Searching...")
+
+        # Convert formsdict q to request params
+        qx=dict()
+        for k in q.keys():
+            vals=[]
+            for v in q.getall(k):
+                vals.append(v)
+            if len(vals)>1:
+                qx[k]=vals
+            else:
+                qx[k]=vals[0]
         self.browser.open(SEARCH_URL, params=qx)
         self.log.debug("Searched on this url {}".format(self.response().url))
 

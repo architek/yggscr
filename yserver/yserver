@@ -69,12 +69,10 @@ if not state['ano']:
     if thostname: state['tsEn'] = True
     if deluge_ip: state['dgEn'] = True
 
-ygg = YggBrowser()
-if not state['ano']:
-    ygg.login(ygg_id=username, ygg_pass=password)
-if proxy:
-    ygg.proxify(proxy)
-    print("Proxied through {}".format(proxy))
+ygg = YggBrowser(proxy=proxy)
+print("Proxy:{}".format(ygg.proxy))
+if not state['ano']: ygg.login(ygg_id=username, ygg_pass=password)
+print("Ygg Auth:{}".format(ygg.idstate))
 
 app = application = Bottle()
 #from werkzeug.debug import DebuggedApplication

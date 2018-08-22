@@ -1,4 +1,5 @@
 import json
+import logging
 import requests
 import cfscrape
 from robobrowser import RoboBrowser
@@ -11,10 +12,12 @@ from robobrowser import exceptions as robo
 class SBrowser:
 
     def __init__(self, scraper=None,
-                 browser=None, proxy=None, **kwargs):
+                 browser=None, proxy=None, loglevel=logging.INFO, **kwargs):
         self.scraper = scraper or cfscrape.create_scraper()
         self.browser = browser or RoboBrowser(session=self.scraper, **kwargs)
         self.proxify(proxy)
+        self.log = self.consolelog(loglevel)
+        self.log.info("D:Created SBrowser")
 
     def __str__(self):
         cd = self.connection_details()
@@ -24,6 +27,17 @@ class SBrowser:
             "none" if self.proxy is None else self.proxy,
             cd["ip"],
             cd["hostname"] if "hostname" in cd else "none")
+
+    def consolelog(self, loglevel):
+        logger = logging.getLogger(__name__)
+        logger.setLevel(logging.DEBUG)
+        formatter = logging.Formatter('%(asctime)s - %(name)s'
+                                      '- %(levelname)s - %(message)s [%(filename)s:%(lineno)s]')
+        stream_handler = logging.StreamHandler()
+        stream_handler.setLevel(loglevel)
+        stream_handler.setFormatter(formatter)
+        logger.addHandler(stream_handler)
+        return logger
 
     def is_cloudflare(self):
         try:
@@ -56,7 +70,7 @@ class SBrowser:
                 requests.exceptions.ConnectionError):
             return {'ip': 'Unknown'}
         except ValueError:
-            print("Server returned no JSON (%s)" % self.response().content)
+            self.log.error("Server returned no JSON (%s)" % self.response().content)
             return {'ip': 'Unknown'}
         return res
 

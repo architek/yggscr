@@ -4,6 +4,7 @@ import re
 import os
 import time
 import json
+import logging
 import datetime
 from bs4 import BeautifulSoup
 from .torrents import Torrent
@@ -58,13 +59,15 @@ class YggBrowser(SBrowser):
     """Ygg Scrapper with CloudFlare bypass
     """
     def __init__(self, scraper=None,
-                 browser=None, proxy=None):
-        SBrowser.__init__(self, scraper=scraper, browser=browser, proxy=proxy,
+                 browser=None, proxy=None, loglevel=logging.INFO):
+        SBrowser.__init__(self, scraper=scraper, browser=browser,
+                          proxy=proxy, loglevel=loglevel,
                           history=False, timeout=10, parser='html.parser')
         self.idstate = None
         self.detail = False         # No detailed torrent info by default
         self.stats = Stats()
         self.browser.session.hooks['response'].append(self.gen_state())
+        self.log.info("Created YggBrowser")
 
     def __str__(self):
         return "{} | [YGG] Auth {}".format(
@@ -75,10 +78,14 @@ class YggBrowser(SBrowser):
         def upd_state(r, *args, **kwargs):
             if "yggtorrent.is" in r.url and "forum" not in r.url \
                     and r.encoding is not None:
+                old_state = self.idstate
                 if "Mon compte" in r.text:
                     self.idstate = "authenticated"
                 else:
                     self.idstate = "anonymous"
+                if old_state!=self.idstate:
+                    self.log.debug("Auth state changed {}->{}".format(
+                        old_state, self.idstate))
         return upd_state
 
     def login(self, ygg_id=None, ygg_pass=None):
@@ -149,7 +156,8 @@ class YggBrowser(SBrowser):
                 except Exception as e:
                     # unknown elements
                     pass
-                    #print("Exception while getting xhr: {}, jtor={}".format(e, jtor))
+                    self.log.debug(
+                        "While getting xhr: {}, jtor={}".format(e, jtor))
         return torrent_list
 
     def top_day(self):
@@ -218,12 +226,12 @@ class YggBrowser(SBrowser):
         category = q.get('category','')
         sub_category = q.get('sub_category','')
         if category and not category.isdigit():
-                qx.update( get_cat_id(category, sub_category) )
+                qx.update( get_cat_id(self.log, category, sub_category) )
 
         qx['do'] = 'search'
-        print("Searching...")
+        self.log.debug("Searching...")
         self.browser.open(SEARCH_URL, params=qx)
-        print("Searched on this url {}".format(self.response().url))
+        self.log.debug("Searched on this url {}".format(self.response().url))
 
         self.detail = detail
         return self._parse_torrents()

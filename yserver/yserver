@@ -4,6 +4,7 @@
 import re
 import html
 import uwsgi
+import logging
 from itertools import cycle
 from yggscr.link import cats
 from yggscr.const import RSS_TPL
@@ -38,7 +39,6 @@ try:
 except KeyError:
     state['ano'] = False
 
-print("Anonymous: {}".format(state['ano']))
 
 if not state['ano']:
     try:
@@ -69,10 +69,12 @@ if not state['ano']:
     if thostname: state['tsEn'] = True
     if deluge_ip: state['dgEn'] = True
 
-ygg = YggBrowser(proxy=proxy)
-print("Proxy:{}".format(ygg.proxy))
+ygg = YggBrowser(proxy=proxy, loglevel=logging.INFO)
 if not state['ano']: ygg.login(ygg_id=username, ygg_pass=password)
-print("Ygg Auth:{}".format(ygg.idstate))
+
+ygg.log.info("Anonymous: {}".format(state['ano']))
+ygg.log.info("Proxy: {}".format(ygg.proxy))
+ygg.log.info("Ygg Auth: {}".format(ygg.idstate))
 
 app = application = Bottle()
 #from werkzeug.debug import DebuggedApplication
@@ -83,7 +85,8 @@ if DEBUG :
         werkzeug = werkzeug.Plugin()
         app.install(werkzeug)
     except Exception as e:
-        print("Couldn't start werkzeug debug middleware")
+        ygg.log.warning("Couldn't start werkzeug debug middleware, disabling")
+        pass
 
 
 def results_opts(results, sort=''):
@@ -106,19 +109,16 @@ def mtemplate(tpl, **kwargs):
 def reco():
     if request.path.startswith('/static/') or request.path.startswith('/images/'):
         return
-    if state['ano']:
-        return
-    if DEBUG:
-        print("Reconnecting to ygg")
+    if state['ano']: return
     try:
         ygg.ping()
     except Exception as e:
-        print("Ping failed, can't check state, exception is {}".format(e))
+        ygg.log.warning("Ping failed, can't check state, exception is {}".format(e))
     if ygg.idstate != "authenticated":
         ygg.login(ygg_id=username, ygg_pass=password)
-        print("Logged in as %s" % username)
-    elif DEBUG:
-        print("Already authenticated")
+        ygg.log.debug("Logged in as %s" % username)
+    else:
+        ygg.log.debug("Already authenticated")
 
 
 @app.route('/static/<filepath>')

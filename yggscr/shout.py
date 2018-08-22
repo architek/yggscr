@@ -57,16 +57,14 @@ class ShoutMessage(object):
 class YggShout:
     def __init__(self, robs=None, debug=False, irc=False, colour=False):
         self.robs = robs or yggscr.ygg.YggBrowser()
-        self.debug = debug
         self.irc = irc
         self.colour = colour
         self.last_shouts = []
+        self.debug = debug
 
     def get_shouts(self):
         """ Return current shouts from website """
-        print("Getting shout tid {}".format(threading.get_ident()))
         self.robs.get(SHOUT_URL, timeout=3)
-        print("Getting shout done tid {}".format(threading.get_ident()))
         return [ShoutMessage(soup=li, shout=self)
                 for li in list(reversed(
                      [li for li in self.robs.parsed().find_all("li")

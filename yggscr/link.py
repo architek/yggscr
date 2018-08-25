@@ -104,6 +104,7 @@ def list_cat_subcat():
             r = r + "({}, {}) ".format(words[0], words[1])
     return r
 
+
 def list_subcats(cat):
     subcats = []
     for link in links:
@@ -111,10 +112,10 @@ def list_subcats(cat):
             subcats.append(link.split('/')[1].split('-')[1])
     return subcats
 
+
 def list_cats():
     cats = []
     for link in links:
         if '/' not in link:
             cats.append(link.split('-')[1])
     return cats
-

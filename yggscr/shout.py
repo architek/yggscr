@@ -5,9 +5,9 @@ from __future__ import unicode_literals
 import time
 import yggscr.ygg
 from bs4 import NavigableString
-import threading
 
 from .const import SHOUT_URL
+
 
 class ShoutMessage(object):
 
@@ -47,8 +47,8 @@ class ShoutMessage(object):
                 # TODO image with no alt needs at least a space
                 disp = " {} ".format(e["alt"]) if e["alt"] else " "
                 message = message + disp
-            elif e.has_attr("class") and e.get("class")[0].strip() == "username":
-                message = message + e.string
+            elif e.has_attr("class") and e.get("class")[0] .strip() == "username":
+                    message = message + e.string
             elif e.name == "a":
                 message = message + e["href"]
         return mtime, id, username, int(group_id), str(message)

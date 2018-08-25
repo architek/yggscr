@@ -3,6 +3,7 @@
 
 from .const import get_dl_link
 
+
 def htn(hsize):
     hsize = hsize.upper()
     units = {'KO': 1024, 'MO': 1024**2, 'GO': 1024**3, 'TO': 1024**4}
@@ -14,7 +15,8 @@ def htn(hsize):
 
 class Torrent():
     def __init__(self, torrent_title, torrent_comm, torrent_age, torrent_size,
-                 torrent_completed, torrent_seed, torrent_leech, href, thref=None,
+                 torrent_completed, torrent_seed, torrent_leech,
+                 href, thref=None,
                  tid=None, cat=None, subcat=None):
         self.href = href
         self.title = torrent_title
@@ -53,6 +55,7 @@ class Torrent():
         pass
 
     def __str__(self):
-        return "{self.title} [{self.publish_date} Size:{self.nsize} C:{self.completed} "\
-            "S:{self.seed} L:{self.leech} Comm:{self.comm}] : "\
-            "{self.href} [id {self.tid}]".format(self=self)
+        return "{self.title} [{self.publish_date} Size:{self.nsize} "\
+            "C:{self.completed} S:{self.seed} L:{self.leech} "\
+            "Comm:{self.comm}] : {self.href} [id {self.tid}]".format(
+                self=self)

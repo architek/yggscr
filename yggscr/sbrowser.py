@@ -22,12 +22,15 @@ class SBrowser:
 
     def __str__(self):
         cd = self.connection_details()
-        return "[Browser] - CF was {}, UA {}, Proxy {}, Local {} Host {}".format(
+        return "[Browser] - CF was {}, UA {}, Proxy {}, Local {} Host {} Country {} City {}".format(
             "active" if self.is_cloudflare() else "inactive",
             self.browser.session.headers['User-Agent'],
             "none" if self.proxy is None else self.proxy,
             cd["ip"],
-            cd["hostname"] if "hostname" in cd else "none")
+            cd["hostname"] if "hostname" in cd else "N/A",
+            cd["country"] if "country" in cd else "N/A",
+            cd["city"] if "city" in cd else "N/A",
+            )
 
     def consolelog(self, loglevel):
         logger = logging.getLogger(__name__)
@@ -67,6 +70,7 @@ class SBrowser:
 
         try:
             self.browser.open("https://ipinfo.io/json")
+            self.log.error("IPINFO Server returned (%s)" % self.response().content)
             res = json.loads(self.response().content.decode('utf-8'))
         except (requests.exceptions.ProxyError,
                 requests.exceptions.ConnectionError):

@@ -35,8 +35,8 @@ class SBrowser:
     def consolelog(self, loglevel):
         logger = logging.getLogger(__name__)
         logger.setLevel(logging.DEBUG)
-        formatter = logging.Formatter('%(asctime)s - %(name)s'
-                                      '- %(levelname)s - %(message)s [%(filename)s:%(lineno)s]')
+        formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s "
+                                      "- %(message)s [%(filename)s:%(lineno)s]")
         stream_handler = logging.StreamHandler()
         stream_handler.setLevel(loglevel)
         stream_handler.setFormatter(formatter)
@@ -76,7 +76,8 @@ class SBrowser:
                 requests.exceptions.ConnectionError):
             return {'ip': 'Unknown'}
         except ValueError:
-            self.log.error("Server returned no JSON (%s)" % self.response().content)
+            self.log.error(
+                "Server returned no JSON (%s)" % self.response().content)
             return {'ip': 'Unknown'}
         return res
 

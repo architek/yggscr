@@ -9,15 +9,16 @@ import datetime
 from bs4 import BeautifulSoup
 from .torrents import Torrent
 from .sbrowser import SBrowser
-from urllib3._collections import HTTPHeaderDict
 from .exceptions import YggException
-from .const import *
+from .const import YGG_HOME, TOP_DAY_URL, TOP_WEEK_URL, TOP_MONTH_URL, \
+                   TOP_SEED_URL, TORRENT_URL, SEARCH_URL, DL_TPL
 from .link import get_link, get_cat_id, list_cat_subcat
 
-from urllib.parse import urlparse, parse_qs, urlencode
+from urllib.parse import urlparse, parse_qs
 
 # from pprint import (PrettyPrinter, pprint)
 # pp = PrettyPrinter(indent=4)
+
 
 class Stats():
     def __init__(self):
@@ -38,7 +39,11 @@ class Stats():
                 ctime-self.last["time"]))
         self.last = {"time": ctime, "up": self.up, "down": self.down}
         if self.first["time"] is None:
-            self.first = {"time": time.time(), "up": self.up, "down": self.down}
+            self.first = {
+                "time": time.time(),
+                "up": self.up,
+                "down": self.down
+            }
             m_up = m_down = "?"
         else:
             m_up = round(GiB*(self.up-self.first["up"])/(
@@ -50,8 +55,9 @@ class Stats():
     # Will only work for ratio above 1 but makes the search more robust
     # Note that website is inconsistent (TiB vs TB, GiB vs GB)
     def add(self, vals):
-        self.down, self.up = sorted(float(e[0]) if e[1] == 'G' else float(e[0]) * 1024
-                          for e in vals)
+        self.down, self.up = sorted(
+            float(e[0]) if e[1] == 'G' else float(e[0]) * 1024
+            for e in vals)
         self.iup, self.mup, self.idown, self.mdown = self.upd_speed()
         self.ratio = round(self.up/self.down, 4)
 
@@ -84,7 +90,7 @@ class YggBrowser(SBrowser):
                     self.idstate = "authenticated"
                 else:
                     self.idstate = "anonymous"
-                if old_state!=self.idstate:
+                if old_state != self.idstate:
                     self.log.debug("Auth state changed {}->{}".format(
                         old_state, self.idstate))
         return upd_state
@@ -125,10 +131,11 @@ class YggBrowser(SBrowser):
         vals = re.findall(r'\b([0-9\.]+)([GT])[oB]\b', html)
         if len(vals) != 2:
             raise YggException("Can't find ratio information")
-        else :
+        else:
             self.stats.add(vals)
 
-        return {'down': self.stats.down, 'up': self.stats.up, 'ratio': self.stats.ratio,
+        return {'down': self.stats.down, 'up': self.stats.up,
+                'ratio': self.stats.ratio,
                 'i_up': self.stats.iup, 'i_down': self.stats.idown,
                 'm_up': self.stats.mup, 'm_down': self.stats.mdown
                 }
@@ -141,10 +148,12 @@ class YggBrowser(SBrowser):
             for jtor in jres[jcat]:
                 try:
                     torrent_list.append(Torrent(
-                        torrent_title=BeautifulSoup(jtor[1], 'html.parser').text.rstrip(),
+                        torrent_title=BeautifulSoup(
+                            jtor[1], 'html.parser').text.rstrip(),
                         torrent_comm=jtor[3],
                         torrent_age=datetime.datetime.fromtimestamp(
-                            int(BeautifulSoup(jtor[4], 'html.parser').div.text)).strftime(
+                            int(BeautifulSoup(
+                                jtor[4], 'html.parser').div.text)).strftime(
                             "%Y-%m-%d %H:%M:%S"),
                         torrent_size=jtor[5].split(">")[-1],
                         torrent_completed=jtor[6],
@@ -223,24 +232,24 @@ class YggBrowser(SBrowser):
         return self._parse_torrents()
 
     def search_torrents(self, detail=False, q=None, **kwargs):
-        category = q.get('category','')
-        sub_category = q.get('sub_category','')
+        category = q.get('category', '')
+        sub_category = q.get('sub_category', '')
         if category and not category.isdigit():
-                q.update( get_cat_id(self.log, category, sub_category) )
+                q.update(get_cat_id(self.log, category, sub_category))
 
         q['do'] = 'search'
         self.log.debug("Searching...")
 
         # Convert formsdict q to request params
-        qx=dict()
+        qx = dict()
         for k in q.keys():
-            vals=[]
+            vals = []
             for v in q.getall(k):
                 vals.append(v)
-            if len(vals)>1:
-                qx[k]=vals
+            if len(vals) > 1:
+                qx[k] = vals
             else:
-                qx[k]=vals[0]
+                qx[k] = vals[0]
         self.browser.open(SEARCH_URL, params=qx)
         self.log.debug("Searched on this url {}".format(self.response().url))
 

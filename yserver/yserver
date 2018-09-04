@@ -14,7 +14,7 @@ from yggscr.const import DL_TPL, get_dl_link
 from configparser import ConfigParser
 from yggscr.client import \
     rtorrent_add_torrent, transmission_add_torrent, deluge_add_torrent
-from bottle import route, hook, run, template, response, \
+from bottle import run, template, response, \
                    static_file, request, redirect, Bottle
 
 
@@ -65,21 +65,26 @@ deluge_pass = config['deluge']['password']
 rpc_url = config['rtorrent']['rpc_url']
 
 if not state['ano']:
-    if rpc_url: state['rtEn'] = True
-    if thostname: state['tsEn'] = True
-    if deluge_ip: state['dgEn'] = True
+    if rpc_url:
+        state['rtEn'] = True
+    if thostname:
+        state['tsEn'] = True
+    if deluge_ip:
+        state['dgEn'] = True
 
 ygg = YggBrowser(proxy=proxy, loglevel=logging.DEBUG)
-if not state['ano']: ygg.login(ygg_id=username, ygg_pass=password)
+if not state['ano']:
+    try:
+        ygg.login(ygg_id=username, ygg_pass=password)
+    except Exception as e:
+        ygg.log.error("Could not login, exception {}".format(e))
 
 ygg.log.info("Anonymous: {}".format(state['ano']))
 ygg.log.info("Proxy: {}".format(ygg.proxy))
 ygg.log.info("Ygg Auth: {}".format(ygg.idstate))
 
 app = application = Bottle()
-#from werkzeug.debug import DebuggedApplication
-#app = DebuggedApplication(app, evalex=True)
-if DEBUG :
+if DEBUG:
     try:
         from bottle.ext import werkzeug
         werkzeug = werkzeug.Plugin()
@@ -97,7 +102,7 @@ def results_opts(results, sort=''):
 
 
 def mtemplate(tpl, **kwargs):
-    rtn = kwargs.pop('rtn',[])
+    rtn = kwargs.pop('rtn', [])
     if 'corder' not in state.keys():
         state['corder'] = 'desc'
     if 'norder' not in state.keys():
@@ -107,13 +112,16 @@ def mtemplate(tpl, **kwargs):
 
 @app.hook('before_request')
 def reco():
-    if request.path.startswith('/static/') or request.path.startswith('/images/'):
+    if request.path.startswith('/static/') or \
+       request.path.startswith('/images/'):
         return
-    if state['ano']: return
+    if state['ano']:
+        return
     try:
         ygg.ping()
     except Exception as e:
-        ygg.log.warning("Ping failed, can't check state, exception is {}".format(e))
+        ygg.log.warning(
+            "Ping failed, can't check state, exception is {}".format(e))
     else:
         ygg.log.debug("Ping reported state {}".format(ygg.idstate))
     if ygg.idstate != "authenticated":
@@ -136,10 +144,10 @@ def server_images(filepath):
 @app.route('/')
 def index():
     return mtemplate('index',
-                    rtn=["Welcome "+ (
+                     rtn=["Welcome " + (
                         "Anonymous - Connect for more options"
                         if state['ano'] else username)]
-                    )
+                     )
 
 
 @app.route('/search')
@@ -150,9 +158,9 @@ def search_index():
 
     rtn = []
     try:
-        torrents = ygg.search_torrents( q=q )
+        torrents = ygg.search_torrents(q=q)
     except Exception as e:
-        state['sorted_torrents']=[]
+        state['sorted_torrents'] = []
         rtn.append("Failed: {}".format(e))
     else:
         state['sorted_torrents'] = torrents
@@ -163,13 +171,13 @@ def search_index():
     state['corder'] = q.pop('order', 'asc')
     state['norder'] = 'desc' if state['corder'] == 'asc' else 'asc'
 
-    state['qs'] = 'search?' + urlencode(q,True)
+    state['qs'] = 'search?' + urlencode(q, True)
     return mtemplate('search_results',
-                    rtn=rtn)
+                     rtn=rtn)
 
 
 def rssize(torrents, base):
-    rss_tpl="""<?xml version="1.0" encoding="utf-8"?>
+    rss_tpl = """<?xml version="1.0" encoding="utf-8"?>
 <rss version="2.0">
 <channel>
 <title>YggTorrent RSS</title>
@@ -178,17 +186,19 @@ def rssize(torrents, base):
 {items}
 </channel>
 </rss>"""
-    item_tpl="""<item><title>{title}</title><description>Size: {torrent.nsize}, Seeders: {torrent.seed}, Leechers: {torrent.leech}</description>
+    item_tpl = """<item><title>{title}</title>"
+        "<description>Size: {torrent.nsize}, Seeders: {torrent.seed}, "
+        "Leechers: {torrent.leech}</description>
 <link>{torrent.href}</link><pubDate>{torrent.publish_date}</pubDate>
 <enclosure url="{uri}"/></item>"""
 
     response.set_header('Content-type', 'application/xml')
-    return rss_tpl.format( items = ''.join(
+    return rss_tpl.format(items=''.join(
                  item_tpl.format(
                      torrent=torrent,
-                     uri = base.format(id=torrent.tid),
-                     title = html.escape(torrent.title))
-            for torrent in torrents))
+                     uri=base.format(id=torrent.tid),
+                     title=html.escape(torrent.title))
+                        for torrent in torrents))
 
 
 @app.route('/rssearch')
@@ -199,9 +209,10 @@ def rssearch():
     q['order'] = 'desc'
     torrents = ygg.search_torrents(q=q)
     if state['ano']:
-        return rssize(torrents,DL_TPL)
+        return rssize(torrents, DL_TPL)
     else:
-        return rssize(torrents, request.urlparts.scheme+"://"+request.urlparts.netloc+"/dl/{id}")
+        return rssize(torrents, request.urlparts.scheme + "://" +
+                      request.urlparts.netloc+"/dl/{id}")
 
 
 @app.route('/top/<name:re:(day|week|month)>')
@@ -214,7 +225,7 @@ def top_day(name):
     state['sorted_torrents'] = results_opts(torrents, request.query.sort)
     state['qs'] = 'top/day?'
     return mtemplate('search_results',
-                    rtn=["Search returned {} torrents".format(len(torrents))])
+                     rtn=["Search returned {} torrents".format(len(torrents))])
 
 
 @app.route('/dl/<idtorrent:int>')
@@ -242,13 +253,14 @@ def send_torrent(client, idtorrent):
             rtn.append(msg)
             transmission_add_torrent(thostname, tport, tuser, tpassword, resp)
         elif client == "rt":
-            rtn.append("Adding torrent to rtorrent @ rpc_url {}".format(rpc_url))
+            rtn.append(
+                "Adding torrent to rtorrent @ rpc_url {}".format(rpc_url))
             rtorrent_add_torrent(rpc_url, resp)
         elif client == "dg":
             rtn.append("Adding {}:{}@{}:{}".format(deluge_user, deluge_pass,
-                                               deluge_ip, deluge_port))
+                                                   deluge_ip, deluge_port))
             r = deluge_add_torrent(deluge_ip, deluge_port,
-                               deluge_user, deluge_pass, resp)
+                                   deluge_user, deluge_pass, resp)
             rtn.append("Deluged RPC returned {}".format(r))
     except Exception as e:
         msg = "Adding torrent failed [{}]".format(e)
@@ -307,8 +319,7 @@ if __name__ == '__main__':
         app=app,
         host=host,
         port=port,
-#        reloader=True,
-#        debug=True,
+#       reloader=True,
+#       debug=True,
         server='wsgiref',
         )
-

@@ -101,6 +101,19 @@ class YggShout:
 
 
 if __name__ == '__main__':
+    import sys
+    if len(sys.argv):
+        hfile = sys.argv[1]
+        try:
+            with open(hfile,"r") as fn:
+                html = fn.read()
+        except:
+            print("Can't read file {}".format(hfile))
+            exit(1)
+        from bs4 import BeautifulSoup
+        soup = BeautifulSoup(html,'html.parser')
+        print(soup.get_text())
+        exit(0)
     yggshout = YggShout()
     while(True):
         yggshout.get_shouts()

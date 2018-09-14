@@ -186,14 +186,18 @@ class YBot(callbacks.Plugin):
     yresp = wrap(yresp)
 
     def yping(self, irc, msg, args, n, quiet):
-        """[n] [quiet: boolean]
+        """[n] [quiet: boolean(default False)]
         GET /
         """
         t = []
         statuses = defaultdict(int)
         mmin, mmax, mmean = float("inf"), float("-inf"), float("inf")
+
         if n is None:
             n=1
+        if n>100: n=100
+        if n>10 and quiet is False: n=10
+
         for _ in range(n):
             try:
                 t1 = time()
@@ -253,7 +257,7 @@ class YBot(callbacks.Plugin):
             user = ircutils.mircColor(user, gcolours[1])
         else:
             user = ircutils.mircColor(user, gcolours[group])
-        
+
         # High grade in bold
         if group in [1, 3, 4, 5]:
             user = ircutils.bold(user)

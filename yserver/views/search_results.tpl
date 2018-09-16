@@ -49,6 +49,7 @@
  </table>
 </div>
 <div>
+%if not state["qs"].startswith('top/'):
 %if request.query.page:
 <a href="{{state["qs"]}}&sort={{request.query.sort}}&order={{state['corder']}}&page={{str(int(request.query.page)-50)}}">&laquo;</a>
 %end

@@ -231,7 +231,7 @@ def top_day(name):
         'exclus': ygg.exclus,
     }.get(name, lambda: [])()
     state['sorted_torrents'] = results_opts(torrents, request.query.sort)
-    state['qs'] = 'top/day?'
+    state['qs'] = 'top/{}?'.format(name)
     return mtemplate('search_results',
                      rtn=["Search returned {} torrents".format(len(torrents))])
 

@@ -18,7 +18,7 @@ class YggShell(Cmd):
         if ygg_browser is not None:
             self.ygg_browser = ygg_browser
         else:
-            self.ygg_browser = ygg.YggBrowser(loglevel=logging.DEBUG)
+            self.ygg_browser = ygg.YggBrowser(loglevel=logging.INFO)
 #        self.ygg_browser.proxify("socks5h://192.168.1.17:9100")
 
     def print_torrents(self, torrents, n=None):

@@ -1,47 +1,40 @@
 import json
-import logging
+from logging import CRITICAL, ERROR, WARNING, INFO, DEBUG #noqa
 import requests
 import cfscrape
 from robobrowser import RoboBrowser
 from robobrowser import exceptions as robo
+from yggscr import ylogging
 
-# from pprint import (PrettyPrinter, pprint)
-# pp = PrettyPrinter(indent=4)
+from pprint import (PrettyPrinter, pprint) #noqa
+pp = PrettyPrinter(indent=4)
 
 
 class SBrowser:
 
     def __init__(self, scraper=None,
-                 browser=None, proxy=None, loglevel=logging.INFO, **kwargs):
-        self.log = self.consolelog(loglevel)
+                 browser=None, proxy=None, loglevel=INFO, **kwargs):
+        self.log = ylogging.consolelog(__name__, loglevel)
         self.log.info("Starting Ygg Scraper")
+
         self.scraper = scraper or cfscrape.create_scraper()
         self.browser = browser or RoboBrowser(session=self.scraper, **kwargs)
         self.proxify(proxy)
+
         self.log.debug("Created SBrowser")
 
     def __str__(self):
         cd = self.connection_details()
-        return "[Browser] - CF was {}, UA {}, Proxy {}, Local {} Host {} Country {} City {}".format(
-            "active" if self.is_cloudflare() else "inactive",
-            self.browser.session.headers['User-Agent'],
-            "none" if self.proxy is None else self.proxy,
-            cd["ip"],
-            cd["hostname"] if "hostname" in cd else "N/A",
-            cd["country"] if "country" in cd else "N/A",
-            cd["city"] if "city" in cd else "N/A",
-            )
-
-    def consolelog(self, loglevel):
-        logger = logging.getLogger(__name__)
-        logger.setLevel(logging.DEBUG)
-        formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s "
-                                      "- %(message)s [%(filename)s:%(lineno)s]")
-        stream_handler = logging.StreamHandler()
-        stream_handler.setLevel(loglevel)
-        stream_handler.setFormatter(formatter)
-        logger.addHandler(stream_handler)
-        return logger
+        return "[Browser] - CF was {}, UA {}, Proxy {}, \
+               Local {} Host {} Country {} City {}".format(
+                    "active" if self.is_cloudflare() else "inactive",
+                    self.browser.session.headers['User-Agent'],
+                    "none" if self.proxy is None else self.proxy,
+                    cd["ip"],
+                    cd["hostname"] if "hostname" in cd else "N/A",
+                    cd["country"] if "country" in cd else "N/A",
+                    cd["city"] if "city" in cd else "N/A",
+                )
 
     def is_cloudflare(self):
         try:

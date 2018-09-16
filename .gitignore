@@ -1,4 +1,4 @@
-src/ygg.rc
+x.shell
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

@@ -62,7 +62,7 @@ class YggShell(Cmd):
     def do_stats(self, line):
         'stats to return ratio statistics once authenticated'
         try:
-            mystat = self.ygg_browser.stats()
+            mystat = self.ygg_browser.get_stats()
         except (requests.exceptions.RequestException) as e:
             print("Network error:%s" % e)
             return

@@ -4,7 +4,8 @@ import re
 import os
 import time
 import json
-import logging
+from yggscr import ylogging
+from logging import CRITICAL, ERROR, WARNING, INFO, DEBUG #noqa
 import datetime
 from bs4 import BeautifulSoup
 from .torrents import Torrent
@@ -66,15 +67,16 @@ class YggBrowser(SBrowser):
     """Ygg Scrapper with CloudFlare bypass
     """
     def __init__(self, scraper=None,
-                 browser=None, proxy=None, loglevel=logging.INFO):
+                 browser=None, proxy=None):
         SBrowser.__init__(self, scraper=scraper, browser=browser,
-                          proxy=proxy, loglevel=loglevel,
-                          history=False, timeout=10, parser='html.parser')
+                          proxy=proxy, history=False, timeout=10,
+                          parser='html.parser')
+        self.log = ylogging.consolelog(__name__, INFO)
         self.idstate = None
         self.detail = False         # No detailed torrent info by default
         self.stats = Stats()
         self.browser.session.hooks['response'].append(self.gen_state())
-        self.log.debug("Created YggBrowser")
+        self.log.info("Created YggBrowser")
 
     def __str__(self):
         return "{} | [YGG] Auth {}".format(
@@ -83,13 +85,13 @@ class YggBrowser(SBrowser):
 
     def gen_state(self):
         def upd_state(r, *args, **kwargs):
-            if "yggtorrent.is" in r.url and "forum" not in r.url \
+            if YGG_HOME in r.url and "forum" not in r.url \
                     and r.encoding is not None:
                 old_state = self.idstate
                 if "Mon compte" in r.text:
                     self.idstate = "authenticated"
                 else:
-                    self.idstate = "anonymous"
+                    self.idstate = "Anonymous"
                 if old_state != self.idstate:
                     self.log.debug("Auth state changed {}->{}".format(
                         old_state, self.idstate))
@@ -117,7 +119,7 @@ class YggBrowser(SBrowser):
 
     def logout(self):
         self.browser.session.cookies.clear()
-        self.idstate = "anonymous"
+        self.idstate = "Anonymous"
 
     def get_stats(self):
         self.browser.open(YGG_HOME)

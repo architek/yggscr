@@ -207,20 +207,22 @@ class YBot(callbacks.Plugin):
                 mmax = max(mmax, dt)
                 mmin = min(mmin, dt)
                 t.append(dt)
-                if n > 1 and not quiet:
-                    irc.reply("{:>2} ping {} time={:>7.2f}ms http {}".format(1+_, self.yggb.browser.url, dt, sts))
+                if not quiet:
+                    irc.reply("{:>2} ping {} time={:>7.2f}ms http {}".format(1+_ if n>1 else "", self.yggb.browser.url, dt, sts),prefixNick=False)
                 statuses[sts] += 1
             except Exception as e:
                 pass
                 mmax = float("inf")
-                irc.reply("{:>2} timeout! [{}]".format(1+_, e))
+                irc.reply("{:>2} timeout! [{}]".format(1+_, e),prefixNick=False)
+        if n==1:
+            return
         if t:
             mmean = sum(t)/len(t)
         str_statuses = ' | '.join('{}:{}'.format(key, value) for key, value in statuses.items())
         irc.reply("{} packet{} transmitted, {} received, {:.2%} packet loss, http codes {}".
-                  format(n, "s" if n > 1 else "", len(t), 1-len(t)/n, str_statuses))
+                  format(n, "s" if n > 1 else "", len(t), 1-len(t)/n, str_statuses),prefixNick=False)
         irc.reply("rtt min/avg/max = {:.2f}/{:.2f}/{:.2f} ms".
-                  format(mmin, mmean, mmax))
+                  format(mmin, mmean, mmax),prefixNick=False)
 
     yping = wrap(yping, [optional('PositiveInt'), optional('boolean')])
 

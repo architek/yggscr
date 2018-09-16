@@ -1,5 +1,6 @@
 import os
 import re
+import sys
 import codecs
 from setuptools import setup
 
@@ -56,3 +57,8 @@ setup(name='yggscr',
       scripts=['bin/yshell', 'yserver/yserver'],
       include_package_data=True,
       zip_safe=False)
+
+if sys.version_info.major < 3:
+        sys.exit('Sorry, Python < 3.4 is not supported')
+elif sys.version_info.minor < 4:
+        sys.exit('Sorry, Python < 3.4 is not supported')

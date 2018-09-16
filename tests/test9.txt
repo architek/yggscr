@@ -1,0 +1,12 @@
+<li  use="2" data-id="30248">
+
+                        <a href="/forum/index.php?members/flokwez.805/" class="avatar avatar--xxs" data-user-id="805" data-xf-init="member-tooltip">
+                        <img src="/forum/data/avatars/s/0/805.jpg?1528700217"  alt="Flokwez" class="avatar-u805-s" itemprop="image" /> 
+                </a>
+
+                <a href="/forum/index.php?members/flokwez.805/" class="username " dir="auto" data-user-id="805" data-xf-init="member-tooltip" user-group-id="2">Flokwez</a>:
+                <span><div class="bbWrapper">ah on peut pas ecrire ****** <span style="color: red"><b><span style="text-decoration: underline">Modération</span> : Vous venez de recevoir un avertissement pour le motif suivant : Insultes </b></span><b><b> !</b></b></div></span>
+                <time  class="u-dt" dir="auto" datetime="2018-09-10T07:54:42+0100" data-time="1536562482" data-date-string="10 Septembre 2018" data-time-string="07:54" title="10 Septembre 2018, à 07:54">il y a 38 minutes</time>
+
+
+        </li>

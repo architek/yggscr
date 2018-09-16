@@ -109,7 +109,7 @@ def list_subcats(cat):
     subcats = []
     for link in links:
         if link.startswith(cat):
-            subcats.append(link.split('/')[1].split('-')[1])
+            subcats.append(link.split('/')[1].split('-', 1)[1])
     return subcats
 
 

@@ -41,18 +41,9 @@ except ImportError:  # running from CLI
     pass
 
 
-if not state['ano']:
-    try:
-        username = config['ygg']['username']
-        password = config['ygg']['password']
-        print("Using credentials <{}> : <{}>".format(username, password))
-    except KeyError:
-        state['ano'] = True
-
 host = config['app']['hostname']
 port = config['app']['port']
-debug = config['app'].get('debug',False)
-
+debug = config['app'].get('debug', False)
 proxy     = config['net']['proxy']
 
 thostname = config['transmission']['hostname']
@@ -67,6 +58,14 @@ deluge_pass = config['deluge']['password']
 
 rpc_url = config['rtorrent']['rpc_url']
 
+if not state['ano']:
+    try:
+        username = config['ygg']['username']
+        password = config['ygg']['password']
+        if debug:
+            print("Using credentials <{}> : <{}>".format(username, password))
+    except KeyError:
+        state['ano'] = True
 
 if not state['ano']:
     if rpc_url:
@@ -75,6 +74,7 @@ if not state['ano']:
         state['tsEn'] = True
     if deluge_ip:
         state['dgEn'] = True
+
 
 ygg = YggBrowser(proxy=proxy,
                  loglevel=logging.DEBUG if debug else logging.INFO)

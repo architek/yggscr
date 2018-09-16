@@ -173,3 +173,9 @@ server {
 	}
 }
 ```
+
+_Note_: While the html is very limited for search/rss, the webapp is a "passthrough" relay for unknown parameters. The following is an rss feed about electro musique:
+
+```
+https://server.example.com/ano/rssearch?category=audio&sub_category=musique&option_genre%3Amultiple[]=1&option_genre%3Amultiple[]=15&option_genre%3Amultiple[]=33&option_genre%3Amultiple[]=34&option_genre%3Amultiple[]=35&option_genre%3Amultiple[]=119&option_genre%3Amultiple[]=124
+```

@@ -3,7 +3,6 @@
 
 import re
 import html
-import uwsgi
 import logging
 from itertools import cycle
 from yggscr.link import cats
@@ -35,15 +34,20 @@ if not config.read('yserver.cfg'):
     exit()
 
 try:
+    import uwsgi
     state['ano'] = uwsgi.opt['ano'].decode('utf8').upper() == "TRUE"
 except KeyError:
     state['ano'] = False
+except ImportError:  # running from CLI
+    state['ano'] = False
+    pass
 
 
 if not state['ano']:
     try:
         username = config['ygg']['username']
         password = config['ygg']['password']
+        print("Using credentials <{}> : <{}>".format(username, password))
     except KeyError:
         state['ano'] = True
 

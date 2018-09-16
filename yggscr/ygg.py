@@ -12,7 +12,7 @@ from .torrents import Torrent
 from .sbrowser import SBrowser
 from .exceptions import YggException
 from .const import YGG_HOME, TOP_DAY_URL, TOP_WEEK_URL, TOP_MONTH_URL, \
-                   TOP_SEED_URL, TORRENT_URL, SEARCH_URL, DL_TPL
+                   EXCLUS_URL, TOP_SEED_URL, TORRENT_URL, SEARCH_URL, DL_TPL
 from .link import get_link, get_cat_id, list_cat_subcat
 
 from urllib.parse import urlparse, parse_qs
@@ -181,10 +181,14 @@ class YggBrowser(SBrowser):
     def top_month(self):
         return self._get_torrents_xhr(TOP_MONTH_URL, timeout=30)
 
+    def exclus(self):
+        self.browser.open(EXCLUS_URL)
+        return self._parse_torrents(table_num=0)
+
     def top_seeded(self):
         return self._get_torrents_xhr(TOP_SEED_URL, method="post")
 
-    def _parse_torrents(self, sup=None, detail=None):
+    def _parse_torrents(self, sup=None, detail=None, table_num=1):
         torrent_list = []
         if sup is None:
             sup = self.parsed()
@@ -193,7 +197,7 @@ class YggBrowser(SBrowser):
         try:
             if "Aucun résultat" in sup.text:
                 return []
-            table = sup.find_all('table')[1]
+            table = sup.find_all('table')[table_num]
             if table is None:
                 raise YggException("Couldn't decode web page")
             table = table.find('tbody')

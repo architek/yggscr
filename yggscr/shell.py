@@ -157,6 +157,18 @@ class YggShell(Cmd):
         else:
             self.print_torrents(torrents)
 
+    def do_exclus(self, line):
+        ''' exclus '''
+        try:
+            torrents = self.ygg_browser.exclus()
+        except (requests.exceptions.RequestException) as e:
+            print("Network error:%s" % e)
+            return
+        if torrents is None:
+            print("No results")
+        else:
+            self.print_torrents(torrents)
+
     def do_lscat(self, line):
         'list categories and subcategories'
         print("List of cat, subcat combinaisons:\n%s" %

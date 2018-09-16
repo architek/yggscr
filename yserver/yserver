@@ -131,7 +131,7 @@ def reco():
             "Ping failed, can't check state, exception is {}".format(e))
     else:
         ygg.log.debug("Ping reported state {}".format(ygg.idstate))
-    if ygg.idstate != "authenticated":
+    if ygg.idstate != "Authenticated":
         ygg.login(ygg_id=username, ygg_pass=password)
         ygg.log.debug("Logged in as %s" % username)
     else:

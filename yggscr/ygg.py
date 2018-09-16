@@ -89,7 +89,7 @@ class YggBrowser(SBrowser):
                     and r.encoding is not None:
                 old_state = self.idstate
                 if "Mon compte" in r.text:
-                    self.idstate = "authenticated"
+                    self.idstate = "Authenticated"
                 else:
                     self.idstate = "Anonymous"
                 if old_state != self.idstate:
@@ -99,7 +99,7 @@ class YggBrowser(SBrowser):
 
     def login(self, ygg_id=None, ygg_pass=None):
         self.open(YGG_HOME)
-        if self.idstate == "authenticated":
+        if self.idstate == "Authenticated":
             raise YggException("Logout first")
         self._id = ygg_id if ygg_id else os.environ['ygg_id']
         self._pass = ygg_pass if ygg_id else os.environ['ygg_pass']
@@ -114,7 +114,7 @@ class YggBrowser(SBrowser):
         login_form['pass'].value = self._pass
         self.browser.submit_form(login_form)
         self.open(YGG_HOME)
-        if self.idstate != "authenticated":
+        if self.idstate != "Authenticated":
             raise YggException("Login failed")
 
     def logout(self):
@@ -123,7 +123,7 @@ class YggBrowser(SBrowser):
 
     def get_stats(self):
         self.open(YGG_HOME)
-        if self.idstate != "authenticated":
+        if self.idstate != "Authenticated":
             raise YggException(
                 "Not logged in, idstate is {}".format(self.idstate))
 

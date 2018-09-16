@@ -16,7 +16,7 @@ class SBrowser:
                  browser=None, proxy=None, loglevel=INFO, **kwargs):
 
         self.log = ylogging.consolelog(name=__name__, loglevel=loglevel)
-        self.log.info("Starting Ygg Browser")
+        self.log.debug("Starting SBrowser")
 
         self.scraper = scraper or cfscrape.create_scraper()
         self.browser = browser or RoboBrowser(session=self.scraper, **kwargs)
@@ -63,7 +63,7 @@ class SBrowser:
         """
 
         try:
-            self.browser.open("https://ipinfo.io/json")
+            self.open("https://ipinfo.io/json")
             self.log.error("IPINFO Server returned (%s)" % self.response().content)
             res = json.loads(self.response().content.decode('utf-8'))
         except (requests.exceptions.ProxyError,
@@ -81,6 +81,6 @@ class SBrowser:
     def response(self):
         return self.browser.response
 
-    def get(self, url, **kwargs):
+    def open(self, url, **kwargs):
         self.log.debug(">>> {}".format(url))
         self.browser.open(url, **kwargs)

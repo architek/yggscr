@@ -68,10 +68,10 @@ class YggBrowser(SBrowser):
     """
     def __init__(self, scraper=None,
                  browser=None, proxy=None, loglevel=INFO):
+        self.log = ylogging.consolelog(__name__, loglevel)
         SBrowser.__init__(self, scraper=scraper, browser=browser,
                           proxy=proxy, history=False, timeout=10,
                           parser='html.parser', loglevel=loglevel)
-        self.log = ylogging.consolelog(__name__, loglevel)
         self.idstate = None
         self.detail = False         # No detailed torrent info by default
         self.stats = Stats()
@@ -98,7 +98,7 @@ class YggBrowser(SBrowser):
         return upd_state
 
     def login(self, ygg_id=None, ygg_pass=None):
-        self.browser.open(YGG_HOME)
+        self.open(YGG_HOME)
         if self.idstate == "authenticated":
             raise YggException("Logout first")
         self._id = ygg_id if ygg_id else os.environ['ygg_id']
@@ -113,7 +113,7 @@ class YggBrowser(SBrowser):
         login_form['id'].value = self._id
         login_form['pass'].value = self._pass
         self.browser.submit_form(login_form)
-        self.browser.open(YGG_HOME)
+        self.open(YGG_HOME)
         if self.idstate != "authenticated":
             raise YggException("Login failed")
 
@@ -122,7 +122,7 @@ class YggBrowser(SBrowser):
         self.idstate = "Anonymous"
 
     def get_stats(self):
-        self.browser.open(YGG_HOME)
+        self.open(YGG_HOME)
         if self.idstate != "authenticated":
             raise YggException(
                 "Not logged in, idstate is {}".format(self.idstate))
@@ -144,7 +144,7 @@ class YggBrowser(SBrowser):
 
     def _get_torrents_xhr(self, url, method="get", timeout=None):
         torrent_list = []
-        self.browser.open(url, method=method, timeout=timeout)
+        self.open(url, method=method, timeout=timeout)
         jres = json.loads(self.response().content.decode('utf-8'))
         for jcat in jres:
             for jtor in jres[jcat]:
@@ -182,7 +182,7 @@ class YggBrowser(SBrowser):
         return self._get_torrents_xhr(TOP_MONTH_URL, timeout=30)
 
     def exclus(self):
-        self.browser.open(EXCLUS_URL)
+        self.open(EXCLUS_URL)
         return self._parse_torrents(table_num=0)
 
     def top_seeded(self):
@@ -213,7 +213,7 @@ class YggBrowser(SBrowser):
                 age = datetime.datetime.fromtimestamp(
                     int(age)).strftime('%Y-%m-%d %H:%M:%S')
                 if detail:
-                    self.browser.open(href)
+                    self.open(href)
                     thref = self.browser.find(
                         'a',
                         attrs={'href': re.compile("download_torrent")})['href']
@@ -233,7 +233,7 @@ class YggBrowser(SBrowser):
 
     def list_torrents(self, cat, subcat, detail=False):
         "This doesn't exist anymore on website"
-        self.browser.open(TORRENT_URL + get_link(cat, subcat))
+        self.open(TORRENT_URL + get_link(cat, subcat))
         self.detail = detail
         return self._parse_torrents()
 
@@ -256,7 +256,7 @@ class YggBrowser(SBrowser):
                 qx[k] = vals
             else:
                 qx[k] = vals[0]
-        self.browser.open(SEARCH_URL, params=qx)
+        self.open(SEARCH_URL, params=qx)
         self.log.debug("Searched on this url {}".format(self.response().url))
 
         self.detail = detail
@@ -274,7 +274,7 @@ class YggBrowser(SBrowser):
         return list_cat_subcat()
 
     def ping(self):
-        self.browser.open(YGG_HOME)
+        self.open(YGG_HOME)
         return self.response().status_code
 
     def id2href(self, id):

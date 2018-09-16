@@ -59,5 +59,5 @@ setup(name='yggscr',
       include_package_data=True,
       zip_safe=False)
 
-if sys.version_info.major < 3 or sys.version_info.major < 4:
+if sys.version_info.major < 3 or sys.version_info.minor < 4:
     sys.exit('\nSetup failed: Sorry, Python < 3.4 is not supported')

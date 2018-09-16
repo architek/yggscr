@@ -17,8 +17,6 @@ from bottle import run, template, response, \
                    static_file, request, redirect, Bottle
 
 
-DEBUG = True
-
 bcyc = cycle([True, False])
 
 state = {
@@ -53,6 +51,7 @@ if not state['ano']:
 
 host = config['app']['hostname']
 port = config['app']['port']
+debug = config['app'].get('debug',False)
 
 proxy     = config['net']['proxy']
 
@@ -68,6 +67,7 @@ deluge_pass = config['deluge']['password']
 
 rpc_url = config['rtorrent']['rpc_url']
 
+
 if not state['ano']:
     if rpc_url:
         state['rtEn'] = True
@@ -76,7 +76,8 @@ if not state['ano']:
     if deluge_ip:
         state['dgEn'] = True
 
-ygg = YggBrowser(proxy=proxy, loglevel=logging.DEBUG)
+ygg = YggBrowser(proxy=proxy,
+                 loglevel=logging.DEBUG if debug else logging.INFO)
 if not state['ano']:
     try:
         ygg.login(ygg_id=username, ygg_pass=password)
@@ -88,13 +89,15 @@ ygg.log.info("Proxy: {}".format(ygg.proxy))
 ygg.log.info("Ygg Auth: {}".format(ygg.idstate))
 
 app = application = Bottle()
-if DEBUG:
+if debug:
+    print("Debug is active")
     try:
         from bottle.ext import werkzeug
         werkzeug = werkzeug.Plugin()
         app.install(werkzeug)
     except Exception as e:
-        ygg.log.warning("Couldn't start werkzeug debug middleware, disabling")
+        ygg.log.warning("Couldn't start werkzeug ({}) debug middleware"
+                        ", disabling".format(e))
         pass
 
 
@@ -219,12 +222,13 @@ def rssearch():
                       request.urlparts.netloc+"/dl/{id}")
 
 
-@app.route('/top/<name:re:(day|week|month)>')
+@app.route('/top/<name:re:(day|week|month|exclus)>')
 def top_day(name):
     torrents = {
         'day': ygg.top_day,
         'week': ygg.top_week,
-        'month': ygg.top_month
+        'month': ygg.top_month,
+        'exclus': ygg.exclus,
     }.get(name, lambda: [])()
     state['sorted_torrents'] = results_opts(torrents, request.query.sort)
     state['qs'] = 'top/day?'

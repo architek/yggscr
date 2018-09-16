@@ -82,4 +82,5 @@ class SBrowser:
         return self.browser.response
 
     def get(self, url, **kwargs):
+        self.log.debug(">>> {}".format(url))
         self.browser.open(url, **kwargs)

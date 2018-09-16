@@ -1,7 +1,7 @@
 import logging
 
 
-def consolelog(self, name, loglevel):
+def consolelog(name, loglevel):
     logger = logging.getLogger(name)
     logger.setLevel(logging.DEBUG)
     formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s "

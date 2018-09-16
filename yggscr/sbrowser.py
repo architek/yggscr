@@ -14,7 +14,7 @@ class SBrowser:
 
     def __init__(self, scraper=None,
                  browser=None, proxy=None, loglevel=INFO, **kwargs):
-        self.log = ylogging.consolelog(__name__, loglevel)
+        self.log = ylogging.consolelog(name=__name__, loglevel=loglevel)
         self.log.info("Starting Ygg Scraper")
 
         self.scraper = scraper or cfscrape.create_scraper()

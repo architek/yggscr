@@ -186,14 +186,18 @@ class YBot(callbacks.Plugin):
     yresp = wrap(yresp)
 
     def yping(self, irc, msg, args, n, quiet):
-        """[n] [quiet: boolean]
+        """[n] [quiet: boolean(default False)]
         GET /
         """
         t = []
         statuses = defaultdict(int)
         mmin, mmax, mmean = float("inf"), float("-inf"), float("inf")
+
         if n is None:
             n=1
+        if n>100: n=100
+        if n>10 and quiet is False: n=10
+
         for _ in range(n):
             try:
                 t1 = time()
@@ -203,20 +207,22 @@ class YBot(callbacks.Plugin):
                 mmax = max(mmax, dt)
                 mmin = min(mmin, dt)
                 t.append(dt)
-                if n > 1 and not quiet:
-                    irc.reply("{:>2} ping {} time={:>7.2f}ms http {}".format(1+_, self.yggb.browser.url, dt, sts))
+                if not quiet:
+                    irc.reply("{:>2} ping {} time={:>7.2f}ms http {}".format(1+_ if n>1 else "", self.yggb.browser.url, dt, sts),prefixNick=False)
                 statuses[sts] += 1
             except Exception as e:
                 pass
                 mmax = float("inf")
-                irc.reply("{:>2} timeout! [{}]".format(1+_, e))
+                irc.reply("{:>2} timeout! [{}]".format(1+_, e),prefixNick=False)
+        if n==1:
+            return
         if t:
             mmean = sum(t)/len(t)
         str_statuses = ' | '.join('{}:{}'.format(key, value) for key, value in statuses.items())
         irc.reply("{} packet{} transmitted, {} received, {:.2%} packet loss, http codes {}".
-                  format(n, "s" if n > 1 else "", len(t), 1-len(t)/n, str_statuses))
+                  format(n, "s" if n > 1 else "", len(t), 1-len(t)/n, str_statuses),prefixNick=False)
         irc.reply("rtt min/avg/max = {:.2f}/{:.2f}/{:.2f} ms".
-                  format(mmin, mmean, mmax))
+                  format(mmin, mmean, mmax),prefixNick=False)
 
     yping = wrap(yping, [optional('PositiveInt'), optional('boolean')])
 
@@ -253,7 +259,7 @@ class YBot(callbacks.Plugin):
             user = ircutils.mircColor(user, gcolours[1])
         else:
             user = ircutils.mircColor(user, gcolours[group])
-        
+
         # High grade in bold
         if group in [1, 3, 4, 5]:
             user = ircutils.bold(user)

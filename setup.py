@@ -44,6 +44,7 @@ setup(name='yggscr',
       packages=['yggscr'],
       test_suite='nose.collector',
       tests_require=['nose'],
+      python_requires='>= 3.4',
       install_requires=[
           'robobrowser>=0.5.3',
           'cmd2>=0.8.0',
@@ -58,7 +59,5 @@ setup(name='yggscr',
       include_package_data=True,
       zip_safe=False)
 
-if sys.version_info.major < 3:
-        sys.exit('Sorry, Python < 3.4 is not supported')
-elif sys.version_info.minor < 4:
-        sys.exit('Sorry, Python < 3.4 is not supported')
+if sys.version_info.major < 3 or sys.version_info.major < 4:
+    sys.exit('\nSetup failed: Sorry, Python < 3.4 is not supported')

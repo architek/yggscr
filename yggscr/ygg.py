@@ -67,11 +67,11 @@ class YggBrowser(SBrowser):
     """Ygg Scrapper with CloudFlare bypass
     """
     def __init__(self, scraper=None,
-                 browser=None, proxy=None):
+                 browser=None, proxy=None, loglevel=INFO):
         SBrowser.__init__(self, scraper=scraper, browser=browser,
                           proxy=proxy, history=False, timeout=10,
-                          parser='html.parser')
-        self.log = ylogging.consolelog(__name__, INFO)
+                          parser='html.parser', loglevel=loglevel)
+        self.log = ylogging.consolelog(__name__, loglevel)
         self.idstate = None
         self.detail = False         # No detailed torrent info by default
         self.stats = Stats()

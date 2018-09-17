@@ -9,18 +9,21 @@ from yggscr.exceptions import YggException
 # pp = PrettyPrinter(indent=4)
 
 
+LOG = logging.INFO
+
+
 class YggShell(Cmd):
     'Ygg command line interface'
     def __init__(self, ygg_browser=None, **kwargs):
         Cmd.__init__(self, **kwargs)
         self.intro = "Welcome to Ygg Shell. Type help or ? to list commands.\n"
         self.prompt = "> "
-        self.log = ylogging.consolelog(__name__, logging.INFO)
+        self.log = ylogging.consolelog(__name__, LOG)
         self.allow_redirection = False
         if ygg_browser is not None:
             self.ygg_browser = ygg_browser
         else:
-            self.ygg_browser = ygg.YggBrowser(loglevel=logging.INFO)
+            self.ygg_browser = ygg.YggBrowser(loglevel=LOG)
 #        self.ygg_browser.proxify("socks5h://192.168.1.17:9100")
 
     def print_torrents(self, torrents, n=None):
@@ -112,7 +115,7 @@ class YggShell(Cmd):
 
     def do_search_torrents(self, line):
         '''search torrents
-        search_torrents q:<pattern> [c:<category>] [s:<subcategory>] [k:v]
+        search_torrents q:<pattern> [c:<category>] [s:<subcategory>]
         [s:<subcategory>] [opt1:val] [opt2:val1] [opt2:val2] [d:False] [n:3]
         any other option will be passed unchanged to the webserver
         d is for detail which will fetch each torrent url for more details
@@ -132,18 +135,21 @@ class YggShell(Cmd):
         except ValueError:
             raise YggException("Error: Invalid syntax in search_torrents")
 
-        q['name'] = q.pop('q')
-        q['category'] = q.pop('c', "")
-        q['sub_category'] = q.pop('s', "")
+        try:
+            q['name'] = q.pop('q')
+            q['category'] = q.pop('c', "")
+            q['sub_category'] = q.pop('s', "")
+        except KeyError:
+            raise YggException("Error: Invalid syntax in search_torrents")
 
         detail = q.pop('d', False)
-        n = q.pop('n', 3)
+        n = int(q.pop('n', 3))
 
         self.log.debug("do_search_torrents parameter:{}".format(q))
         try:
             torrents = self.ygg_browser.search_torrents(
                 q=q,
-                detail=detail)
+                detail=detail, nmax=n)
         except (requests.exceptions.RequestException) as e:
             print("Network error:%s" % e)
             return
@@ -154,7 +160,7 @@ class YggShell(Cmd):
         if torrents is None:
             print("No results")
         else:
-            self.print_torrents(torrents, n)
+            self.print_torrents(torrents)
 
     def do_next(self, line):
         'returns next torrents from previous search or list'

@@ -20,6 +20,7 @@ from collections import defaultdict
 # import supybot.plugins as plugins
 import supybot.ircutils as ircutils
 from bs4 import BeautifulSoup
+from logging import INFO, DEBUG
 
 try:
     from supybot.i18n import PluginInternationalization
@@ -41,7 +42,7 @@ class YBot(callbacks.Plugin):
 
         self.__parent = super(YBot, self)
         self.__parent.__init__(irc)
-        self.yggb = YggBrowser()
+        self.yggb = YggBrowser(loglevel=DEBUG)
         self.yggb.proxify("socks5h://192.168.1.9:9100")
         self.shout = YggShout(self.yggb)
         shout_err = 0
@@ -72,20 +73,39 @@ class YBot(callbacks.Plugin):
         irc.replySuccess()
     yprox = wrap(yprox, ['owner', optional('anything')])
 
-    def ysearch(self, irc, msg, args, q, n, detail):
-        """q:pattern[,c:cat[,s:subcat]] [n:nmax] [detail True/False]
+    def ysearch(self, irc, msg, args, n, detail, p):
+        """[n:nmax] [detail True/False] q:pattern [c:cat [s:subcat]] [opt:val]*
         Searches on ygg and return first page results -
         Will only return the first nmax results and waits 1s between each reply
         """
+        q = {}
         try:
-            p = dict((t.split(':')
-                      for t in q.split(',')))
+            for t in p.split():
+                k, v = t.rsplit(':', 1)
+                if k in q.keys():
+                    if isinstance(q[k], list):
+                        q[k].append(v)
+                    else:
+                        q[k] = [q[k], v]
+                else:
+                    q[k] = v
         except ValueError:
             irc.error("Wrong syntax")
+            pass
             return
+
+        q['name'] = q.pop('q')
+        q['category'] = q.pop('c', "")
+        q['sub_category'] = q.pop('s', "")
+
+        if n is None:
+            n = 3
+        if detail is None:
+            detail = False
+
         try:
             torrents = self.yggb.search_torrents(
-                detail, name=p["q"], category=p.get("c"), sub_category=p.get("s"))
+                detail=detail, q=q, nmax=int(n))
         except (requests.exceptions.ProxyError,
                 requests.exceptions.ConnectionError) as e:
             irc.error("Network Error: %s" % e)
@@ -96,16 +116,14 @@ class YBot(callbacks.Plugin):
         if torrents is None:
             irc.reply("No results")
             return
-        if n is None:
-            n = 3
         for idx, torrent in enumerate(torrents[:n]):
             sleep(1)
-            irc.reply("%2d - %s [%s Size:%s C:%s S:%s L:%s Comm:%s] : %s" %
+            irc.reply("%2d - %s [%s Size:%s C:%s S:%s L:%s Comm:%s Uploader:%s] : %s" %
                       (1+idx, torrent.title, torrent.publish_date, torrent.size,
                        torrent.completed, torrent.seed, torrent.leech,
-                       torrent.comm, torrent.href))
+                       torrent.comm, torrent.uploader, torrent.href))
     ysearch = wrap(ysearch,
-                   ['anything', optional('int'), optional('boolean')])
+                   [optional('int'), optional('boolean'), 'text'])
 
     def ycat(self, irc, msg, args):
         """Will list available cat/subcat combinaisons

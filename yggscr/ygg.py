@@ -248,7 +248,7 @@ class YggBrowser(SBrowser):
 
         self.log.debug("Searching...")
 
-        # Convert formsdict q to request params
+        # Convert formsdict or dict to requests parameters list
         for k in q.keys():
             try:
                 vals = q.getall(k)

@@ -189,12 +189,12 @@ class YggBrowser(SBrowser):
 
     def exclus(self):
         self.open(EXCLUS_URL)
-        return self._parse_torrents(table_num=0)
+        return self._parse_torrents(table_num=0, n=100)
 
     def top_seeded(self):
         return self._get_torrents_xhr(TOP_SEED_URL, method="post")
 
-    def _parse_torrents(self, sup=None, detail=False, table_num=1):
+    def _parse_torrents(self, sup=None, detail=False, table_num=1, n=100):
         torrent_list = []
         if sup is None:
             sup = self.parsed()
@@ -205,7 +205,7 @@ class YggBrowser(SBrowser):
             if table is None:
                 raise YggException("Couldn't decode web page")
             table = table.find('tbody')
-            for row in table.find_all('tr'):
+            for row in table.find_all('tr')[:n]:
                 rlinks = row.find_all('a')
                 rlink = rlinks[1]
                 name = rlink.text.rstrip()
@@ -224,10 +224,12 @@ class YggBrowser(SBrowser):
                         attrs={'href': re.compile("download_torrent")})['href']
                     date = re.findall(r'\d+/\d+/\d+ \d+:\d+',
                                       str(self.response().content))[0]
+                    uploader = self.parsed().find('td', string=
+                                        'Uploadé par').parent.find_all('td')[1].get_text()
                     tid = parse_qs(urlparse(thref).query)['id'][0]
                     torrent_list.append(Torrent(
                         name, comm, age, size, compl, seeders, leechers, href,
-                        thref, tid))
+                        thref, tid, uploader))
                 else:
                     torrent_list.append(Torrent(
                         name, comm, age, size, compl, seeders, leechers, href))
@@ -236,12 +238,7 @@ class YggBrowser(SBrowser):
 
         return torrent_list
 
-    def list_torrents(self, cat, subcat, detail=False):
-        "This doesn't exist anymore on website"
-        self.open(TORRENT_URL + get_link(cat, subcat))
-        return self._parse_torrents(detail=detail)
-
-    def search_torrents(self, detail=False, q=None, **kwargs):
+    def search_torrents(self, detail=False, q=None, nmax=100, **kwargs):
         qx = {}
 
         category = q.get('category', '')
@@ -264,15 +261,15 @@ class YggBrowser(SBrowser):
         self.log.debug("Searched on this url {} with detail:{}"
                        .format(self.response().url, detail))
 
-        return self._parse_torrents(detail=detail)
+        return self._parse_torrents(detail=detail, n=nmax)
 
-    def next_torrents(self):
+    def next_torrents(self, nmax):
         s_href = self.browser.find('a', string=re.compile('suivant'))
         if s_href:
             self.browser.follow_link(s_href)
         else:
             return None
-        return self._parse_torrents()
+        return self._parse_torrents(n=nmax)
 
     def cat_subcat(self):
         return list_cat_subcat()

@@ -101,8 +101,15 @@ class YggBrowser(SBrowser):
         self.open(YGG_HOME)
         if self.idstate == "Authenticated":
             raise YggException("Logout first")
-        self._id = ygg_id if ygg_id else os.environ['ygg_id']
-        self._pass = ygg_pass if ygg_id else os.environ['ygg_pass']
+        try:
+            self._id = ygg_id if ygg_id else os.environ['ygg_id']
+            self._pass = ygg_pass if ygg_id else os.environ['ygg_pass']
+        except KeyError:
+            self.log.error("Asked to login but provided "
+                           "neither config nor environment variable")
+            pass
+            return
+
         for form in self.browser.get_forms():
             if form.parsed.find(id="login_msg_pass"):
                 login_form = form

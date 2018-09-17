@@ -4,8 +4,9 @@ import sys
 import codecs
 from setuptools import setup
 
+if sys.version_info < (3, 4):
+    sys.exit('Sorry, Python < 3.4 is not supported')
 here = os.path.abspath(os.path.dirname(__file__))
-
 
 def read(*parts):
     with codecs.open(os.path.join(here, *parts), 'r') as fp:
@@ -59,5 +60,3 @@ setup(name='yggscr',
       include_package_data=True,
       zip_safe=False)
 
-if sys.version_info < (3, 4):
-    sys.exit('\nSetup failed: Sorry, Python < 3.4 is not supported')

@@ -6,7 +6,7 @@ import time
 import yggscr.ygg
 from bs4 import NavigableString
 
-from .const import SHOUT_URL
+from yggscr.const import SHOUT_URL
 
 
 class ShoutMessage(object):
@@ -64,7 +64,7 @@ class YggShout:
 
     def get_shouts(self):
         """ Return current shouts from website """
-        self.robs.get(SHOUT_URL, timeout=3)
+        self.robs.open(SHOUT_URL, timeout=3)
         return [ShoutMessage(soup=li, shout=self)
                 for li in list(reversed(
                      [li for li in self.robs.parsed().find_all("li")
@@ -102,16 +102,16 @@ class YggShout:
 
 if __name__ == '__main__':
     import sys
-    if len(sys.argv):
+    if len(sys.argv) > 1:
         hfile = sys.argv[1]
         try:
-            with open(hfile,"r") as fn:
+            with open(hfile, "r") as fn:
                 html = fn.read()
         except:
             print("Can't read file {}".format(hfile))
             exit(1)
         from bs4 import BeautifulSoup
-        soup = BeautifulSoup(html,'html.parser')
+        soup = BeautifulSoup(html, 'html.parser')
         print(soup.get_text())
         exit(0)
     yggshout = YggShout()

@@ -1,7 +1,12 @@
 # from pprint import (PrettyPrinter, pprint)
 # pp = PrettyPrinter(indent=4)
 
-from .const import get_dl_link
+from yggscr.const import get_dl_link
+from yggscr import ylogging
+from logging import DEBUG, INFO #noqa
+
+
+log = ylogging.consolelog(__name__, INFO)
 
 
 def htn(hsize):
@@ -42,6 +47,7 @@ class Torrent():
             self.cat = cat
         if href:
             self.cat, self.subcat = href.split('/')[4:6]
+        log.debug("Torrent is {}".format(self))
 
     def set_id(self, tid):
         self.tid = tid
@@ -58,5 +64,6 @@ class Torrent():
     def __str__(self):
         return "{self.title} [{self.publish_date} Size:{self.nsize} "\
             "C:{self.completed} S:{self.seed} L:{self.leech} "\
-            "Comm:{self.comm}] : {self.href} [id {self.tid}]".format(
+            "Comm:{self.comm} Uploader:{self.uploader}] "\
+            ": {self.href} [id {self.tid}]".format(
                 self=self)

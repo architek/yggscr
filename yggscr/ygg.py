@@ -8,12 +8,12 @@ from yggscr import ylogging
 from logging import CRITICAL, ERROR, WARNING, INFO, DEBUG #noqa
 import datetime
 from bs4 import BeautifulSoup
-from .torrents import Torrent
-from .sbrowser import SBrowser
-from .exceptions import YggException
-from .const import YGG_HOME, TOP_DAY_URL, TOP_WEEK_URL, TOP_MONTH_URL, \
-                   EXCLUS_URL, TOP_SEED_URL, TORRENT_URL, SEARCH_URL, DL_TPL
-from .link import get_link, get_cat_id, list_cat_subcat
+from yggscr.torrents import Torrent
+from yggscr.sbrowser import SBrowser
+from yggscr.exceptions import YggException
+from yggscr.const import YGG_HOME, TOP_DAY_URL, TOP_WEEK_URL, TOP_MONTH_URL, \
+                   EXCLUS_URL, TOP_SEED_URL, SEARCH_URL, DL_TPL
+from yggscr.link import get_cat_id, list_cat_subcat
 
 from urllib.parse import urlparse, parse_qs
 
@@ -222,14 +222,14 @@ class YggBrowser(SBrowser):
                     thref = self.browser.find(
                         'a',
                         attrs={'href': re.compile("download_torrent")})['href']
-                    date = re.findall(r'\d+/\d+/\d+ \d+:\d+',
+                    date = re.findall(r'\d+/\d+/\d+ \d+:\d+', #noqa
                                       str(self.response().content))[0]
-                    uploader = self.parsed().find('td', string=
-                                        'Uploadé par').parent.find_all('td')[1].get_text()
+                    uploader = self.parsed().find('td', string='Uploadé par')\
+                        .parent.find_all('td')[1].get_text()
                     tid = parse_qs(urlparse(thref).query)['id'][0]
                     torrent_list.append(Torrent(
                         name, comm, age, size, compl, seeders, leechers, href,
-                        thref, tid, uploader))
+                        thref, tid, uploader=uploader))
                 else:
                     torrent_list.append(Torrent(
                         name, comm, age, size, compl, seeders, leechers, href))

@@ -13,7 +13,7 @@ Ygg scraper with:
 Install with any method you prefer, example
 
 ```bash
-apt install python3-setuptools
+sudo apt install python3-setuptools
 python3 setup.py install --user
 ```
 _Note_: If you want the CloudFlare bypass to work, you also need to install *nodejs*

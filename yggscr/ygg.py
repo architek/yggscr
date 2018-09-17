@@ -73,7 +73,6 @@ class YggBrowser(SBrowser):
                           proxy=proxy, history=False, timeout=10,
                           parser='html.parser', loglevel=loglevel)
         self.idstate = None
-        self.detail = False         # No detailed torrent info by default
         self.stats = Stats()
         self.browser.session.hooks['response'].append(self.gen_state())
         self.log.info("Created YggBrowser")
@@ -195,12 +194,10 @@ class YggBrowser(SBrowser):
     def top_seeded(self):
         return self._get_torrents_xhr(TOP_SEED_URL, method="post")
 
-    def _parse_torrents(self, sup=None, detail=None, table_num=1):
+    def _parse_torrents(self, sup=None, detail=False, table_num=1):
         torrent_list = []
         if sup is None:
             sup = self.parsed()
-        if detail is None:
-            detail = self.detail
         try:
             if "Aucun résultat" in sup.text:
                 return []
@@ -220,6 +217,7 @@ class YggBrowser(SBrowser):
                 age = datetime.datetime.fromtimestamp(
                     int(age)).strftime('%Y-%m-%d %H:%M:%S')
                 if detail:
+                    self.log.debug("Fetching details for torrent")
                     self.open(href)
                     thref = self.browser.find(
                         'a',
@@ -241,8 +239,7 @@ class YggBrowser(SBrowser):
     def list_torrents(self, cat, subcat, detail=False):
         "This doesn't exist anymore on website"
         self.open(TORRENT_URL + get_link(cat, subcat))
-        self.detail = detail
-        return self._parse_torrents()
+        return self._parse_torrents(detail=detail)
 
     def search_torrents(self, detail=False, q=None, **kwargs):
         category = q.get('category', '')
@@ -257,17 +254,21 @@ class YggBrowser(SBrowser):
         qx = dict()
         for k in q.keys():
             vals = []
-            for v in q.getall(k):
-                vals.append(v)
+            try:
+                for v in q.getall(k):
+                    vals.append(v)
+            except AttributeError:
+                vals.append(q[k])
             if len(vals) > 1:
                 qx[k] = vals
             else:
                 qx[k] = vals[0]
+        self.log.debug("qx is {}".format(qx))
         self.open(SEARCH_URL, params=qx)
-        self.log.debug("Searched on this url {}".format(self.response().url))
+        self.log.debug("Searched on this url {} with detail:{}"
+                       .format(self.response().url, detail))
 
-        self.detail = detail
-        return self._parse_torrents()
+        return self._parse_torrents(detail=detail)
 
     def next_torrents(self):
         s_href = self.browser.find('a', string=re.compile('suivant'))

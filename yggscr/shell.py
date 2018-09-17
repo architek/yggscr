@@ -1,9 +1,10 @@
 import shlex
 import logging
+from yggscr import ylogging
 import requests
-from . import ygg
+from yggscr import ygg
 from cmd2 import Cmd
-from .exceptions import YggException
+from yggscr.exceptions import YggException
 # from pprint import (PrettyPrinter, pprint)
 # pp = PrettyPrinter(indent=4)
 
@@ -14,6 +15,7 @@ class YggShell(Cmd):
         Cmd.__init__(self, **kwargs)
         self.intro = "Welcome to Ygg Shell. Type help or ? to list commands.\n"
         self.prompt = "> "
+        self.log = ylogging.consolelog(__name__, logging.INFO)
         self.allow_redirection = False
         if ygg_browser is not None:
             self.ygg_browser = ygg_browser
@@ -110,24 +112,38 @@ class YggShell(Cmd):
 
     def do_search_torrents(self, line):
         '''search torrents
-        search_torrents q:<pattern> [c:<category>]'''
-        '''[s:<subcategory>] [d:False] [n:3]
+        search_torrents q:<pattern> [c:<category>] [s:<subcategory>] [k:v]
+        [s:<subcategory>] [opt1:val] [opt2:val1] [opt2:val2] [d:False] [n:3]
+        any other option will be passed unchanged to the webserver
         d is for detail which will fetch each torrent url for more details
         n is the number of torrents to display (all by default)
         '''
+        q = {}
         try:
-            p = dict((t.split(':')
-                      for t in shlex.split(line.strip())))
+            for t in shlex.split(line.strip()):
+                k, v = t.rsplit(':', 1)
+                if k in q.keys():
+                    if isinstance(q[k], list):
+                        q[k].append(v)
+                    else:
+                        q[k] = [q[k], v]
+                else:
+                    q[k] = v
         except ValueError:
-            raise YggException(
-                "Error: Syntax is search_torrents " +
-                "q:<pattern> [c:<category>] [s:<subcategory>] [d:True]")
+            raise YggException("Error: Invalid syntax is search_torrents")
+
+        q['name'] = q.pop('q')
+        q['category'] = q.pop('c', "")
+        q['sub_category'] = q.pop('s', "")
+
+        detail = q.pop('d', False)
+        n = q.pop('n', 3)
+
+        self.log.debug("do_search_torrents parameter:{}".format(q))
         try:
             torrents = self.ygg_browser.search_torrents(
-                q={'name': p['q'],
-                    'category': p.get('c', ''),
-                    'sub_category': p.get('s', '')},
-                detail=p.get('d', False))
+                q=q,
+                detail=detail)
         except (requests.exceptions.RequestException) as e:
             print("Network error:%s" % e)
             return
@@ -138,7 +154,7 @@ class YggShell(Cmd):
         if torrents is None:
             print("No results")
         else:
-            self.print_torrents(torrents, p.get('n'))
+            self.print_torrents(torrents, n)
 
     def do_next(self, line):
         'returns next torrents from previous search or list'

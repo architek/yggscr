@@ -105,7 +105,7 @@ class YBot(callbacks.Plugin):
 
         try:
             torrents = self.yggb.search_torrents(
-                detail=detail, q=q, nmax=n)
+                detail=detail, q=q, nmax=int(n))
         except (requests.exceptions.ProxyError,
                 requests.exceptions.ConnectionError) as e:
             irc.error("Network Error: %s" % e)

@@ -130,7 +130,7 @@ class YggShell(Cmd):
                 else:
                     q[k] = v
         except ValueError:
-            raise YggException("Error: Invalid syntax is search_torrents")
+            raise YggException("Error: Invalid syntax in search_torrents")
 
         q['name'] = q.pop('q')
         q['category'] = q.pop('c', "")

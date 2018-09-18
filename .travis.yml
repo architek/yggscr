@@ -3,20 +3,23 @@ python:
   - "3.4"
   - "3.5"
   - "3.6"
+
 virtualenv:
   system_site_packages: true
+
+sudo: required
+
+addons:
+  apt:
+    packages:
+      - python3-setuptools
 
 matrix:
   include:
     - os: linux
-      dist: bionic
-      sudo: required
+      dist: trusty
     - os: linux
-      dist: stretch
-      sudo: required
-    - os: linux
-      dist: jessie
-      sudo: required
+      dist: precise
 
 # command to install dependencies
 install:

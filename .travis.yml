@@ -14,10 +14,14 @@ addons:
     packages:
       - python3-setuptools
 
+branches:
+  only:
+  - dev
+
 matrix:
   include:
-    - os: linux
-      dist: trusty
+#    - os: linux
+#      dist: trusty
     - os: linux
       dist: precise
 

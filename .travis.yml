@@ -1,4 +1,3 @@
-dist: precise
 language: python
 python:
   - "3.4"
@@ -7,8 +6,6 @@ python:
 
 virtualenv:
   system_site_packages: true
-
-sudo: false
 
 addons:
   apt:
@@ -22,6 +19,11 @@ branches:
 matrix:
   include:
     - os: linux
+      sudo: false
+      dist: trusty
+    - os: linux
+      sudo: required
+      dist: trusty
 
 # command to install dependencies
 install:

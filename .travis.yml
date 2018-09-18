@@ -4,8 +4,8 @@ python:
   - "3.5"
   - "3.6"
 
-virtualenv:
-  system_site_packages: true
+#virtualenv:
+#  system_site_packages: true
 
 addons:
   apt:

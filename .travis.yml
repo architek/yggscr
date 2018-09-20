@@ -16,6 +16,7 @@ addons:
 branches:
   only:
   - dev
+  - master
 
 matrix:
   include:

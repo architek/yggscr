@@ -1,11 +1,35 @@
 language: python
 python:
-  - "2.7"
+  - "3.4"
   - "3.5"
   - "3.6"
+  - "3.7"
+
+#virtualenv:
+#  system_site_packages: true
+
+addons:
+  apt:
+    packages:
+      - python3-setuptools
+
+branches:
+  only:
+  - dev
+
+matrix:
+  include:
+    - os: linux
+      sudo: false
+      dist: trusty
+    - os: linux
+      sudo: required
+      dist: trusty
+
 # command to install dependencies
 install:
-  - pip setup.py -q install
+  - python3 setup.py -q install
+
 # command to run tests
 script:
-  - pytest # or py.test for Python versions 3.5 and below
+  - nosetests -w tests

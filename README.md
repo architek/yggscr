@@ -1,4 +1,5 @@
-![alt text](https://user-images.githubusercontent.com/490053/43690510-8dc22da8-990b-11e8-902a-ba135ed9e449.png "YggScraper")
+![Travis build](https://travis-ci.org/architek/yggscr.svg?branch=master "Travis")
+[![pipeline status](https://framagit.org/torrent/yggscr/badges/master/pipeline.svg)](https://framagit.org/torrent/yggscr/commits/master)
 
 Ygg scraper with:
 * **Shell** interface - Any [cmd2](https://github.com/python-cmd2/cmd2 "Python cmd2") features can be used: completion, scripts and much more
@@ -7,6 +8,8 @@ Ygg scraper with:
 * **Irc** [limnoria](https://github.com/ProgVal/Limnoria "Limnoria") interface
 * Cloud Flare bypass using [cfscrape](https://github.com/Anorov/cloudflare-scrape "cfscrape")
 * Http and Socks proxy support
+
+![alt text](https://user-images.githubusercontent.com/490053/43690510-8dc22da8-990b-11e8-902a-ba135ed9e449.png "YggScraper")
 
 ## INSTALL
 

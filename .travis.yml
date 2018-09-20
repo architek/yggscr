@@ -22,10 +22,10 @@ matrix:
   include:
     - os: linux
       sudo: false
-      dist: trusty
+      dist: xenial
     - os: linux
       sudo: required
-      dist: trusty
+      dist: xenial
 
 # command to install dependencies
 install:

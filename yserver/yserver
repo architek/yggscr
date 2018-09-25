@@ -43,7 +43,7 @@ except ImportError:  # running from CLI
 
 host = config['app']['hostname']
 port = config['app']['port']
-debug = config['app'].get('debug', False)
+debug = config['app'].getboolean('debug', False)
 proxy     = config['net']['proxy']
 
 thostname = config['transmission']['hostname']

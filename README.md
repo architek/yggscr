@@ -16,10 +16,20 @@ Ygg scraper with:
 Install with any method you prefer, example
 
 ```bash
-sudo apt install python3-setuptools
+sudo apt install python3-setuptools git
 python3 setup.py install --user
 ```
+
+_Note_: You need at least setuptools 33.1.1. On jessie you can use official backports
+
+```
+echo "deb http://ftp.debian.org/debian/ jessie-backports main contrib non-free" >> /etc/apt/sources.list
+sudo apt update
+sudo apt install python3-setuptools -t jessie-backports
+```
+
 _Note_: If you want the CloudFlare bypass to work, you also need to install *nodejs*
+
 
 ## QUICK START
 

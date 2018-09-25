@@ -2,10 +2,18 @@ import os
 import re
 import sys
 import codecs
-from setuptools import setup
+from distutils.version import StrictVersion
+
+try:
+    from setuptools import setup, __version__
+except ImportError as e:
+    sys.exit('You need to install python3 setuptools')
 
 if sys.version_info < (3, 4):
     sys.exit('Sorry, Python < 3.4 is not supported')
+if StrictVersion(__version__) < StrictVersion('33.1.1'):
+    sys.exit('Sorry, Python3 setuptools < 33.1.1 is not supported')
+
 here = os.path.abspath(os.path.dirname(__file__))
 
 def read(*parts):
@@ -52,6 +60,7 @@ setup(name='yggscr',
           'requests[socks]>=2.18.4',
           'cfscrape>=1.9.4',
           'bottle>=0.12.13',
+          'bottle-werkzeug>=0.1.1',
           'transmissionrpc>=0.11',
           'deluge_client>=1.6.0',
           'configparser>=3.5.0',

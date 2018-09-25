@@ -164,7 +164,15 @@ class YggShell(Cmd):
 
     def do_next(self, line):
         'returns next torrents from previous search or list'
-        torrents = self.ygg_browser.next_torrents()
+        line = line.strip()
+        if line:
+            if line.startswith('n:'):
+                n = line[2:]
+            else:
+                raise YggException("Error: Syntax is next [n:nmax]")
+        else:
+            n = 3
+        torrents = self.ygg_browser.next_torrents(nmax=n)
         if torrents is None:
             print("No results")
         else:

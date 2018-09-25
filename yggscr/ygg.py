@@ -263,7 +263,7 @@ class YggBrowser(SBrowser):
 
         return self._parse_torrents(detail=detail, n=nmax)
 
-    def next_torrents(self, nmax):
+    def next_torrents(self, nmax=100):
         s_href = self.browser.find('a', string=re.compile('suivant'))
         if s_href:
             self.browser.follow_link(s_href)

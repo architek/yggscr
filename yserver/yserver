@@ -10,7 +10,7 @@ from yggscr.const import RSS_TPL
 from yggscr.ygg import YggBrowser
 from urllib.parse import urlencode
 from yggscr.const import DL_TPL, get_dl_link
-from configparser import ConfigParser
+from configparser import RawConfigParser
 from yggscr.client import \
     rtorrent_add_torrent, transmission_add_torrent, deluge_add_torrent
 from bottle import run, template, response, \
@@ -26,7 +26,7 @@ state = {
     'dgEn': False,
 }
 
-config = ConfigParser()
+config = RawConfigParser()
 if not config.read('yserver.cfg'):
     print("Configuration file yserver.cfg not found")
     exit()

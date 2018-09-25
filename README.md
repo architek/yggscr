@@ -15,7 +15,7 @@ Ygg scraper with:
 
 Install with any method you prefer, example
 
-```bash
+```
 sudo apt install python3-setuptools git
 git clone https://github.com/architek/yggscr.git
 cd yggscr
@@ -37,7 +37,7 @@ _Note_: If you want the CloudFlare bypass to work, you also need to install *nod
 
 ### Directly from the shell
 
-```bash
+```
 $ yshell
 Welcome to Ygg Shell. Type help or ? to list commands.
 
@@ -45,11 +45,12 @@ Welcome to Ygg Shell. Type help or ? to list commands.
 
 Documented commands (type help <topic>):
 ========================================
-edit     list_torrents  lscat  print    pyscript  search_torrents  shortcuts
-help     load           next   proxify  quit      set              stats    
-history  login          ping   py       response  shell
+alias   help           login  print     quit             shell      unalias
+edit    history        lscat  proxify   response         shortcuts
+exclus  list_torrents  next   py        search_torrents  stats    
+get     load           ping   pyscript  set              top_day  
 
-> search_torrents q:cyber,c:film,s:docu
+> search_torrents q:cyber c:film s:docu
 * Cyber guérilla 2.0 (2015) Science&Vie; [VFF] [HDTV] [1080p] x264  [0.93GB] S:26 L:0 | https://yggtorrent.com/torrent/filmvidéo/documentaire/184378-cyber+guérilla+2+0+2015+sciencevie+vff+hdtv+1080p+x264 | None | None
 * Infrarouge On Nous Ecoute Partie 1 Cyber guerre L Arme Fatale 2015  [1.11GB] S:6 L:0 | https://yggtorrent.com/torrent/filmvidéo/documentaire/22526-infrarouge+on+nous+ecoute+partie+1+cyber+guerre+l+arme+fatale+2015 | None | None
 > stats

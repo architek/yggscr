@@ -12,5 +12,5 @@ def consolelog(name, loglevel):
     stream_handler.setFormatter(formatter)
 
     logger.addHandler(stream_handler)
-    logger.info("Starting logger at level {}".format(loglevel))
+    logger.debug("Starting logger at level {}".format(loglevel))
     return logger

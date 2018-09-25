@@ -75,7 +75,7 @@ class YggBrowser(SBrowser):
         self.idstate = None
         self.stats = Stats()
         self.browser.session.hooks['response'].append(self.gen_state())
-        self.log.info("Created YggBrowser")
+        self.log.debug("Created YggBrowser")
 
     def __str__(self):
         return "{} | [YGG] Auth {}".format(

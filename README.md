@@ -17,6 +17,8 @@ Install with any method you prefer, example
 
 ```bash
 sudo apt install python3-setuptools git
+git clone https://github.com/architek/yggscr.git
+cd yggscr
 python3 setup.py install --user
 ```
 

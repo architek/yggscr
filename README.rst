@@ -4,8 +4,8 @@ Ygg Scraper.  Yggtorrent scraper library - Webserver - Rss - Shell
 :Info: This is the README file for Ygg Scraper.
 :Author: Laurent Kislaire <teebeenator@gmail.com>
 :Copyright: © 2018, Laurent Kislaire.
-:Date: 2018-09-30
-:Version: 1.0.1
+:Date: 2018-10-01
+:Version: 1.0.2
 
 .. index: README
 .. image:: https://travis-ci.org/architek/yggscr.svg?branch=master
@@ -187,6 +187,9 @@ Enable uwsgi app and reload nginx::
 	systemctl restart uwsgi.service
 	systemctl restart nginx
 
+Anonymous Public mode
+=====================
+
 Note that it's possible to run the webapp without any credentials (see uwsgi 'ano' option). The realtime stats will not be shown and its up to the consumer application to provide the authentication cookie (e.g. the browser itself).
 
 You can have as many instances of the webapp running as you have .ini files. An example can be different configurations (anonymous, user1, user2). Each application has its own configuration and nginx can connect to the correct application through the relevant unix socket.
@@ -232,7 +235,7 @@ UI Limitation
 
 Because I'm too lazy to do a proper html page, not all options are visible. The webapp is a "passthrough" relay. Any unknown parameter is sent to the server. 
 
-As an example, the following is an anonumous rss feed about electro music (combining categories)::
+The following is an anonymous rss feed about electro music (combining categories)::
 
 	https://server.example.com/ano/rssearch?category=audio&sub_category=musique&option_genre%3Amultiple[]=1&option_genre%3Amultiple[]=15&option_genre%3Amultiple[]=33&option_genre%3Amultiple[]=34&option_genre%3Amultiple[]=35&option_genre%3Amultiple[]=119&option_genre%3Amultiple[]=124
 

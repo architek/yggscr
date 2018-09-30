@@ -1,10 +1,10 @@
 import shlex
-import logging
-from yggscr import ylogging
 import requests
-from yggscr import ygg
 from cmd2 import Cmd
-from yggscr.exceptions import YggException
+import logging
+from . import ygg
+from . import ylogging
+from .exceptions import YggException
 # from pprint import (PrettyPrinter, pprint)
 # pp = PrettyPrinter(indent=4)
 

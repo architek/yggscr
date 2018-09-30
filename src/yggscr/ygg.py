@@ -4,16 +4,16 @@ import re
 import os
 import time
 import json
-from yggscr import ylogging
+from . import ylogging
 from logging import CRITICAL, ERROR, WARNING, INFO, DEBUG #noqa
 import datetime
 from bs4 import BeautifulSoup
-from yggscr.torrents import Torrent
-from yggscr.sbrowser import SBrowser
-from yggscr.exceptions import YggException
-from yggscr.const import YGG_HOME, TOP_DAY_URL, TOP_WEEK_URL, TOP_MONTH_URL, \
+from .torrents import Torrent
+from .sbrowser import SBrowser
+from .exceptions import YggException
+from .const import YGG_HOME, TOP_DAY_URL, TOP_WEEK_URL, TOP_MONTH_URL, \
                    EXCLUS_URL, TOP_SEED_URL, SEARCH_URL, DL_TPL
-from yggscr.link import get_cat_id, list_cat_subcat
+from .link import get_cat_id, list_cat_subcat
 
 from urllib.parse import urlparse, parse_qs
 

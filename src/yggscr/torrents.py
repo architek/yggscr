@@ -1,8 +1,8 @@
 # from pprint import (PrettyPrinter, pprint)
 # pp = PrettyPrinter(indent=4)
 
-from yggscr.const import get_dl_link
-from yggscr import ylogging
+from .const import get_dl_link
+from . import ylogging
 from logging import DEBUG, INFO #noqa
 
 

@@ -1,10 +1,10 @@
-import json
-from logging import CRITICAL, ERROR, WARNING, INFO, DEBUG #noqa
 import requests
 import cfscrape
 from robobrowser import RoboBrowser
 from robobrowser import exceptions as robo
-from yggscr import ylogging
+import json
+from . import ylogging
+from logging import CRITICAL, ERROR, WARNING, INFO, DEBUG #noqa
 
 from pprint import (PrettyPrinter, pprint) #noqa
 pp = PrettyPrinter(indent=4)

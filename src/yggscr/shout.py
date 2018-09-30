@@ -3,10 +3,10 @@
 
 from __future__ import unicode_literals
 import time
-import yggscr.ygg
 from bs4 import NavigableString
 
-from yggscr.const import SHOUT_URL
+from . import ygg
+from .const import SHOUT_URL
 
 
 class ShoutMessage(object):

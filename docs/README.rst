@@ -188,6 +188,7 @@ Note that it's possible to run the webapp without any credentials (see uwsgi 'an
 You can have as many instances of the webapp running as you have .ini files. An example can be different configurations (anonymous, user1, user2). Each application has its own configuration and nginx can connect to the correct application through the relevant unix socket.
 
 Example for 2 configurations (internal LAN/external WAN)::
+
 	http {
 	    [...]
 		geo $client { 

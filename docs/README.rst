@@ -103,6 +103,7 @@ As standalone web server
 This server allows searching, downloading torrent file, sending to rtorrent,transmission or deluge client and authenticated RSS.
 
 Fill in your settings in defaults.cfg (at least Hostname, Port to listen to, username and password) and launch the server::
+
 	yserver
 
 To access webapp, connect to http://localhost:8081 (or any other config you've set)

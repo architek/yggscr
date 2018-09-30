@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
@@ -44,7 +43,6 @@ class ShoutMessage(object):
             if isinstance(e, NavigableString):
                 message = message + e.string.rstrip('\n\t')
             elif e.name == "img":
-                # TODO image with no alt needs at least a space
                 disp = " {} ".format(e["alt"]) if e["alt"] else " "
                 message = message + disp
             elif e.has_attr("class") and e.get("class")[0] .strip() == "username":

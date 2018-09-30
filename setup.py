@@ -52,6 +52,7 @@ setup(name='yggscr',
       entry_points={
           'console_scripts': [
               'yshell = yggscr.__main__:main',
+              'yshout = yggscr.shout:main',
               'yserver = yserver.__main__:main',
           ]
       },

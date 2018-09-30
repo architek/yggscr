@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 import time
 from bs4 import NavigableString
 
-from . import ygg
+from .ygg import YggBrowser
 from .const import SHOUT_URL
 
 
@@ -26,7 +26,7 @@ class ShoutMessage(object):
                 self.group, self.message = self.parse_shout(soup)
 
     def __str__(self):
-        return '{self.user:>12}: {self.message}'.format(self=self)
+        return '{self.mtime} : {self.user:>12}: {self.message}'.format(self=self)
 
     def __eq__(self, other):
         return self.mtime == other.mtime and self.user == other.user \
@@ -56,7 +56,7 @@ class ShoutMessage(object):
 
 class YggShout:
     def __init__(self, robs=None, debug=False, irc=False, colour=False):
-        self.robs = robs or yggscr.ygg.YggBrowser()
+        self.robs = robs or YggBrowser()
         self.irc = irc
         self.colour = colour
         self.last_shouts = []
@@ -100,14 +100,14 @@ class YggShout:
         return res
 
 
-if __name__ == '__main__':
+def main():
     import sys
     if len(sys.argv) > 1:
         hfile = sys.argv[1]
         try:
             with open(hfile, "r") as fn:
                 html = fn.read()
-        except:
+        except FileNotFoundError:
             print("Can't read file {}".format(hfile))
             exit(1)
         from bs4 import BeautifulSoup
@@ -122,3 +122,7 @@ if __name__ == '__main__':
             shout.message += pre
             print(shout)
         time.sleep(2)
+
+
+if __name__ == '__main__':
+    main()

@@ -10,6 +10,9 @@ Ygg Scraper.  Yggtorrent scraper library - Webserver - Rss - Shell
 .. index: README
 .. image:: https://travis-ci.org/architek/yggscr.svg?branch=master
    :target: https://travis-ci.org/architek/yggscr
+.. image:: https://coveralls.io/repos/github/architek/yggscr/badge.svg?branch=master
+   :target: https://coveralls.io/github/architek/yggscr?branch=master
+
 
 PURPOSE
 -------

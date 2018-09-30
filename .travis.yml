@@ -34,6 +34,7 @@ before_install:
 
 # command to install dependencies
 install:
+  - pip install coveralls
   - python3 setup.py -q install
 
 
@@ -41,3 +42,6 @@ notifications:
   email:
     on_success: never
     on_failure: always
+
+after_success:
+    - coveralls

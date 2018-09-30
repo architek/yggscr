@@ -1,2 +1,7 @@
-include LICENSE
-include README.md
+graft src/yggscr
+graft src/Ybot
+graft src/yserver
+graft docs
+graft tests
+include README.rst AUTHORS LICENSE CHANGELOG.rst setup.py setup.cfg requirements.txt
+global-exclude __pycache__ *.pyc

@@ -22,10 +22,22 @@ branches:
   - dev
   - master
 
+# command to run tests
+#script:
+  - pip install pytest-cov
+  - pytest
+
+before_install:
+  - python --version
+  - uname -a
+  - lsb_release -a
+
 # command to install dependencies
 install:
   - python3 setup.py -q install
 
-# command to run tests
-#script:
-  - pytest
+
+notifications:
+  email:
+    on_success: never
+    on_failure: always

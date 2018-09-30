@@ -5,7 +5,7 @@ Ygg Scraper.  Yggtorrent scraper library - Webserver - Rss - Shell
 :Author: Laurent Kislaire <teebeenator@gmail.com>
 :Copyright: © 2018, Laurent Kislaire.
 :Date: 2018-09-30
-:Version: 1.0.0
+:Version: 1.0.1
 
 .. index: README
 .. image:: https://travis-ci.org/architek/yggscr.svg?branch=master

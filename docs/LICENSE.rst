@@ -6,7 +6,7 @@ Appendix B. License for Ygg Scraper
 :Copyright: © 2018, Laurent Kislaire.
 :License: ISC (see /LICENSE or :doc:`Appendix B <LICENSE>`.)
 :Date: 2018-09-30
-:Version: 1.0.0
+:Version: 1.0.1
 
 .. index:: LICENSE
 

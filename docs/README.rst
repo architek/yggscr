@@ -15,12 +15,16 @@ PURPOSE
 -------
 Ygg scraper with:
 
-- **Shell** interface - Any [cmd2](https://github.com/python-cmd2/cmd2 "Python cmd2") features can be used: completion, scripts and much more
+- **Shell** interface - Any python Cmd2_ features can be used: completion, scripts and much more
 - **RSS** feed with torrent using passkey
 - **Transmission / Rtorrent / Deluge** add torrent directly from webapp
-- **Irc** [limnoria](https://github.com/ProgVal/Limnoria "Limnoria") interface
-- Cloud Flare bypass using [cfscrape](https://github.com/Anorov/cloudflare-scrape "cfscrape")
+- **Irc** Limnoria_ interface
+- Cloud Flare bypass using cfscrape_ 
 - Http and Socks proxy support
+
+.. _Cmd2: https://github.com/python-cmd2/cmd2
+.. _Limnoria: https://github.com/ProgVal/Limnoria
+.. _cfscrape: https://github.com/Anorov/cloudflare-scrape
 
 .. image:: https://user-images.githubusercontent.com/490053/43690510-8dc22da8-990b-11e8-902a-ba135ed9e449.png
 
@@ -227,7 +231,9 @@ NOTES
 UI Limitation
 =============
 
-Because I'm too lazy to do a proper html page, not all options are visible. The webapp is a "passthrough" relay. Any unknown parameter are sent to the server. As an example, the following is an anonumous rss feed about electro music (combining categories)::
+Because I'm too lazy to do a proper html page, not all options are visible. The webapp is a "passthrough" relay. Any unknown parameter is sent to the server. 
+
+As an example, the following is an anonumous rss feed about electro music (combining categories)::
 
 	https://server.example.com/ano/rssearch?category=audio&sub_category=musique&option_genre%3Amultiple[]=1&option_genre%3Amultiple[]=15&option_genre%3Amultiple[]=33&option_genre%3Amultiple[]=34&option_genre%3Amultiple[]=35&option_genre%3Amultiple[]=119&option_genre%3Amultiple[]=124
 

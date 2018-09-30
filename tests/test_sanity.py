@@ -5,8 +5,8 @@
 # See /LICENSE for licensing information.
 
 
-import yggscr
-import yggscr.template
+import src.yggscr
+#import yggscr.template
 
 
 def test_true():
@@ -49,5 +49,5 @@ def test_bitwise():
 
 def test_import():
     """Test imports."""
-    yggscr
-    yggscr.template
+    src.yggscr
+#    yggscr.template

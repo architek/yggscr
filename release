@@ -171,7 +171,7 @@ status 'This is the last chance to quit.  Hit ^C now if you want to.'
 read bailout
 
 ./setup.py sdist bdist_wheel || exit $?
-twine upload -s dist/$PROJECTLC-$version.tar.gz dist/$PROJECTLC-$version*.whl || exit $?
+# twine upload -s dist/$PROJECTLC-$version.tar.gz dist/$PROJECTLC-$version*.whl || exit $?
 
 if [[ -e PKGBUILD ]]; then
     status 'Updating AUR PKGBUILDs...'

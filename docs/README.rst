@@ -4,8 +4,8 @@ Ygg Scraper.  Yggtorrent scraper library - Webserver - Rss - Shell
 :Info: This is the README file for Ygg Scraper.
 :Author: Laurent Kislaire <teebeenator@gmail.com>
 :Copyright: © 2018, Laurent Kislaire.
-:Date: 2018-09-01
-:Version: 0.1.0
+:Date: 2018-09-30
+:Version: 1.0.0
 
 .. index: README
 .. image:: https://travis-ci.org/architek/yggscr.svg?branch=master
@@ -40,7 +40,6 @@ Install using a virtualenv::
     pip3 install --user virtualenv
     
     # Create virtualenv
-    mkdir .venv
     python3 -m virtualenv .venv
     .venv/bin/python -m pip install --upgrade pip setuptools wheel
     
@@ -53,7 +52,7 @@ Install using a virtualenv::
     yserver
     yshell
 
-*_Note_*: You need at least setuptools 33.1.1. 
+*Note*: You need at least setuptools 33.1.1. 
 
 On *Debian Jessie* you can use official backports::
 
@@ -61,7 +60,7 @@ On *Debian Jessie* you can use official backports::
     sudo apt update
     sudo apt install python3-setuptools -t jessie-backports
 
-*_Note_*: If you want the CloudFlare bypass to work, you also need to install the debian package *nodejs*
+*Note*: If you want the CloudFlare bypass to work, you also need to install the debian package *nodejs*
 
 USAGE
 -----

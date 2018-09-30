@@ -2,9 +2,8 @@
 Appendix A. Contribution rules
 ==============================
 :Info: Those are the contribution rules for Ygg Scraper.
-:Copyright: © 2012-2018, Chris Warrick
-:License: BSD (see /LICENSE or :doc:`Appendix B <LICENSE>`.)
-
+:Copyright: © 2012-2018, Chris Warrick.
+:License: 3-clause BSD
 
 .. index:: contributing
 

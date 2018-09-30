@@ -4,8 +4,8 @@ Ygg Scraper.  Yggtorrent scraper library - Webserver - Rss - Shell
 :Info: This is the README file for Ygg Scraper.
 :Author: Laurent Kislaire <teebeenator@gmail.com>
 :Copyright: © 2018, Laurent Kislaire.
-:Date: 2018-09-01
-:Version: 0.1.0
+:Date: 2018-09-30
+:Version: 1.0.0
 
 .. index: README
 .. image:: https://travis-ci.org/architek/yggscr.svg?branch=master
@@ -15,12 +15,16 @@ PURPOSE
 -------
 Ygg scraper with:
 
-- **Shell** interface - Any [cmd2](https://github.com/python-cmd2/cmd2 "Python cmd2") features can be used: completion, scripts and much more
+- **Shell** interface - Any python Cmd2_ features can be used: completion, scripts and much more
 - **RSS** feed with torrent using passkey
 - **Transmission / Rtorrent / Deluge** add torrent directly from webapp
-- **Irc** [limnoria](https://github.com/ProgVal/Limnoria "Limnoria") interface
-- Cloud Flare bypass using [cfscrape](https://github.com/Anorov/cloudflare-scrape "cfscrape")
+- **Irc** Limnoria_ interface
+- Cloud Flare bypass using cfscrape_ 
 - Http and Socks proxy support
+
+.. _Cmd2: https://github.com/python-cmd2/cmd2
+.. _Limnoria: https://github.com/ProgVal/Limnoria
+.. _cfscrape: https://github.com/Anorov/cloudflare-scrape
 
 .. image:: https://user-images.githubusercontent.com/490053/43690510-8dc22da8-990b-11e8-902a-ba135ed9e449.png
 
@@ -36,7 +40,6 @@ Install using a virtualenv::
     pip3 install --user virtualenv
     
     # Create virtualenv
-    mkdir .venv
     python3 -m virtualenv .venv
     .venv/bin/python -m pip install --upgrade pip setuptools wheel
     
@@ -49,7 +52,7 @@ Install using a virtualenv::
     yserver
     yshell
 
-*_Note_*: You need at least setuptools 33.1.1. 
+*Note*: You need at least setuptools 33.1.1. 
 
 On *Debian Jessie* you can use official backports::
 
@@ -57,7 +60,7 @@ On *Debian Jessie* you can use official backports::
     sudo apt update
     sudo apt install python3-setuptools -t jessie-backports
 
-*_Note_*: If you want the CloudFlare bypass to work, you also need to install the debian package *nodejs*
+*Note*: If you want the CloudFlare bypass to work, you also need to install the debian package *nodejs*
 
 USAGE
 -----
@@ -103,6 +106,7 @@ As standalone web server
 This server allows searching, downloading torrent file, sending to rtorrent,transmission or deluge client and authenticated RSS.
 
 Fill in your settings in defaults.cfg (at least Hostname, Port to listen to, username and password) and launch the server::
+
 	yserver
 
 To access webapp, connect to http://localhost:8081 (or any other config you've set)
@@ -141,27 +145,39 @@ Create nginx vhost::
 Create file /etc/uwsgi/apps-available/yserver.ini::
 
 	[uwsgi]
+	plugins = python3
 	socket = /run/uwsgi/app/yserver/socket
-	route-run = fixpathinfo:
-	chdir = /var/www/bottle/yserver/
+
+	virtualenv = /home/user/git/yggscr/.venv
+	chdir = /home/user/git/yggscr/src/yserver
+	file = app.py
+
 	master = true
-	file = yserver
+
 	uid = www-data
 	gid = www-data
-	;debug = true
-	;reloader = true
-	;catch-all = false
+
 	workers = 2
-	threads = 4
-	plugins = python3
+	threads = 2
 	socket-timeout = 6000000
+	;harakiri = 20
+
+	;paste-logger = true
+	;disable-logging = true
+	debug = true
+	;reloader = true
+	;catch-all : set to false to let debugging middleware handle exceptions
+	;catch-all = false
+
+	need-app = true
+	vacuum = true
+
 	;set-placeholder = ano=true
 
-Create directories::
+Create directory for socket for nginx to communicate with uwsgi::
 
 	mkdir -p /run/uwsgi/app/yserver
 	chown www-data:www-data /run/uwsgi/app/yserver
-	mkdir -p /var/www/bottle/yserver/   # or wherever the tree yserver/ is 
 
 Edit yserver.cfg to fit to your need
 Enable uwsgi app and reload nginx::
@@ -176,6 +192,7 @@ Note that it's possible to run the webapp without any credentials (see uwsgi 'an
 You can have as many instances of the webapp running as you have .ini files. An example can be different configurations (anonymous, user1, user2). Each application has its own configuration and nginx can connect to the correct application through the relevant unix socket.
 
 Example for 2 configurations (internal LAN/external WAN)::
+
 	http {
 	    [...]
 		geo $client { 
@@ -213,7 +230,9 @@ NOTES
 UI Limitation
 =============
 
-Because I'm too lazy to do a proper html page, not all options are visible. The webapp is a "passthrough" relay. Any unknown parameter are sent to the server. As an example, the following is an anonumous rss feed about electro music (combining categories)::
+Because I'm too lazy to do a proper html page, not all options are visible. The webapp is a "passthrough" relay. Any unknown parameter is sent to the server. 
+
+As an example, the following is an anonumous rss feed about electro music (combining categories)::
 
 	https://server.example.com/ano/rssearch?category=audio&sub_category=musique&option_genre%3Amultiple[]=1&option_genre%3Amultiple[]=15&option_genre%3Amultiple[]=33&option_genre%3Amultiple[]=34&option_genre%3Amultiple[]=35&option_genre%3Amultiple[]=119&option_genre%3Amultiple[]=124
 

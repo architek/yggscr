@@ -141,27 +141,39 @@ Create nginx vhost::
 Create file /etc/uwsgi/apps-available/yserver.ini::
 
 	[uwsgi]
+	plugins = python3
 	socket = /run/uwsgi/app/yserver/socket
-	route-run = fixpathinfo:
-	chdir = /var/www/bottle/yserver/
+
+	virtualenv = /home/user/git/yggscr/.venv
+	chdir = /home/user/git/yggscr/src/yserver
+	file = app.py
+
 	master = true
-	file = yserver
+
 	uid = www-data
 	gid = www-data
-	;debug = true
-	;reloader = true
-	;catch-all = false
+
 	workers = 2
-	threads = 4
-	plugins = python3
+	threads = 2
 	socket-timeout = 6000000
+	;harakiri = 20
+
+	;paste-logger = true
+	;disable-logging = true
+	debug = true
+	;reloader = true
+	;catch-all : set to false to let debugging middleware handle exceptions
+	;catch-all = false
+
+	need-app = true
+	vacuum = true
+
 	;set-placeholder = ano=true
 
-Create directories::
+Create directory for socket for nginx to communicate with uwsgi::
 
 	mkdir -p /run/uwsgi/app/yserver
 	chown www-data:www-data /run/uwsgi/app/yserver
-	mkdir -p /var/www/bottle/yserver/   # or wherever the tree yserver/ is 
 
 Edit yserver.cfg to fit to your need
 Enable uwsgi app and reload nginx::

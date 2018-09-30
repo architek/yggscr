@@ -23,7 +23,7 @@ branches:
   - master
 
 # command to run tests
-#script:
+script:
   - pip install pytest-cov
   - pytest
 

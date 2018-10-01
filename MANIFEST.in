@@ -1,5 +1,5 @@
 graft src/yggscr
-graft src/Ybot
+graft src/YBot
 graft src/yserver
 graft docs
 graft tests

@@ -147,6 +147,9 @@ cp docs/README.rst README
 status 'Generating locales...'
 ./.pypt/localegen
 
+status 'Generating html doc...'
+(cd docs; make html)
+
 status 'Importing...'
 python -c "import $PROJECTLC"
 if [[ $? != 0 ]]; then

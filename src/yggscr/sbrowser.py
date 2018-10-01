@@ -60,11 +60,7 @@ class SBrowser:
     def connection_details(self):
         """
         Return WAN connection detail
-        { "ip": "8.8.8.8", "hostname": "a.example.com",
-          "city": "Paris", "country": "France", ...
-        }
         """
-
         try:
             self.open("https://ipinfo.io/json")
             self.log.error("IPINFO Server returned (%s)" % self.response().content)

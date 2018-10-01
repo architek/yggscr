@@ -12,9 +12,9 @@ from hashlib import sha256
 import supybot.ircdb as ircdb
 from supybot.commands import (wrap, optional)
 import supybot.callbacks as callbacks
-from .yggscr.ygg import YggBrowser
-from .yggscr.shout import (YggShout, ShoutMessage)
-from .yggscr.exceptions import YggException
+from yggscr.ygg import YggBrowser
+from yggscr.shout import (YggShout, ShoutMessage)
+from yggscr.exceptions import YggException
 from collections import defaultdict
 # import supybot.utils as utils
 # import supybot.plugins as plugins

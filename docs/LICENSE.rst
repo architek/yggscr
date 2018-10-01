@@ -1,12 +1,12 @@
-=======================================================
-Appendix B. License for Ygg Scraper
-=======================================================
+=======
+License
+=======
 :Info: This is the license for Ygg Scraper.
 :Author: Laurent Kislaire <teebeenator@gmail.com>
 :Copyright: © 2018, Laurent Kislaire.
 :License: ISC (see /LICENSE or :doc:`Appendix B <LICENSE>`.)
 :Date: 2018-10-01
-:Version: 1.0.3
+:Version: 1.0.4
 
 .. index:: LICENSE
 

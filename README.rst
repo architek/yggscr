@@ -1,11 +1,11 @@
-==============================================================================
-Ygg Scraper.  Yggtorrent scraper library - Webserver - Rss - Shell
-==============================================================================
+===========
+Ygg Scraper
+===========
 :Info: This is the README file for Ygg Scraper.
 :Author: Laurent Kislaire <teebeenator@gmail.com>
 :Copyright: © 2018, Laurent Kislaire.
 :Date: 2018-10-01
-:Version: 1.0.3
+:Version: 1.0.4
 
 .. index: README
 .. image:: https://travis-ci.org/architek/yggscr.svg?branch=master
@@ -232,9 +232,6 @@ Example for 2 configurations (internal LAN/external WAN)::
 
 NOTES
 -----
-
-UI Limitation
-=============
 
 Because I'm too lazy to do a proper html page, not all options are visible. The webapp is a "passthrough" relay. Any unknown parameter is sent to the server. 
 

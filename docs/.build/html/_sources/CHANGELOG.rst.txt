@@ -1,6 +1,6 @@
-=====================
-Appendix C. Changelog
-=====================
+=========
+Changelog
+=========
 :Info: This is the changelog for Ygg Scraper.
 :Author: Laurent Kislaire <teebeenator@gmail.com>
 :Copyright: © 2018, Laurent Kislaire.
@@ -18,4 +18,13 @@ More information can be found on GitHub in the `releases section
 
 Version History
 ===============
+
+
+v1.0.3: CI Add
+
+v1.0.2: Finish rebase
+
+v1.0.1: Release
+
+v1.0.0: Refactor
 

@@ -22,11 +22,6 @@ branches:
   - dev
   - master
 
-# command to run tests
-script:
-  - pip install pytest-cov
-  - pytest
-
 before_install:
   - python --version
   - uname -a
@@ -34,9 +29,13 @@ before_install:
 
 # command to install dependencies
 install:
-  - pip install coveralls
+  - pip install coveralls codecov
   - python3 setup.py -q install
 
+# command to run tests
+script:
+  - pip install pytest-cov
+  - pytest
 
 notifications:
   email:
@@ -45,3 +44,4 @@ notifications:
 
 after_success:
     - coveralls
+    - codecov

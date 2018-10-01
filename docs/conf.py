@@ -24,9 +24,9 @@ copyright = '2018, Laurent Kislaire'
 author = 'Laurent Kislaire'
 
 # The short X.Y version
-version = ''
+version = '1.0.4'
 # The full version, including alpha/beta/rc tags
-release = '1.0.3'
+release = '1.0.4'
 
 
 # -- General configuration ---------------------------------------------------
@@ -87,7 +87,13 @@ html_theme = 'alabaster'
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
-# html_theme_options = {}
+html_theme_options = {
+    "description": "A light yggtorrent interface",
+    "github_user": "architek",
+    "github_repo": "yggscr",
+    "fixed_sidebar": True,
+    "page_width": "95%",
+}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -102,7 +108,14 @@ html_static_path = ['.static']
 # default: ``['localtoc.html', 'relations.html', 'sourcelink.html',
 # 'searchbox.html']``.
 #
-# html_sidebars = {}
+html_sidebars = {
+    "**": [
+        "about.html",
+        "navigation.html",
+        "relations.html",
+        "searchbox.html",
+    ]
+}
 
 
 # -- Options for HTMLHelp output ---------------------------------------------

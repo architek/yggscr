@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Ygg Scraper. Yggtorrent scraper library - Webserver - Rss - Shell &#8212; YggScr 1.0.3 documentation</title>
+    <title>Ygg Scraper &#8212; YggScr 1.0.3 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -16,7 +16,7 @@
     <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Welcome to YggScr’s documentation!" href="index.html" />
+    <link rel="prev" title="License" href="LICENSE.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -24,17 +24,75 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head><body>
-  
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">YggScr</a></h1>
 
-    <div class="document">
+
+
+<p class="blurb">A light yggtorrent interface</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=architek&repo=yggscr&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="source/yggscr.html">yggscr package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="source/yserver.html">yserver package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contribute</a></li>
+<li class="toctree-l1"><a class="reference internal" href="LICENSE.html">License</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Ygg Scraper</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#purpose">PURPOSE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installation">INSTALLATION</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#usage">USAGE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#notes">NOTES</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#copyright">COPYRIGHT</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="LICENSE.html" title="previous chapter">License</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
       <div class="documentwrapper">
         <div class="bodywrapper">
           
 
           <div class="body" role="main">
             
-  <div class="section" id="ygg-scraper-yggtorrent-scraper-library-webserver-rss-shell">
-<h1>Ygg Scraper.  Yggtorrent scraper library - Webserver - Rss - Shell<a class="headerlink" href="#ygg-scraper-yggtorrent-scraper-library-webserver-rss-shell" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="ygg-scraper">
+<h1>Ygg Scraper<a class="headerlink" href="#ygg-scraper" title="Permalink to this headline">¶</a></h1>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -259,13 +317,10 @@ server {
 </div>
 <div class="section" id="notes">
 <h2>NOTES<a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="ui-limitation">
-<h3>UI Limitation<a class="headerlink" href="#ui-limitation" title="Permalink to this headline">¶</a></h3>
 <p>Because I’m too lazy to do a proper html page, not all options are visible. The webapp is a “passthrough” relay. Any unknown parameter is sent to the server.</p>
 <p>The following is an anonymous rss feed about electro music (combining categories):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>https://server.example.com/ano/rssearch?category=audio&amp;sub_category=musique&amp;option_genre%3Amultiple[]=1&amp;option_genre%3Amultiple[]=15&amp;option_genre%3Amultiple[]=33&amp;option_genre%3Amultiple[]=34&amp;option_genre%3Amultiple[]=35&amp;option_genre%3Amultiple[]=119&amp;option_genre%3Amultiple[]=124
 </pre></div>
-</div>
 </div>
 </div>
 <div class="section" id="copyright">
@@ -289,54 +344,8 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.</p>
           
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="index.html">YggScr</a></h1>
-
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Ygg Scraper.  Yggtorrent scraper library - Webserver - Rss - Shell</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#purpose">PURPOSE</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#installation">INSTALLATION</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#usage">USAGE</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#notes">NOTES</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#copyright">COPYRIGHT</a></li>
-</ul>
-</li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="index.html" title="previous chapter">Welcome to YggScr’s documentation!</a></li>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    </div>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
+    <div class="clearer"></div>
+  </div>
     <div class="footer">
       &copy;2018, Laurent Kislaire.
       

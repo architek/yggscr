@@ -4,80 +4,50 @@ yggscr package
 Submodules
 ----------
 
-yggscr.client module
---------------------
-
 .. automodule:: yggscr.client
     :members:
     :undoc-members:
     :show-inheritance:
-
-yggscr.const module
--------------------
 
 .. automodule:: yggscr.const
     :members:
     :undoc-members:
     :show-inheritance:
 
-yggscr.exceptions module
-------------------------
-
 .. automodule:: yggscr.exceptions
     :members:
     :undoc-members:
     :show-inheritance:
-
-yggscr.link module
-------------------
 
 .. automodule:: yggscr.link
     :members:
     :undoc-members:
     :show-inheritance:
 
-yggscr.sbrowser module
-----------------------
-
 .. automodule:: yggscr.sbrowser
     :members:
     :undoc-members:
     :show-inheritance:
-
-yggscr.shell module
--------------------
 
 .. automodule:: yggscr.shell
     :members:
     :undoc-members:
     :show-inheritance:
 
-yggscr.shout module
--------------------
-
 .. automodule:: yggscr.shout
     :members:
     :undoc-members:
     :show-inheritance:
-
-yggscr.torrents module
-----------------------
 
 .. automodule:: yggscr.torrents
     :members:
     :undoc-members:
     :show-inheritance:
 
-yggscr.ygg module
------------------
-
 .. automodule:: yggscr.ygg
     :members:
     :undoc-members:
     :show-inheritance:
-
-yggscr.ylogging module
-----------------------
 
 .. automodule:: yggscr.ylogging
     :members:

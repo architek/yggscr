@@ -13,6 +13,9 @@ Ygg Scraper
 .. image:: https://coveralls.io/repos/github/architek/yggscr/badge.svg?branch=master
    :target: https://coveralls.io/github/architek/yggscr?branch=master
 
+Sphinx Doc_
+
+.. _Doc: https://architek.github.io/yggscr/.build/html/index.html
 
 PURPOSE
 -------

@@ -31,7 +31,6 @@
 # THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 . .pypt/config
 function status {
     echo $@
@@ -55,7 +54,7 @@ function cleanup_cmfn {
     [[ -e $cmfn2 ]] && rm $cmfn2 || true
 }
 
-status '*** Chris Warrick’s Release Scripts (PyPT)'
+status '*** Release Scripts (PyPT)'
 
 echo -n "Version number: "
 read version
@@ -99,7 +98,7 @@ cleanup_cmfn
 git add -A --ignore-errors .
 
 cat > $cmfn <<EOF
-#~ Chris Warrick’s Release Scripts (PyPT)
+#~ Release Scripts (PyPT)
 #~ Please write your commit and changelog messages.
 #~ You may use reST formatting in the latter.
 #~ Please make the first line of your commit message short.

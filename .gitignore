@@ -1,6 +1,7 @@
 .venv
 .pypt/gh-token
 x.shell
+docs/.build/doctrees/environment.pickle
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

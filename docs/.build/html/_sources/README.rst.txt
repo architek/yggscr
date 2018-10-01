@@ -12,9 +12,6 @@ Ygg Scraper
    :target: https://travis-ci.org/architek/yggscr
 .. image:: https://codecov.io/gh/architek/yggscr/branch/master/graph/badge.svg
    :target: https://codecov.io/gh/architek/yggscr
-.. image:: https://coveralls.io/repos/github/architek/yggscr/badge.svg?branch=master
-   :target: https://coveralls.io/github/architek/yggscr?branch=master
-
 
 PURPOSE
 -------

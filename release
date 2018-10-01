@@ -31,6 +31,7 @@
 # THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+set -x
 . .pypt/config
 function status {
     echo $@
@@ -47,6 +48,7 @@ function error {
 function cleanup {
     rm -rf $PROJECTLC.egg-info build || true
     rm -rf **/__pycache__ || true
+    rm -rf **/**/__pycache__ || true
 }
 
 function cleanup_cmfn {
@@ -133,8 +135,8 @@ sed "s/version=.*/version='$version',/g" setup.py -i
 sed "s/version = .*/version = '$version'/g" docs/conf.py -i
 sed "s/release = .*/release = '$version'/g" docs/conf.py -i
 sed "s/:Version: .*/:Version: $version/g" docs/**/*.rst -i
-sed "s/# $PROJECT v.*/# $PROJECT v$version/" $PROJECTLC/**/*.py -i
-sed "s/__version__ = .*/__version__ = '$version'/g" $PROJECTLC/__init__.py -i
+sed "s/# $PROJECT v.*/# $PROJECT v$version/" src/**/*.py -i
+sed "s/__version__ = .*/__version__ = '$version'/g" src/**/__init__.py -i
 sed "s/:Date: .*/:Date: $date/g" docs/*.rst -i
 
 [[ -e "PKGBUILD" ]] && sed "s/pkgver=.*/pkgver=$version/g" PKGBUILD -i || true

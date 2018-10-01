@@ -6,7 +6,7 @@ Changelog
 :Copyright: © 2018, Laurent Kislaire.
 :License: ISC (see /LICENSE or :doc:`Appendix B <LICENSE>`.)
 :Date: 2018-10-01
-:Version: 1.0.4
+:Version: 1.0.6
 
 .. index:: CHANGELOG
 
@@ -18,12 +18,3 @@ More information can be found on GitHub in the `releases section
 
 Version History
 ===============
-
-v1.0.3: CI Add
-
-v1.0.2: Finish rebase
-
-v1.0.1: Release
-
-v1.0.0: Refactor
-

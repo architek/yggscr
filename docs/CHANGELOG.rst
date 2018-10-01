@@ -19,7 +19,6 @@ More information can be found on GitHub in the `releases section
 Version History
 ===============
 
-
 v1.0.3: CI Add
 
 v1.0.2: Finish rebase

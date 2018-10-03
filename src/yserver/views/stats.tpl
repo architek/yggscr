@@ -1,2 +1,3 @@
 <div class="menu" id="stats_txt">
+Processing...
 </div>

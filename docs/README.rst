@@ -45,7 +45,7 @@ Install using a virtualenv::
     
     # Clone and fetch install utils
     git clone https://github.com/architek/yggscr.git && cd yggscr
-    sudo apt-get install git build-essential python-dev python3-pip virtualenv
+    sudo apt-get install git build-essential python-dev virtualenv
     
     # Create virtualenv
     virtualenv -p python3 .venv

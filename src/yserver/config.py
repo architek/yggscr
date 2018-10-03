@@ -15,7 +15,11 @@ class Config(dict):
             'proxy': '',
             'debug': 'False',
             'if.host': '127.0.0.1',
-            'if.port': 8333})
+            'if.port': 8333,
+            'transmission.host': '',
+            'rtorrent.rpc_url': '',
+            'deluge.host': '',
+        })
         self.conf = configparser.ConfigParser(**options)
 
         if not self.conf.read(filename):

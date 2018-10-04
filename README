@@ -4,8 +4,8 @@ Ygg Scraper
 :Info: This is the README file for Ygg Scraper.
 :Author: Laurent Kislaire <teebeenator@gmail.com>
 :Copyright: © 2018, Laurent Kislaire.
-:Date: 2018-10-02
-:Version: 1.1.1
+:Date: 2018-10-04
+:Version: 1.1.2
 
 .. index: README
 .. image:: https://travis-ci.org/architek/yggscr.svg?branch=master
@@ -45,7 +45,7 @@ Install using a virtualenv::
     
     # Clone and fetch install utils
     git clone https://github.com/architek/yggscr.git && cd yggscr
-    sudo apt-get install git build-essential python-dev python3-pip virtualenv
+    sudo apt-get install git build-essential python-dev virtualenv
     
     # Create virtualenv
     virtualenv -p python3 .venv

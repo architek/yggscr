@@ -104,31 +104,6 @@ class YggShell(Cmd):
             print("Network error:%s" % e)
             return
 
-    def do_list_torrents(self, line):
-        '''list torrents for selected category and subcategory
-        list_torrents c:<category> [s:<subcategory] [d:<False>] [n:3]
-        d is for detail which will fetch each torrent url for more details
-        n is the number of torrents to display (all by default)
-        '''
-        try:
-            p = dict((t.split(':')
-                      for t in shlex.split(line.strip())))
-        except ValueError:
-            raise YggException(
-                "Error: Syntax is list_torrents " +
-                "c:<category> [s:<subcategory>] [d:True]")
-        try:
-            torrents = self.ygg_browser.list_torrents(
-                p['c'], p.get('s'), p.get('d'))
-        except (requests.exceptions.RequestException) as e:
-            print("Network error:%s" % e)
-            return
-        except KeyError:
-            raise YggException(
-                "Error: Syntax is list_torrents " +
-                "c:<category> [s:<subcategory>] [d:True]")
-        self.print_torrents(torrents, p.get('n'))
-
     def do_search_torrents(self, line):
         '''search torrents
         search_torrents q:<pattern> [c:<category>] [s:<subcategory>]
@@ -141,16 +116,15 @@ class YggShell(Cmd):
         try:
             for t in shlex.split(line.strip()):
                 k, v = t.rsplit(':', 1)
-                if k in q.keys():
+                if k not in q:
+                    q[k] = v
+                else:
                     if isinstance(q[k], list):
                         q[k].append(v)
                     else:
                         q[k] = [q[k], v]
-                else:
-                    q[k] = v
         except ValueError:
             raise YggException("Error: Invalid syntax in search_torrents")
-
         try:
             q['name'] = q.pop('q')
             q['category'] = q.pop('c', "")

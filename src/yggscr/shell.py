@@ -4,12 +4,28 @@ from cmd2 import Cmd
 import logging
 from . import ygg
 from . import ylogging
+from functools import wraps
 from .exceptions import YggException
 # from pprint import (PrettyPrinter, pprint)
 # pp = PrettyPrinter(indent=4)
 
 
 LOG = logging.INFO
+
+
+def wrapper(method):
+    @wraps(method)
+    def _impl(self, *method_args, **method_kwargs):
+        try:
+            torrents = method(self, *method_args, **method_kwargs)
+        except (requests.exceptions.RequestException) as e:
+            print("Network error:%s" % e)
+            return
+        if torrents is None:
+            print("No results")
+        else:
+            self.print_torrents(torrents)
+    return _impl
 
 
 class YggShell(Cmd):
@@ -178,29 +194,25 @@ class YggShell(Cmd):
         else:
             self.print_torrents(torrents)
 
+    @wrapper
     def do_top_day(self, line):
-        ''' top day '''
-        try:
-            torrents = self.ygg_browser.top_day()
-        except (requests.exceptions.RequestException) as e:
-            print("Network error:%s" % e)
-            return
-        if torrents is None:
-            print("No results")
-        else:
-            self.print_torrents(torrents)
+        """ Get Top day """
+        return self.ygg_browser.top_day()
 
+    @wrapper
+    def do_top_week(self, line):
+        """ Get Top week """
+        return self.ygg_browser.top_week()
+
+    @wrapper
+    def do_top_month(self, line):
+        """ Get Top month """
+        return self.ygg_browser.top_month()
+
+    @wrapper
     def do_exclus(self, line):
-        ''' exclus '''
-        try:
-            torrents = self.ygg_browser.exclus()
-        except (requests.exceptions.RequestException) as e:
-            print("Network error:%s" % e)
-            return
-        if torrents is None:
-            print("No results")
-        else:
-            self.print_torrents(torrents)
+        """ Get exclu """
+        return self.ygg_browser.exclus()
 
     def do_lscat(self, line):
         'list categories and subcategories'

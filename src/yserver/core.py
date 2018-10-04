@@ -17,9 +17,8 @@ bcyc = cycle([True, False])
 
 
 class YggServer(bottle.Bottle):
-    def __init__(self, name):
+    def __init__(self, cfg_filename="yserver.cfg"):
         super(YggServer, self).__init__()
-        self.name = name
         self.state = {
             'sorted_torrents': '',
             'rtEn': False,
@@ -29,7 +28,7 @@ class YggServer(bottle.Bottle):
         }
 
         self.config = Config()
-        self.config.load_config('yserver.cfg')
+        self.config.load_config(cfg_filename)
 
         self.ygg = YggBrowser(
             proxy=self.config['proxy'],

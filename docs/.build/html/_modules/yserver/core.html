@@ -105,9 +105,8 @@
 
 
 <div class="viewcode-block" id="YggServer"><a class="viewcode-back" href="../../source/yserver.html#yserver.core.YggServer">[docs]</a><span class="k">class</span> <span class="nc">YggServer</span><span class="p">(</span><span class="n">bottle</span><span class="o">.</span><span class="n">Bottle</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cfg_filename</span><span class="o">=</span><span class="s2">&quot;yserver.cfg&quot;</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">YggServer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;sorted_torrents&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
             <span class="s1">&#39;rtEn&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
@@ -117,7 +116,7 @@
         <span class="p">}</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">Config</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">load_config</span><span class="p">(</span><span class="s1">&#39;yserver.cfg&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">load_config</span><span class="p">(</span><span class="n">cfg_filename</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">ygg</span> <span class="o">=</span> <span class="n">YggBrowser</span><span class="p">(</span>
             <span class="n">proxy</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;proxy&#39;</span><span class="p">],</span>
@@ -426,7 +425,7 @@
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>
 

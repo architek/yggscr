@@ -45,11 +45,10 @@ Install using a virtualenv::
     
     # Clone and fetch install utils
     git clone https://github.com/architek/yggscr.git && cd yggscr
-    sudo apt-get install git build-essential python-dev python3-pip
-    pip3 install --user virtualenv
+    sudo apt-get install git build-essential python-dev virtualenv
     
     # Create virtualenv
-    python3 -m virtualenv .venv
+    virtualenv -p python3 .venv
     .venv/bin/python -m pip install --upgrade pip setuptools wheel
     
     # Build in virtualenv
@@ -60,6 +59,11 @@ Install using a virtualenv::
     cd src/yserver
     yserver
     yshell
+
+    # To leave virtualenv
+    deactivate
+
+*Note*: The user configured in yserver.ini needs read access to the virtualenv directory.
 
 *Note*: You need at least setuptools 33.1.1. 
 

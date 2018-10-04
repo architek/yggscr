@@ -1,0 +1,27 @@
+#!/bin/bash
+#
+# Usage : ./start_yserver <local_port[default 8333]>
+# Make sure you have set the interface in yserver.cfg to something else than default 127.0.0.1 (0.0.0.0 for example)
+
+command -v docker >/dev/null 2>&1 || { echo 'You need docker installed and in your path'; exit; }
+[ -f docker/yserver/Dockerfile ] || { echo 'You need to run this from root repository (above "docker" directory)'; exit; }
+
+port=${1:-8333}
+echo "Container 'yserver' will be built and started on TCP/$port, press any key to continue" && read
+
+# smallest sdist 
+mkdir -p .dock
+tar \
+    --exclude __pycache__ \
+    --exclude src/yserver/resources  \
+    --exclude src/yserver/views \
+    --exclude src/yggscr.egg-info \
+    -cf .dock/code.tar \
+        src/ \
+        docs/README.rst \
+        setup.py
+
+docker build -f docker/yserver/Dockerfile . | tee .buildlog
+container_id=`grep "Successfully built" .buildlog | cut -d ' ' -f 3`
+
+[ -z "$container_id" ] || docker run --name yserver -p "$port":8333 --rm -it "$container_id"

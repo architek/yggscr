@@ -51,6 +51,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../CONTRIBUTING.html">Contribute</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../LICENSE.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../README.html">Ygg Scraper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docker_link.html">Docker Images</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../source/yggscr.html">yggscr API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../source/yserver.html">yserver API</a></li>
 </ul>
@@ -102,7 +103,11 @@
             <span class="s1">&#39;proxy&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
             <span class="s1">&#39;debug&#39;</span><span class="p">:</span> <span class="s1">&#39;False&#39;</span><span class="p">,</span>
             <span class="s1">&#39;if.host&#39;</span><span class="p">:</span> <span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;if.port&#39;</span><span class="p">:</span> <span class="mi">8333</span><span class="p">})</span>
+            <span class="s1">&#39;if.port&#39;</span><span class="p">:</span> <span class="mi">8333</span><span class="p">,</span>
+            <span class="s1">&#39;transmission.host&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;rtorrent.rpc_url&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;deluge.host&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="p">})</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">conf</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">(</span><span class="o">**</span><span class="n">options</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>

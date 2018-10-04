@@ -1,4 +1,6 @@
 .venv
+.buildlog
+.dock
 .pypt/gh-token
 x.shell
 docs/.build/doctrees

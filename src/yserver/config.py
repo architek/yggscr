@@ -23,7 +23,7 @@ class Config(dict):
         self.conf = configparser.ConfigParser(**options)
 
         if not self.conf.read(filename):
-            raise FileNotFoundError
+            raise FileNotFoundError("Can't find filename <{}>".format(filename))
 
         for section in self.conf.sections():
             for key in self.conf.options(section):

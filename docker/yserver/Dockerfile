@@ -1,27 +1,32 @@
 FROM debian:stretch-slim
 ENV LANG C.UTF-8
 
-# Apt upgrade
-RUN apt-get update -y
-RUN apt-get upgrade -y
-
-# Py Setuptools
-RUN apt-get -y install python3-setuptools python3-pip
-RUN apt-get -y install ca-certificates
+# Apt setuptools & al
+RUN apt-get update -y && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    python3-setuptools python3-pip \
+    ca-certificates
 
 # Install reqs
 COPY requirements.txt /opt/app/
 RUN pip3 install -r /opt/app/requirements.txt
 
-# Install code
-ADD ./.dock/code.tar /opt/app/
+# Copy and install
+RUN mkdir -p /opt/app/src/yserver
+RUN mkdir -p /opt/app/docs
+COPY setup.py /opt/app/
+COPY docs/README.rst /opt/app/docs/
+COPY src/yserver/ /opt/app/src/yserver/
+COPY src/yggscr/ /opt/app/src/yggscr/
 WORKDIR /opt/app
 RUN python3 setup.py install
 
-# Copy remaining stuffs
-COPY . /opt/app/
+# Copy static stuffs
+COPY src/yserver/resources /opt/app/src/yserver/
+COPY src/yserver/views /opt/app/src/yserver/
 
 # Run daemon
 WORKDIR /opt/app/src/yserver/
+RUN sed 's/^\s*host\s*=\s*127.0.0.1/host = 0.0.0.0/' -i yserver.cfg
 ENTRYPOINT ["yserver"]
-# EXPOSE 8333:8333
+EXPOSE 8333

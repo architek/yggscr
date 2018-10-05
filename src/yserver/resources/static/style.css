@@ -39,6 +39,7 @@
       inset 0 0 8px  rgba(0,0,0,0.1),
             0 0 16px rgba(0,0,0,0.1); 
     background: rgba(255,255,255,0.2);
+    width: 10em;
 }
 
 table {

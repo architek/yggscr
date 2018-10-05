@@ -1,0 +1,34 @@
+version: "3.2"
+
+services:
+    nginx:
+        depends_on:
+            - uwsgi
+        build:
+            context: ./nginx
+        volumes:
+            - type: volume
+              source: usocket
+              target: /run/ygg
+              volume:
+                  nocopy: true
+        ports:
+            - "8333:80"
+            
+    yserver:
+        build:
+            context: ../
+            dockerfile: $PWD/docker/yserver/Dockerfile
+        ports:
+            - "8333:8333"
+
+    uwsgi:
+        user: www-data:www-data
+        build:
+            context: ../
+            dockerfile: $PWD/docker/uwsgi/Dockerfile
+        volumes:
+            - "usocket:/run/ygg"
+
+volumes:
+    usocket:

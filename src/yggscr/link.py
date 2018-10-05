@@ -77,18 +77,18 @@ def get_cat_id(log, cat, subcat=None):
     if subcat == "série-tv":
         subcat = "serie-tv"
 
-    cat_id = None
-    subcat_id = None
+    cat_id = ""
+    subcat_id = ""
     for link in links:
-        if cat_id is None and re.findall(r'\d+-%s' % re.escape(cat), link):
+        if not cat_id and re.findall(r'\d+-%s' % re.escape(cat), link):
             cat_id = re.findall(r'\d+', link)[0]
             log.debug('cat_id {}'.format(cat_id))
             continue
-        if cat_id is not None and subcat and "-{}".format(subcat) in link:
+        if cat_id and subcat and "-{}".format(subcat) in link:
             subcat_id = re.findall(r'\d+', link)[0]
             log.debug('subcat_id {}'.format(subcat_id))
             break
-    if cat_id is None or (subcat and subcat_id is None):
+    if not cat_id or (subcat and not subcat_id):
         raise ygge.YggException("Cat or subcat not found in get_cat_id")
     return {"category": cat_id, "sub_category": subcat_id}
 

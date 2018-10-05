@@ -12,7 +12,6 @@ from yggscr.const import DL_TPL, get_dl_link
 from yggscr.client import rtorrent_add_torrent, transmission_add_torrent, deluge_add_torrent
 
 
-# TODO
 bcyc = cycle([True, False])
 
 
@@ -25,6 +24,8 @@ class YggServer(bottle.Bottle):
             'tsEn': False,
             'dgEn': False,
             'ano': True,
+            'corder': 'desc',
+            'norder': 'desc',
         }
 
         self.config = Config()
@@ -126,10 +127,7 @@ class YggServer(bottle.Bottle):
                       key=lambda k: getattr(k, sort),
                       reverse=next(bcyc)) if sort else results
 
-    def mtemplate(self, tpl, **kwargs):
-        rtn = kwargs.pop('rtn', [])
-        self.state.setdefault('corder', 'desc')
-        self.state.setdefault('norder', 'desc')
+    def mtemplate(self, tpl, rtn=[], **kwargs):
         return bottle.template(tpl, request=bottle.request,
                                state=self.state, rtn=rtn, **kwargs)
 

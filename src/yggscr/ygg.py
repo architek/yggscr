@@ -243,8 +243,11 @@ class YggBrowser(SBrowser):
 
         category = q.get('category', '')
         sub_category = q.get('sub_category', '')
+
         if category and not category.isdigit():
-                q.update(get_cat_id(self.log, category, sub_category))
+            q.pop('category')   # Formsdict
+            q.pop('sub_category', '')
+            q.update(get_cat_id(self.log, category, sub_category))
 
         self.log.debug("Searching...")
 

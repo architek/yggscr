@@ -5,7 +5,7 @@ for c in yggscr.link.list_cats():
 */
 var cat = new Object();
 cat[""]=[""];
-cat["filmvidéo"]=["animation","animation","concert","documentaire","emission","film","serie","spectacle","sport","video"];
+cat["filmvidéo"]=["animation","animation-serie","concert","documentaire","emission","film","serie","spectacle","sport","video"];
 cat["audio"]=["karaoke","musique","podcast","samples"];
 cat["application"]=["autre","formation","linux","macos","smartphone","tablette","windows"];
 cat["jeu+vidéo"]=["autre","linux","macos","microsoft","nintendo","smartphone","sony","tablette","windows"];

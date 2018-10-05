@@ -1,1 +1,1 @@
-.. include:: ../docker/yserver/README.rst
+.. include:: ../docker/README.rst

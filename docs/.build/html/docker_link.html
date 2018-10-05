@@ -54,8 +54,8 @@
 <li class="toctree-l1"><a class="reference internal" href="LICENSE.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html">Ygg Scraper</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Docker Images</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#nginx-using-uwsgi">Nginx using uwsgi</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#standalone-server">Standalone server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#nginx-using-uwsgi">Nginx using uwsgi</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="source/yggscr.html">yggscr API</a></li>
@@ -93,37 +93,33 @@
             
   <div class="section" id="docker-images">
 <h1>Docker Images<a class="headerlink" href="#docker-images" title="Permalink to this headline">¶</a></h1>
-<p>You need docker, and for nginx instance, docker-compose.</p>
-<div class="section" id="nginx-using-uwsgi">
-<h2>Nginx using uwsgi<a class="headerlink" href="#nginx-using-uwsgi" title="Permalink to this headline">¶</a></h2>
-<p>TODO</p>
-</div>
+<p>Two setups are possible:</p>
+<ul class="simple">
+<li>Standalone server (yserver)</li>
+<li>Uwsgi app behind nginx</li>
+</ul>
+<p>The configuration used is from <strong>src/yserver/yserver.cfg</strong>.</p>
+<p>By default, both setups are listening on <strong>tcp/8333</strong>.</p>
+<dl class="docutils">
+<dt><em>Note</em>:</dt>
+<dd>For docker use, the if.port setting NEEDS to be changed in yserver.cfg.
+The script takes care of replacing default by 0.0.0.0.
+Changing port has to be done in the yserver.cfg as well as in the docker file.</dd>
+</dl>
 <div class="section" id="standalone-server">
 <h2>Standalone server<a class="headerlink" href="#standalone-server" title="Permalink to this headline">¶</a></h2>
-<p>This is minimal docker for dev purpose. Internal webserver, don’t use this in production.</p>
-<p>Usage:</p>
-<ul>
-<li><p class="first">Modify configuration src/yserver/yserver.cfg <a class="footnote-reference" href="#id2" id="id1">[*]</a>,</p>
-</li>
-<li><p class="first">Execute docker/yserver/start_yserver.</p>
-<blockquote>
-<div><table class="docutils footnote" frame="void" id="id2" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id1">[*]</a></td><td><p class="first last">For docker use, one setting NEEDS to be changed in src/yserver/yserver.cfg.
-The default interface to listen is localhost for security reasons. For docker, you need to change that to 0.0.0.0.</p>
-</td></tr>
-</tbody>
-</table>
-</div></blockquote>
-</li>
-</ul>
-<p>The start_yserver script will:</p>
-<ul class="simple">
-<li>Download Debian stretch,</li>
-<li>Install setuptools, python3 and C libraries,</li>
-<li>Build the library and entry points binaries.</li>
-</ul>
+<p>The standalone server yserver can be started with docker compose or directly from docker:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span><span class="o">-</span><span class="n">compose</span> <span class="o">-</span><span class="n">f</span> <span class="n">docker</span><span class="o">/</span><span class="n">docker</span><span class="o">-</span><span class="n">compose</span><span class="o">.</span><span class="n">yml</span> <span class="n">up</span> <span class="n">yserver</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="nginx-using-uwsgi">
+<h2>Nginx using uwsgi<a class="headerlink" href="#nginx-using-uwsgi" title="Permalink to this headline">¶</a></h2>
+<p>Docker-compose is mandatory for container using nginx:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span><span class="o">-</span><span class="n">compose</span> <span class="o">-</span><span class="n">f</span> <span class="n">docker</span><span class="o">/</span><span class="n">docker</span><span class="o">-</span><span class="n">compose</span><span class="o">.</span><span class="n">yml</span> <span class="n">up</span> <span class="n">nginx</span>
+</pre></div>
+</div>
+<p><em>Note</em>: If you want to run the uwsgi container behind a reverse proxy on the host, set the socket in the host area with a bind mount.</p>
 </div>
 </div>
 

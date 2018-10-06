@@ -43,5 +43,3 @@ You can change nginx host port to *12345* with::
 Watch logs::
 
    docker logs -f docker_uwsgi_1
-
-

@@ -6,7 +6,7 @@ License
 :Copyright: © 2018, Laurent Kislaire.
 :License: ISC (see /LICENSE or :doc:`Appendix B <LICENSE>`.)
 :Date: 2018-10-06
-:Version: 1.1.4
+:Version: 1.1.5
 
 .. index:: LICENSE
 

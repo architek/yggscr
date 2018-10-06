@@ -1,4 +1,4 @@
-version: "3.2"
+version: "3.7"
 
 services:
     nginx:
@@ -9,7 +9,7 @@ services:
         volumes:
             - type: volume
               source: usocket
-              target: /run/ygg
+              target: /run/
               volume:
                   nocopy: true
         ports:
@@ -28,7 +28,7 @@ services:
             context: ../
             dockerfile: $PWD/docker/uwsgi/Dockerfile
         volumes:
-            - "usocket:/run/ygg"
+            - "usocket:/run"
 
 volumes:
     usocket:

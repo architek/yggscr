@@ -31,3 +31,10 @@ Docker-compose is mandatory for container using nginx::
     docker-compose -f docker/docker-compose.yml up nginx
 
 *Note*: If you want to run the uwsgi container behind a reverse proxy on the host, set the socket in the host area with a bind mount.
+
+Stopping
+========
+
+If you are using docker-compose::
+
+   docker-compose -f docker/docker-compose.yml down --volumes

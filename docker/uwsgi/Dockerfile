@@ -27,7 +27,10 @@ COPY src/yserver/resources /opt/app/src/yserver/
 COPY src/yserver/views /opt/app/src/yserver/
 
 # WSGI
-VOLUME /run
 COPY docker/uwsgi/conf/ygg.ini /opt/app/ygg.ini
+
 RUN mkdir -p /run/ygg && chown -R www-data:www-data /run/ygg
+VOLUME /run
+
+#CMD ["tail","-f","/dev/null"]
 CMD [ "uwsgi", "--ini", "/opt/app/ygg.ini"]

@@ -27,6 +27,6 @@ COPY src/yserver/views /opt/app/src/yserver/
 
 # Run daemon
 WORKDIR /opt/app/src/yserver/
-RUN sed 's/^\s*host\s*=\s*127.0.0.1/host = 0.0.0.0/' -i yserver.cfg
+RUN sed 's/^;*\s*host\s*=\s*127.0.0.1/host = 0.0.0.0/' -i yserver.cfg
 ENTRYPOINT ["yserver"]
 EXPOSE 8333

@@ -287,7 +287,7 @@ class YggBrowser(SBrowser):
     def download_torrent(self, torrent=None, id=None):
         href = torrent.get_dl_link() if torrent is not None \
                                        else self.id2href(id)
-        self.get(href)
+        self.open(href)
         iheaders = self.response().headers
         headers = [('Content-type', iheaders['Content-type']),
                    ('Content-Disposition',  iheaders['Content-Disposition'])]

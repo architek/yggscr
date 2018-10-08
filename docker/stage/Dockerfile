@@ -18,8 +18,11 @@ RUN pip install --no-index --find-links=/opt/yggscr/wheels -r requirements-dev.t
 RUN apk --update --no-cache add uwsgi uwsgi-python3 && rm -rf /var/cache/apk/*
 RUN mkdir /run/ygg/ && chown -R uwsgi:uwsgi /run/ygg
 RUN sed 's/^;*\s*host\s*=\s*127.0.0.1/host = 0.0.0.0/' -i conf/yserver.cfg
-RUN mv conf/yserver.cfg src/yserver
-RUN mv conf/ygg.ini .
+RUN mv conf/yserver.cfg src/yserver/
+RUN mv conf/ygg.ini src/yserver/
+ENV PYTHONPATH /opt/yggscr/src
+WORKDIR src/yserver
 CMD [ "uwsgi", "--ini", "ygg.ini", "--pythonpath", "/usr/local/lib/python3.6/site-packages", "--pythonpath", "/opt/yggscr/src"]
 
+EXPOSE 8333
 VOLUME /run/ygg/

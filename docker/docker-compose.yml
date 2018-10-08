@@ -22,11 +22,6 @@ services:
             dockerfile: $PWD/docker/stage/Dockerfile
         volumes:
             - "usocket:/run/ygg/"
-
-    yserver:
-        build:
-            context: ../
-            dockerfile: $PWD/docker/yserver/Dockerfile
         ports:
             - "8333:8333"
 

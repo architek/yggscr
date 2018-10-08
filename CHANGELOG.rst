@@ -6,7 +6,7 @@ Changelog
 :Copyright: © 2018, Laurent Kislaire.
 :License: ISC (see /LICENSE or :doc:`Appendix B <LICENSE>`.)
 :Date: 2018-10-08
-:Version: 1.1.9
+:Version: 1.1.10
 
 .. index:: CHANGELOG
 

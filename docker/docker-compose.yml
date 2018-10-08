@@ -5,16 +5,12 @@ services:
         depends_on:
             - stage
         build:
-            context: ./nginx
+            context: ../
+            dockerfile: $PWD/docker/nginx/Dockerfile
         volumes:
             - type: volume
               source: usocket
               target: /run/ygg/
-              volume:
-                  nocopy: true
-            - type: volume
-              source: conf
-              target: /opt/yggscr/conf/
               volume:
                   nocopy: true
         ports:
@@ -26,7 +22,6 @@ services:
             dockerfile: $PWD/docker/stage/Dockerfile
         volumes:
             - "usocket:/run/ygg/"
-            - "conf:/opt/yggscr/conf/"
 
     yserver:
         build:
@@ -38,4 +33,3 @@ services:
 
 volumes:
     usocket:
-    conf:

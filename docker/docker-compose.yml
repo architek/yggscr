@@ -14,7 +14,7 @@ services:
                   nocopy: true
             - type: volume
               source: conf
-              target /opt/yggscr/conf/
+              target: /opt/yggscr/conf/
               volume:
                   nocopy: true
         ports:

@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-# Ygg Scraper v1.1.7
+# Ygg Scraper v1.1.8
 # Yggtorrent scraper library - Webserver - Rss - Shell
 # Copyright © 2018, Laurent Kislaire.
 # See /LICENSE for licensing information.

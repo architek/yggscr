@@ -4,8 +4,8 @@ Ygg Scraper
 :Info: This is the README file for Ygg Scraper.
 :Author: Laurent Kislaire <teebeenator@gmail.com>
 :Copyright: © 2018, Laurent Kislaire.
-:Date: 2018-10-07
-:Version: 1.1.6
+:Date: 2018-10-08
+:Version: 1.1.7
 
 .. index: README
 .. image:: https://travis-ci.org/architek/yggscr.svg?branch=master

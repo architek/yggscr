@@ -3,18 +3,31 @@ version: "3.7"
 services:
     nginx:
         depends_on:
-            - uwsgi
+            - stage
         build:
             context: ./nginx
         volumes:
             - type: volume
               source: usocket
-              target: /run/
+              target: /run/ygg/
+              volume:
+                  nocopy: true
+            - type: volume
+              source: conf
+              target /opt/yggscr/conf/
               volume:
                   nocopy: true
         ports:
             - "8333:80"
-            
+
+    stage:
+        build:
+            context: ../
+            dockerfile: $PWD/docker/stage/Dockerfile
+        volumes:
+            - "usocket:/run/ygg/"
+            - "conf:/opt/yggscr/conf/"
+
     yserver:
         build:
             context: ../
@@ -22,13 +35,7 @@ services:
         ports:
             - "8333:8333"
 
-    uwsgi:
-        user: www-data:www-data
-        build:
-            context: ../
-            dockerfile: $PWD/docker/uwsgi/Dockerfile
-        volumes:
-            - "usocket:/run"
 
 volumes:
     usocket:
+    conf:

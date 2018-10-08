@@ -7,11 +7,14 @@ Two setups are possible:
 - Standalone server (yserver)
 
 Quick Start
------------
+===========
 
-- Download latest GitHub release at https://github.com/architek/yggscr/releases/latest::
+- Download latest GitHub release at https://github.com/architek/yggscr/releases/latest or better using git::
 
    git clone https://github.com/architek/yggscr.git && cd yggscr
+
+   # To get updates
+   git pull
 
 - Use either of the two setups (see below)
 
@@ -28,7 +31,7 @@ Docker-compose is mandatory for container using nginx::
 Standalone server
 =================
 
-The standalone server yserver can be started with docker-compose (or directly with docker)::
+The standalone server can be started with docker-compose (or directly with docker)::
 
    docker-compose -f docker/docker-compose.yml run -p 8333:8333 stage python -m yserver.__main__
 

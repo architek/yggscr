@@ -1,6 +1,5 @@
 #!/bin/sh
-BASE=/opt/yggscr/conf/yserver.cfg
-DEST=/opt/yggscr/src/yserver
-cp "$BASE" "$DEST"
-cat /opt/yggscr/src/yserver/yserver.cfg
+cp /opt/yggscr/conf/yserver.cfg .
+sed 's/^;*\s*host\s*=\s*127.0.0.1/host = 0.0.0.0/' -i yserver.cfg
+cat yserver.cfg
 exec "$@"

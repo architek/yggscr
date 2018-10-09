@@ -5,6 +5,7 @@
 x.shell
 docs/.build/doctrees
 docs/source
+conf/yserver-mine.cfg
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

@@ -85,7 +85,7 @@ class YggServer(bottle.Bottle):
             try:
                 self.ygg.login(ygg_id=username, ygg_pass=password)
             except Exception as e:
-                self.log.error("Could not login, exception {}".format(e))
+                self.log.error("Could not login with user <{}>, exception {}".format(username, e))
 
     def setup_routes(self):
         self.add_hook('before_request', self.reco)

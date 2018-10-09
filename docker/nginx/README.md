@@ -1,4 +1,6 @@
-Nginx reverse proxy with:
+# Nginx reverse proxy
+
+Settings:
 
 * No server_name
 * Listens on 0.0.0.0:80 only

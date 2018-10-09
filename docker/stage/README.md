@@ -6,8 +6,7 @@ Configure settings by mounting your local file yserver.cfg to /opt/yggscr/conf/y
 Otherwise, default options for user, network and client are used.
 
 
-* If you want to run this standalone, use this run command:
+* By default uwsgi will communicate through unix socket to nginx container (see nginx image for an example)
 
-``` python -m yserver.__main__
+* If you want to run this standalone without nginx, simply use this as parameter to run command: `python -m yserver.__main__`
 
-* Otherwise, by default it will communicate through unix socket to nginx container (see nginx image)

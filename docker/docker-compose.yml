@@ -22,6 +22,7 @@ services:
             dockerfile: $PWD/docker/stage/Dockerfile
         volumes:
             - "usocket:/run/ygg/"
+            - "../conf/yserver.cfg:/opt/yggscr/conf/yserver.cfg:ro"
 
 volumes:
     usocket:

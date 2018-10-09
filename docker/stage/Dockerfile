@@ -13,10 +13,13 @@ RUN pip install --no-index --find-links=/opt/yggscr/wheels -r requirements-dev.t
 RUN apk --update --no-cache add uwsgi uwsgi-python3 && \
     mkdir /run/ygg/ && chown -R uwsgi:uwsgi /run/ygg && \
     sed 's/^;*\s*host\s*=\s*127.0.0.1/host = 0.0.0.0/' -i conf/yserver.cfg && \
-    mv conf/yserver.cfg src/yserver/ && \
-    mv conf/ygg.ini src/yserver/
+    cp conf/yserver.cfg src/yserver/ && \
+    cp conf/ygg.ini src/yserver/
+
 ENV PYTHONPATH /opt/yggscr/src
+
 WORKDIR src/yserver
+ENTRYPOINT ["/opt/yggscr/docker/stage/conf-setup.sh"]
 CMD [ "uwsgi", "--ini", "ygg.ini", "--pythonpath", "/usr/local/lib/python3.6/site-packages", "--pythonpath", "/opt/yggscr/src"]
 
 EXPOSE 8333

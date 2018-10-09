@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # Normally not needed because of http redirect but breaks with SSL FIXME
-YGG_HOST = "yggtorrent.to"
+YGG_HOST = "www3.yggtorrent.to"
 
 YGG_HOME = "https://" + YGG_HOST
 

@@ -1,5 +1,6 @@
 # Docker file for wsgi ygg app
 
+[![](https://images.microbadger.com/badges/image/architek/yggscr.svg)](https://microbadger.com/images/architek/yggscr "Get your own image badge on microbadger.com") [![](https://images.microbadger.com/badges/version/architek/yggscr.svg)](https://microbadger.com/images/architek/yggscr "Get your own version badge on microbadger.com")
 
 Configure settings by mounting your local file yserver.cfg to /opt/yggscr/conf/yserver.cfg in the container.
 

@@ -24,9 +24,9 @@ copyright = '2018, Laurent Kislaire'
 author = 'Laurent Kislaire'
 
 # The short X.Y version
-version = '1.1.12'
+version = '1.1.13'
 # The full version, including alpha/beta/rc tags
-release = '1.1.12'
+release = '1.1.13'
 
 
 # -- General configuration ---------------------------------------------------

@@ -170,9 +170,9 @@ class YggServer(bottle.Bottle):
             self.log.debug("Ping reported state {}".format(
                 self.ygg.idstate))
         if self.ygg.idstate != "Authenticated":
-            self.ygg.login(ygg_id=self.config['username'],
-                       ygg_pass=self.config['password'])
-            self.log.debug("Logged in as %s" % self.config['username'])
+            self.ygg.login(ygg_id=self.config['ygg.username'],
+                       ygg_pass=self.config['ygg.password'])
+            self.log.debug("Logged in as %s" % self.config['ygg.username'])
         else:
             self.log.debug("Already authenticated")
 

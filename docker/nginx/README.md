@@ -1,5 +1,6 @@
 # Nginx reverse proxy
 [![](https://images.microbadger.com/badges/image/architek/nginx.svg)](https://microbadger.com/images/architek/nginx "Get your own image badge on microbadger.com") [![](https://images.microbadger.com/badges/version/architek/nginx.svg)](https://microbadger.com/images/architek/nginx "Get your own version badge on microbadger.com")
+
 Settings:
 
 * No server_name

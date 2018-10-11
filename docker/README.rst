@@ -6,8 +6,27 @@ Two setups are possible:
 - Uwsgi app behind nginx
 - Standalone server (yserver)
 
-Quick Start
-===========
+Docker hub
+==========
+
+Images are available on docker hub::
+   docker pull architek/yggscr
+
+   # Optional if you want nginx
+   docker pull architek/nginx
+   
+   # Optional if you want to have yggscr access website with tor
+   docker pull architek/docker-tor-socks
+
+When running:
+
+* Map host file (e.g. yserver.cfg) to /opt/yggscr/conf/yserver.cfg in yggscr container
+* If using nginx, set nginx container to use /var/ygg/ as /var/ygg exposed by yggscr container
+* If using tor proxy, set proxy line in yserver.cfg correctly according to tor container ip
+
+
+Manual install
+==============
 
 - Download latest GitHub release at https://github.com/architek/yggscr/releases/latest or better using git::
 

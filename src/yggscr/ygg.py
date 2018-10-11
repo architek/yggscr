@@ -4,16 +4,16 @@ import re
 import os
 import time
 import json
-from . import ylogging
 from logging import CRITICAL, ERROR, WARNING, INFO, DEBUG #noqa
 import datetime
 from bs4 import BeautifulSoup
-from .torrents import Torrent
-from .sbrowser import SBrowser
-from .exceptions import YggException, LoginFailed, TooManyFailedLogins
-from .const import YGG_HOME, TOP_DAY_URL, TOP_WEEK_URL, TOP_MONTH_URL, \
+from yggscr import ylogging
+from yggscr.torrents import Torrent
+from yggscr.sbrowser import SBrowser
+from yggscr.exceptions import YggException, LoginFailed, TooManyFailedLogins
+from yggscr.const import YGG_HOME, TOP_DAY_URL, TOP_WEEK_URL, TOP_MONTH_URL, \
                    EXCLUS_URL, TOP_SEED_URL, SEARCH_URL, DL_TPL
-from .link import get_cat_id, list_cat_subcat
+from yggscr.link import get_cat_id, list_cat_subcat
 
 from urllib.parse import urlparse, parse_qs
 
@@ -76,7 +76,7 @@ class YggBrowser(SBrowser):
         self.stats = Stats()
         self.browser.session.hooks['response'].append(self.gen_state())
         self.log.debug("Created YggBrowser")
-        self.login_attempts = 0
+        self.last_ygg_id = None
 
     def __str__(self):
         return "{} | [YGG] Auth {}".format(
@@ -98,6 +98,11 @@ class YggBrowser(SBrowser):
         return upd_state
 
     def login(self, ygg_id=None, ygg_pass=None):
+
+        if ygg_id != self.last_ygg_id:
+            self.login_attempts = 1
+            self.last_ygg_id = ygg_id
+
         if self.login_attempts > 3:
             self.log.debug("Not trying to login with 3 consecutive failed attempts. Fix your configuration and retry.")
             raise TooManyFailedLogins("3 consecutives logins")

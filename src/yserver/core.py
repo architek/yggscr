@@ -180,9 +180,9 @@ class YggServer(bottle.Bottle):
                 return
             except TooManyFailedLogins as e:
                 self.log.error(
-                    "Too many failed logins, login disabled (fix your connection), exception is {}".format(e))
-                pass
+                    "Too many failed logins, login disabled (fix your settings), exception is {}".format(e))
                 self.state['ano'] = True
+                pass
                 return
             except YggException as e:
                 self.log.error("Generic exception got raised: {}".format(e))

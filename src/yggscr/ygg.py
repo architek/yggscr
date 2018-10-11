@@ -10,7 +10,7 @@ import datetime
 from bs4 import BeautifulSoup
 from .torrents import Torrent
 from .sbrowser import SBrowser
-from .exceptions import YggException
+from .exceptions import YggException, LoginFailed, TooManyFailedLogins
 from .const import YGG_HOME, TOP_DAY_URL, TOP_WEEK_URL, TOP_MONTH_URL, \
                    EXCLUS_URL, TOP_SEED_URL, SEARCH_URL, DL_TPL
 from .link import get_cat_id, list_cat_subcat
@@ -76,6 +76,7 @@ class YggBrowser(SBrowser):
         self.stats = Stats()
         self.browser.session.hooks['response'].append(self.gen_state())
         self.log.debug("Created YggBrowser")
+        self.login_attempts = 0
 
     def __str__(self):
         return "{} | [YGG] Auth {}".format(
@@ -97,9 +98,9 @@ class YggBrowser(SBrowser):
         return upd_state
 
     def login(self, ygg_id=None, ygg_pass=None):
-        self.open(YGG_HOME)
-        if self.idstate == "Authenticated":
-            raise YggException("Logout first")
+        if self.login_attempts > 3:
+            self.log.debug("Not trying to login with 3 consecutive failed attempts. Fix your configuration and retry.")
+            raise TooManyFailedLogins("3 consecutives logins")
         try:
             self._id = ygg_id if ygg_id else os.environ['ygg_id']
             self._pass = ygg_pass if ygg_id else os.environ['ygg_pass']
@@ -108,6 +109,12 @@ class YggBrowser(SBrowser):
                            "neither config nor environment variable")
             pass
             return
+
+        self.open(YGG_HOME)
+        self.login_attempts += 1
+
+        if self.idstate == "Authenticated":
+            raise YggException("Logout first")
 
         for form in self.browser.get_forms():
             if form.parsed.find(id="login_msg_pass"):
@@ -121,7 +128,8 @@ class YggBrowser(SBrowser):
         self.browser.submit_form(login_form)
         self.open(YGG_HOME)
         if self.idstate != "Authenticated":
-            raise YggException("Login failed")
+            raise LoginFailed("State did not change to authenticate")
+        self.login_attempts = 0
 
     def logout(self):
         self.browser.session.cookies.clear()

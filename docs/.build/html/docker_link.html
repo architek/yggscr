@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Docker Images &#8212; YggScr 1.1.13 documentation</title>
+    <title>Docker Images &#8212; YggScr 1.1.14 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -54,7 +54,8 @@
 <li class="toctree-l1"><a class="reference internal" href="LICENSE.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html">Ygg Scraper</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Docker Images</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#quick-start">Quick Start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#docker-hub">Docker hub</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#manual-install">Manual install</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#nginx-using-uwsgi">Nginx using uwsgi</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#standalone-server">Standalone server</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#tweaking">Tweaking</a></li>
@@ -100,8 +101,26 @@
 <li>Uwsgi app behind nginx</li>
 <li>Standalone server (yserver)</li>
 </ul>
-<div class="section" id="quick-start">
-<h2>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="docker-hub">
+<h2>Docker hub<a class="headerlink" href="#docker-hub" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>Images are available on docker hub::</dt>
+<dd><p class="first">docker pull architek/yggscr</p>
+<p># Optional if you want nginx
+docker pull architek/nginx</p>
+<p class="last"># Optional if you want to have yggscr access website with tor
+docker pull architek/docker-tor-socks</p>
+</dd>
+</dl>
+<p>When running:</p>
+<ul class="simple">
+<li>Map host file (e.g. yserver.cfg) to /opt/yggscr/conf/yserver.cfg in yggscr container</li>
+<li>If using nginx, set nginx container to use /var/ygg/ as /var/ygg exposed by yggscr container</li>
+<li>If using tor proxy, set proxy line in yserver.cfg correctly according to tor container ip</li>
+</ul>
+</div>
+<div class="section" id="manual-install">
+<h2>Manual install<a class="headerlink" href="#manual-install" title="Permalink to this headline">¶</a></h2>
 <ul>
 <li><p class="first">Download latest GitHub release at <a class="reference external" href="https://github.com/architek/yggscr/releases/latest">https://github.com/architek/yggscr/releases/latest</a> or better using git:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">architek</span><span class="o">/</span><span class="n">yggscr</span><span class="o">.</span><span class="n">git</span> <span class="o">&amp;&amp;</span> <span class="n">cd</span> <span class="n">yggscr</span>

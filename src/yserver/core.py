@@ -5,6 +5,7 @@ import re
 from urllib.parse import urlencode
 from itertools import cycle
 from yserver.config import Config
+from yggscr.exceptions import YggException, LoginFailed, TooManyFailedLogins
 from yggscr.ygg import YggBrowser
 from yggscr.link import cats
 from yggscr.const import RSS_TPL
@@ -170,8 +171,24 @@ class YggServer(bottle.Bottle):
             self.log.debug("Ping reported state {}".format(
                 self.ygg.idstate))
         if self.ygg.idstate != "Authenticated":
-            self.ygg.login(ygg_id=self.config['ygg.username'],
-                       ygg_pass=self.config['ygg.password'])
+            try:
+                self.ygg.login(ygg_id=self.config['ygg.username'],
+                               ygg_pass=self.config['ygg.password'])
+            except LoginFailed as e:
+                self.log.warning("Failed login, exception is {}".format(e))
+                pass
+                return
+            except TooManyFailedLogins as e:
+                self.log.error(
+                    "Too many failed logins, login disabled (fix your connection), exception is {}".format(e))
+                pass
+                self.state['ano'] = True
+                return
+            except YggException as e:
+                self.log.error("Generic exception got raised: {}".format(e))
+                pass
+                return
+
             self.log.debug("Logged in as %s" % self.config['ygg.username'])
         else:
             self.log.debug("Already authenticated")

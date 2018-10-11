@@ -10,6 +10,7 @@ Docker hub
 ==========
 
 Images are available on docker hub::
+
    docker pull architek/yggscr
 
    # Optional if you want nginx

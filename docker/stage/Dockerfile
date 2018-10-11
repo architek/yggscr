@@ -6,7 +6,7 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.vcs-url="https://github.com/architek/yggscr" \
       org.label-schema.vcs-ref=$VCS_REF \
       org.label-schema.schema-version="1.0.0-rc1"
-LABEL maintainer=Laurent Kislaire <teebeenator@gmail.com>
+LABEL maintainer="Laurent Kislaire <teebeenator@gmail.com>"
 
 RUN apk --update --no-cache add git && \
     git clone https://github.com/architek/yggscr.git && rm -rf yggscr/.git && \

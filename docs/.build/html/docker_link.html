@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Docker Images &#8212; YggScr 1.1.14 documentation</title>
+    <title>Docker Images &#8212; YggScr 1.1.15 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -55,10 +55,9 @@
 <li class="toctree-l1"><a class="reference internal" href="README.html">Ygg Scraper</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Docker Images</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#docker-hub">Docker hub</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#configuration">Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#manual-install">Manual install</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#nginx-using-uwsgi">Nginx using uwsgi</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#standalone-server">Standalone server</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#tweaking">Tweaking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#start-stop">Start Stop</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="source/yggscr.html">yggscr API</a></li>
@@ -98,26 +97,35 @@
 <h1>Docker Images<a class="headerlink" href="#docker-images" title="Permalink to this headline">¶</a></h1>
 <p>Two setups are possible:</p>
 <ul class="simple">
-<li>Uwsgi app behind nginx</li>
-<li>Standalone server (yserver)</li>
+<li>Uwsgi app behind an http server acting as a reverse proxy (only nginx image provided)</li>
+<li>Uwsgi app with its own http server</li>
 </ul>
 <div class="section" id="docker-hub">
 <h2>Docker hub<a class="headerlink" href="#docker-hub" title="Permalink to this headline">¶</a></h2>
-<dl class="docutils">
-<dt>Images are available on docker hub::</dt>
-<dd><p class="first">docker pull architek/yggscr</p>
-<p># Optional if you want nginx
-docker pull architek/nginx</p>
-<p class="last"># Optional if you want to have yggscr access website with tor
-docker pull architek/docker-tor-socks</p>
-</dd>
-</dl>
-<p>When running:</p>
+<p>Images are available on docker hub:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">pull</span> <span class="n">architek</span><span class="o">/</span><span class="n">yggscr</span>
+
+<span class="c1"># Optional if you want nginx</span>
+<span class="n">docker</span> <span class="n">pull</span> <span class="n">architek</span><span class="o">/</span><span class="n">nginx</span>
+
+<span class="c1"># Optional if you want to have yggscr access website with tor</span>
+<span class="n">docker</span> <span class="n">pull</span> <span class="n">architek</span><span class="o">/</span><span class="n">docker</span><span class="o">-</span><span class="n">tor</span><span class="o">-</span><span class="n">socks</span>
+</pre></div>
+</div>
+<p>For configuration, see chapter below.</p>
+</div>
+<div class="section" id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h2>
+<p>The default configuration is sufficient for anonymous access, without proxy and without any interface to bittorrent clients.</p>
+<p>To override this, you can bind mount a directory on your host to /opt/yggscr/conf in the container and create any (or all) of the following files:</p>
 <ul class="simple">
-<li>Map host file (e.g. yserver.cfg) to /opt/yggscr/conf/yserver.cfg in yggscr container</li>
-<li>If using nginx, set nginx container to use /var/ygg/ as /var/ygg exposed by yggscr container</li>
-<li>If using tor proxy, set proxy line in yserver.cfg correctly according to tor container ip</li>
+<li><em>yserver.cfg</em> is the torrent/ygg configuration.</li>
+<li><em>ygg.ini</em> is the uwsgi configuration which creates the mapping between nginx and the application. In this file, you can for example set the yserver.cfg file to be used.</li>
+<li><em>ygg.conf</em> is the nginx configuration used by the nginx container (replaces /etc/nginx/conf.d/default.conf).</li>
 </ul>
+<p>Finally you can also override the filename <em>ygg.ini</em> by setting an env variable WSGI_INI in yggscr container (for example <em>ygg-my.ini</em>)</p>
+<p>Keep in mind that all files in your host directory will be copied to the container (but not its subdirectories).</p>
+<p>This allows having a single reverse proxy in front of several uwsgi applications.</p>
 </div>
 <div class="section" id="manual-install">
 <h2>Manual install<a class="headerlink" href="#manual-install" title="Permalink to this headline">¶</a></h2>
@@ -130,47 +138,28 @@ docker pull architek/docker-tor-socks</p>
 </pre></div>
 </div>
 </li>
-<li><p class="first">Use either of the two setups (see below)</p>
-</li>
 </ul>
 </div>
-<div class="section" id="nginx-using-uwsgi">
-<h2>Nginx using uwsgi<a class="headerlink" href="#nginx-using-uwsgi" title="Permalink to this headline">¶</a></h2>
-<p>Docker-compose is mandatory for container using nginx:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span><span class="o">-</span><span class="n">compose</span> <span class="o">-</span><span class="n">f</span> <span class="n">docker</span><span class="o">/</span><span class="n">docker</span><span class="o">-</span><span class="n">compose</span><span class="o">.</span><span class="n">yml</span> <span class="n">up</span> <span class="n">nginx</span>
-</pre></div>
-</div>
-<p><em>Note</em>: If you want to run the uwsgi container behind a reverse proxy on the host, set the socket in the host area with a bind mount (either through command line or in uwsgi Dockerfile)</p>
-</div>
-<div class="section" id="standalone-server">
-<h2>Standalone server<a class="headerlink" href="#standalone-server" title="Permalink to this headline">¶</a></h2>
-<p>The standalone server can be started with docker-compose (or directly with docker):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span><span class="o">-</span><span class="n">compose</span> <span class="o">-</span><span class="n">f</span> <span class="n">docker</span><span class="o">/</span><span class="n">docker</span><span class="o">-</span><span class="n">compose</span><span class="o">.</span><span class="n">yml</span> <span class="n">run</span> <span class="o">-</span><span class="n">p</span> <span class="mi">8333</span><span class="p">:</span><span class="mi">8333</span> <span class="n">stage</span> <span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">yserver</span><span class="o">.</span><span class="n">__main__</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="tweaking">
-<h2>Tweaking<a class="headerlink" href="#tweaking" title="Permalink to this headline">¶</a></h2>
-<p>Configuration files are in conf/</p>
-<ul class="simple">
-<li>yserver.cfg is the torrent/ygg conf. You need to change some settings there.</li>
-</ul>
-<p>For nginx setup:
-- ygg.conf is the nginx conf
-- ygg.ini is the wsgi conf</p>
-<p>To stop everything started by up:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span><span class="o">-</span><span class="n">compose</span> <span class="o">-</span><span class="n">f</span> <span class="n">docker</span><span class="o">/</span><span class="n">docker</span><span class="o">-</span><span class="n">compose</span><span class="o">.</span><span class="n">yml</span> <span class="n">down</span> <span class="o">--</span><span class="n">timeout</span> <span class="mi">1</span> <span class="o">--</span><span class="n">volumes</span>
+<div class="section" id="start-stop">
+<h2>Start Stop<a class="headerlink" href="#start-stop" title="Permalink to this headline">¶</a></h2>
+<p>If you want to stay on the command line:</p>
+<p>Nginx using uwsgi:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span><span class="o">-</span><span class="n">compose</span> <span class="o">-</span><span class="n">f</span> <span class="n">docker</span><span class="o">/</span><span class="n">docker</span><span class="o">-</span><span class="n">compose</span><span class="o">.</span><span class="n">yml</span> <span class="n">up</span> <span class="n">yggscr</span> <span class="n">nginx</span>
+<span class="p">[</span><span class="o">...</span><span class="p">]</span>
+<span class="n">docker</span><span class="o">-</span><span class="n">compose</span> <span class="o">-</span><span class="n">f</span> <span class="n">docker</span><span class="o">/</span><span class="n">docker</span><span class="o">-</span><span class="n">compose</span><span class="o">.</span><span class="n">yml</span> <span class="n">down</span> <span class="o">--</span><span class="n">timeout</span> <span class="mi">1</span> <span class="o">--</span><span class="n">volumes</span>
 </pre></div>
 </div>
 <p>You can change nginx host port to <em>12345</em> with:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span><span class="o">-</span><span class="n">compose</span> <span class="o">-</span><span class="n">f</span> <span class="n">docker</span><span class="o">/</span><span class="n">docker</span><span class="o">-</span><span class="n">compose</span><span class="o">.</span><span class="n">yml</span> <span class="n">run</span> <span class="o">-</span><span class="n">T</span> <span class="o">--</span><span class="n">publish</span> <span class="mi">12345</span><span class="p">:</span><span class="mi">80</span> <span class="o">--</span><span class="n">rm</span> <span class="n">nginx</span>
 </pre></div>
 </div>
-<dl class="docutils">
-<dt><em>Note</em>:</dt>
-<dd>For yserver, the if.port setting NEEDS to be changed in yserver.cfg.  The yserver docker takes care of replacing default by 0.0.0.0.
-Up command will use compose file to set host port, changing port has to be done in the yserver.cfg (only used by yserver) as well as in the yserver or nginx docker file.</dd>
-</dl>
+<p>In this mode, yggscr does not open any TCP port.</p>
+<p>Standalone server:</p>
+<p>The standalone server can be started when you override command with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span><span class="o">-</span><span class="n">compose</span> <span class="o">-</span><span class="n">f</span> <span class="n">docker</span><span class="o">/</span><span class="n">docker</span><span class="o">-</span><span class="n">compose</span><span class="o">.</span><span class="n">yml</span> <span class="n">run</span> <span class="o">-</span><span class="n">p</span> <span class="o">&lt;</span><span class="n">host</span> <span class="n">port</span><span class="o">&gt;</span><span class="p">:</span><span class="mi">8333</span> <span class="n">stage</span> <span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">yserver</span><span class="o">.</span><span class="n">__main__</span>
+</pre></div>
+</div>
+<p>In standalone configuration, the server by defaults listens on 127.0.0.1 for security reasons. When running a container, this adress is changed to 0.0.0.0 automatically.</p>
 </div>
 </div>
 

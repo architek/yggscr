@@ -5,6 +5,5 @@ RUN set -x && \
     wget https://raw.githubusercontent.com/architek/yggscr/master/conf/ygg.conf -O /opt/yggscr/conf/ygg.conf && \
     wget https://raw.githubusercontent.com/architek/yggscr/master/docker/nginx/conf-setup.sh -O /opt/yggscr/docker/nginx/conf-setup.sh && \
     apt purge -y wget ca-certificates && apt autoremove -y && rm -rf /var/lib/apt/lists/*
-COPY docker /opt/yggscr/docker
 ENTRYPOINT ["/opt/yggscr/docker/nginx/conf-setup.sh"]
 EXPOSE 80

@@ -1,13 +1,5 @@
 FROM python:3.6-alpine as base
 
-RUN apk --update --no-cache add git && \
-    git clone https://github.com/architek/yggscr.git && rm -rf yggscr/.git && \
-    apk del git
-WORKDIR yggscr/
-RUN pip install wheel && pip wheel . --wheel-dir=wheels
-
-
-FROM python:3.6-alpine as uwsgi
 ARG BUILD_DATE
 ARG VCS_REF
 LABEL org.label-schema.build-date=$BUILD_DATE \
@@ -16,6 +8,14 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.schema-version="1.0.0-rc1"
 LABEL maintainer="Laurent Kislaire <teebeenator@gmail.com>"
 
+RUN apk --update --no-cache add git && \
+    git clone https://github.com/architek/yggscr.git && rm -rf yggscr/.git && \
+    apk del git
+WORKDIR yggscr/
+RUN pip install wheel && pip wheel . --wheel-dir=wheels
+
+
+FROM python:3.6-alpine as uwsgi
 COPY --from=base yggscr/ /opt/yggscr
 WORKDIR /opt/yggscr
 RUN apk --update --no-cache add uwsgi uwsgi-python3 && \

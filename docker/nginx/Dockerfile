@@ -1,6 +1,9 @@
 FROM nginx
+RUN mkdir -p /opt/yggscr/conf
 RUN set -x && \
     apt update && apt install --no-install-recommends -y wget ca-certificates && \
-    wget https://raw.githubusercontent.com/architek/yggscr/master/conf/ygg.conf -O /etc/nginx/conf.d/default.conf && \
+    wget https://raw.githubusercontent.com/architek/yggscr/master/conf/ygg.conf -O /opt/yggscr/conf/ygg.conf && \
     apt purge -y wget ca-certificates && apt autoremove -y && rm -rf /var/lib/apt/lists/*
+COPY docker /opt/yggscr/docker
+ENTRYPOINT ["/opt/yggscr/docker/nginx/conf-setup.sh"]
 EXPOSE 80

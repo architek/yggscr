@@ -39,6 +39,8 @@ class YggServer(bottle.Bottle):
         self.log = self.ygg.log
         self.debug()
 
+        self.log.debug("Yserver configuration used: {}".format(cfg))
+
         self.auth()
         self.log.info("Anonymous: {}, Proxy: {}, Ygg Auth: {}".format(
             self.state['ano'],
@@ -71,6 +73,7 @@ class YggServer(bottle.Bottle):
             self.state['ano'] = False
         except ImportError:
             # running from CLI, try to auth
+            self.log.debug("Could not load uwsgi python module")
             self.state['ano'] = False
             pass
 
@@ -87,6 +90,7 @@ class YggServer(bottle.Bottle):
                 self.ygg.login(ygg_id=username, ygg_pass=password)
             except Exception as e:
                 self.log.error("Could not login with user <{}>, exception {}".format(username, e))
+            # FIXME exception here vs 3 attempts later
 
     def setup_routes(self):
         self.add_hook('before_request', self.reco)
@@ -154,7 +158,7 @@ class YggServer(bottle.Bottle):
                         torrent=torrent,
                         uri=base.format(id=torrent.tid),
                         title=html.escape(torrent.title))
-                            for torrent in torrents))
+                    for torrent in torrents))
 
     # Hooks
     def reco(self):

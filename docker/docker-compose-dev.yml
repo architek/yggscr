@@ -6,13 +6,14 @@ services:
             - stage-dev
         build:
             context: ../
-            dockerfile: $PWD/docker/nginx/Dockerfile
+            dockerfile: $PWD/docker/nginx/Dockerfile-dev
         volumes:
             - type: volume
               source: usocket
               target: /run/ygg/
               volume:
                   nocopy: true
+            - "../conf:/opt/yggscr/conf/:ro"
         ports:
             - "8333:80"
 
@@ -22,7 +23,7 @@ services:
             dockerfile: $PWD/docker/stage/Dockerfile-dev
         volumes:
             - "usocket:/run/ygg/"
-            - "../conf/yserver.cfg:/opt/yggscr/conf/yserver.cfg:ro"
+            - "../conf/:/opt/yggscr/conf/:ro"
 
 volumes:
     usocket:

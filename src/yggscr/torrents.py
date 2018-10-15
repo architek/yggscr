@@ -1,8 +1,9 @@
 # from pprint import (PrettyPrinter, pprint)
 # pp = PrettyPrinter(indent=4)
 
-from .const import get_dl_link
-from . import ylogging
+from yggscr.const import get_dl_link
+from yggscr import ylogging
+from yggscr.link import cat_subcat_from_href
 from logging import DEBUG, INFO #noqa
 
 
@@ -46,7 +47,7 @@ class Torrent():
         if cat:
             self.cat = cat
         if href:
-            self.cat, self.subcat = href.split('/')[4:6]
+            self.cat, self.subcat = cat_subcat_from_href(href)
         log.debug("Torrent is {}".format(self))
 
     def set_id(self, tid):

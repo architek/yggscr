@@ -1,16 +1,17 @@
 import bottle
 import html
 import logging
+import tempfile
 import re
+from os import chmod
 from urllib.parse import urlencode
 from itertools import cycle
 from yserver.config import Config
 from yggscr.exceptions import YggException, LoginFailed, TooManyFailedLogins
 from yggscr.ygg import YggBrowser
 from yggscr.link import cats
-from yggscr.const import RSS_TPL
-from yggscr.const import DL_TPL, get_dl_link
-from yggscr.client import rtorrent_add_torrent, transmission_add_torrent, deluge_add_torrent
+from yggscr.const import RSS_TPL, DL_TPL, get_dl_link
+from yggscr.client import rtorrent_add_torrent, transmission_add_torrent, deluge_add_torrent, exec_cmd
 
 
 bcyc = cycle([True, False])
@@ -24,6 +25,7 @@ class YggServer(bottle.Bottle):
             'rtEn': False,
             'tsEn': False,
             'dgEn': False,
+            'exEn': False,
             'ano': True,
             'corder': 'desc',
             'norder': 'desc',
@@ -100,7 +102,8 @@ class YggServer(bottle.Bottle):
             ('/rssearch', self.rssearch),
             ('/top/<name:re:(day|week|month|exclus)>', self.top_day),
             ('/dl/<idtorrent:int>', self.dl_torrent),
-            ('/<client:re:(ts|rt|dg)>/<idtorrent:int>', self.send_torrent),
+            ('/<client:re:(ts|rt|dg|ex)>/<idtorrent:int>/<cat:re:', self.send_torrent),
+            ('/ex/<cat:path>/<subcat:path>/<idtorrent:int>', self.exec_torrent),
             ('/rss', self.rss),
             ('/rss/<cat>', self.rss_cat),
             ('/stats', self.stats),
@@ -117,6 +120,8 @@ class YggServer(bottle.Bottle):
                 self.state['tsEn'] = True
             if self.config['deluge.host']:
                 self.state['dgEn'] = True
+            if self.config['exec.cmd']:
+                self.state['exEn'] = True
 
     def run(self, **kwargs):
         super(YggServer, self).run(
@@ -267,12 +272,38 @@ class YggServer(bottle.Bottle):
             bottle.response.set_header(k, v)
         return resp
 
+    def exec_torrent(self, cat, subcat, idtorrent):
+        rtn = []
+
+        cmd = self.config['exec.cmd']
+        try:
+            _, resp = self.ygg.download_torrent(id=idtorrent)
+        except Exception as e:
+            rtn.append("Couldn't download torrent [{}]".format(e))
+
+        fp = tempfile.NamedTemporaryFile(prefix="yggscr-", suffix=".torrent")
+        fp.write(resp)
+        fp.flush()
+        chmod(fp.name, 444)
+        cmd = cmd.format(f=fp.name, cat=cat, subcat=subcat)
+        rtn.append("Torrent downloaded, executing command {}".format(cmd))
+        output, error = exec_cmd(cmd, fp.name, cat, subcat)
+        self.log.debug(error.decode('utf-8'))
+        if error:
+            rtn.append("Exec failed code {}, output {}".format(
+                error.decode('utf-8').replace("\n"," "),
+                output.decode('utf-8').replace("\n"," ")))
+        else:
+            rtn.append("Exec ok, output {}".format(output.decode('utf-8').replace("\n"," ")))
+        self.state['qs'] = 'search?'
+        return self.mtemplate('search_results', rtn=rtn)
+
     def send_torrent(self, client, idtorrent):
         rtn = []
 
         try:
             _, resp = self.ygg.download_torrent(id=idtorrent)
-            rtn.append("Torrent downloaded, sending to client...")
+            rtn.append("Torrent downloaded, sending to {} client...".format(client))
         except Exception as e:
             rtn.append("Couldn't download torrent [{}]".format(e))
 
@@ -287,7 +318,7 @@ class YggServer(bottle.Bottle):
                 rtn.append(msg)
                 transmission_add_torrent(host, port, user, passw, resp)
             elif client == "rt":
-                ru = self.config['rpc_url']
+                ru = self.config['rtorrent.rpc_url']
                 rtn.append("Adding torrent to rtorrent @ rpc_url {}".format(ru))
                 rtorrent_add_torrent(ru, resp)
             elif client == "dg":

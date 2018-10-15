@@ -119,3 +119,7 @@ def list_cats():
         if '/' not in link:
             cats.append(link.split('-')[1])
     return cats
+
+
+def cat_subcat_from_href(href):
+    return href.split('/')[4:6]

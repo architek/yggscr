@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from base64 import b64encode
 import xmlrpc.client
+import shlex
+import subprocess
 from transmissionrpc import Client as tclient
 from deluge_client import DelugeRPCClient
 
@@ -27,3 +29,9 @@ def deluge_add_torrent(ip, port, user, password, torrent_binary):
         filename="",
         filedump=b64encode(torrent_binary).decode('ascii'),
         options={})
+
+
+def exec_cmd(cmd, torrent_filename, cat, subcat):
+    process = subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+    output, error = process.communicate()
+    return output, error

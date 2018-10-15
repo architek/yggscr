@@ -32,6 +32,9 @@
 %if state['dgEn']:
     <td><a href="dg/{{r.tid}}">D</a></td>
 %end
+%if state['exEn']:
+    <td><a href="ex/{{r.cat}}/{{r.subcat}}/{{r.tid}}">E</a></td>
+%end
     <td>{{r.cat}}</td>
     <td>{{r.subcat}}</td>
 %if state['ano']:

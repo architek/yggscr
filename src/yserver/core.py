@@ -221,7 +221,7 @@ class YggServer(bottle.Bottle):
     def search_index(self):
         q = bottle.request.copy().query.decode()
         if q.pop('act', "") == "Rssize":
-            bottle.redirect("/rssearch?" + bottle.request.query_string)
+            bottle.redirect("rssearch?" + bottle.request.query_string)
 
         rtn = []
         try:

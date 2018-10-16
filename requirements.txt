@@ -4,6 +4,7 @@ pytest
 coverage
 pytest-cov
 sphinx
+mock
 
 robobrowser
 cmd2>=0.8.0

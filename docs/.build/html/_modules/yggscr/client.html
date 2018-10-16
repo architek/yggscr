@@ -89,8 +89,6 @@
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="kn">from</span> <span class="nn">base64</span> <span class="k">import</span> <span class="n">b64encode</span>
 <span class="kn">import</span> <span class="nn">xmlrpc.client</span>
-<span class="kn">import</span> <span class="nn">shlex</span>
-<span class="kn">import</span> <span class="nn">subprocess</span>
 <span class="kn">from</span> <span class="nn">transmissionrpc</span> <span class="k">import</span> <span class="n">Client</span> <span class="k">as</span> <span class="n">tclient</span>
 <span class="kn">from</span> <span class="nn">deluge_client</span> <span class="k">import</span> <span class="n">DelugeRPCClient</span>
 
@@ -117,12 +115,6 @@
         <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
         <span class="n">filedump</span><span class="o">=</span><span class="n">b64encode</span><span class="p">(</span><span class="n">torrent_binary</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">),</span>
         <span class="n">options</span><span class="o">=</span><span class="p">{})</span></div>
-
-
-<div class="viewcode-block" id="exec_cmd"><a class="viewcode-back" href="../../source/yggscr.html#yggscr.client.exec_cmd">[docs]</a><span class="k">def</span> <span class="nf">exec_cmd</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">torrent_filename</span><span class="p">,</span> <span class="n">cat</span><span class="p">,</span> <span class="n">subcat</span><span class="p">):</span>
-    <span class="n">process</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">shlex</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">cmd</span><span class="p">),</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">output</span><span class="p">,</span> <span class="n">error</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">output</span><span class="p">,</span> <span class="n">error</span></div>
 </pre></div>
 
           </div>

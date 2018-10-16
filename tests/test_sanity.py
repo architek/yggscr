@@ -6,7 +6,9 @@
 
 
 import src.yggscr
-#import yggscr.template
+import src.yggscr.shell
+import src.yserver.core
+import src.yggscr.__main__
 
 
 def test_true():
@@ -47,7 +49,19 @@ def test_bitwise():
     assert 0b1111 >> 2 == 0b11
 
 
-def test_import():
+def test_import_yggscr():
     """Test imports."""
     src.yggscr
-#    yggscr.template
+    src.yggscr.__main__.main()
+
+
+def test_import_yserver():
+    """Test imports."""
+
+    src.yserver
+
+
+def test_import_yshell():
+    """Test imports."""
+
+    s = src.yggscr.shell #noqa

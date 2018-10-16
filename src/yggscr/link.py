@@ -68,8 +68,9 @@ def get_link(cat, subcat):
     raise ygge.YggException("Cat or subcat not found in get_link")
 
 
-def get_cat_id(log, cat, subcat=None):
-    log.debug("get_cat_id({},{})".format(cat, subcat))
+def get_cat_id(cat, subcat=None, log=None):
+    if log:
+        log.debug("get_cat_id({},{})".format(cat, subcat))
     if cat == "filmvideo" or cat == "film-vidéo":
         cat = "filmvidéo"
     if cat == "jeu-video" or cat == "jeu-vidéo":
@@ -82,11 +83,13 @@ def get_cat_id(log, cat, subcat=None):
     for link in links:
         if not cat_id and re.findall(r'\d+-%s' % re.escape(cat), link):
             cat_id = re.findall(r'\d+', link)[0]
-            log.debug('cat_id {}'.format(cat_id))
+            if log:
+                log.debug('cat_id {}'.format(cat_id))
             continue
         if cat_id and subcat and "-{}".format(subcat) in link:
             subcat_id = re.findall(r'\d+', link)[0]
-            log.debug('subcat_id {}'.format(subcat_id))
+            if log:
+                log.debug('subcat_id {}'.format(subcat_id))
             break
     if not cat_id or (subcat and not subcat_id):
         raise ygge.YggException("Cat or subcat not found in get_cat_id")

@@ -77,6 +77,7 @@ class YggBrowser(SBrowser):
         self.browser.session.hooks['response'].append(self.gen_state())
         self.log.debug("Created YggBrowser")
         self.last_ygg_id = None
+        self.login_attempts = 0
 
     def __str__(self):
         return "{} | [YGG] Auth {}".format(
@@ -260,7 +261,7 @@ class YggBrowser(SBrowser):
         if category and not category.isdigit():
             q.pop('category')   # Formsdict
             q.pop('sub_category', '')
-            q.update(get_cat_id(self.log, category, sub_category))
+            q.update(get_cat_id(category, sub_category, self.log))
 
         self.log.debug("Searching...")
 
@@ -302,7 +303,11 @@ class YggBrowser(SBrowser):
                                        else self.id2href(id)
         self.open(href)
         iheaders = self.response().headers
-        headers = [('Content-type', iheaders['Content-type']),
-                   ('Content-Disposition',  iheaders['Content-Disposition'])]
+        try:
+            headers = [('Content-type', iheaders['Content-type']),
+                       ('Content-Disposition',  iheaders['Content-Disposition'])]
+        except KeyError:
+            self.log.error("Couldn't download torrent")
+            return
         response_body = self.response().content
         return headers, response_body

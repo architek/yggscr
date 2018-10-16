@@ -23,7 +23,7 @@ def transmission_add_torrent(ip, port, user, password, torrent_binary):
 
 
 def deluge_add_torrent(ip, port, user, password, torrent_binary):
-    client = DelugeRPCClient(ip, int(port), user, password)
+    client = DelugeRPCClient(ip, int(port), user, password, decode_utf8=True)
     client.connect()
     return client.core.add_torrent_file(
         filename="",

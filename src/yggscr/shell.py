@@ -202,7 +202,7 @@ class YggShell(Cmd):
         'get last response'
         print(self.ygg_browser.response().text)
 
-    def do_get(self, url):
+    def do_open(self, url):
         'do a simple get on an url'
         print("Getting %s ..." % url)
-        self.ygg_browser.get(url)
+        self.ygg_browser.open(url)

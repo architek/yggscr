@@ -89,8 +89,9 @@
 <span></span><span class="c1"># from pprint import (PrettyPrinter, pprint)</span>
 <span class="c1"># pp = PrettyPrinter(indent=4)</span>
 
-<span class="kn">from</span> <span class="nn">.const</span> <span class="k">import</span> <span class="n">get_dl_link</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">ylogging</span>
+<span class="kn">from</span> <span class="nn">yggscr.const</span> <span class="k">import</span> <span class="n">get_dl_link</span>
+<span class="kn">from</span> <span class="nn">yggscr</span> <span class="k">import</span> <span class="n">ylogging</span>
+<span class="kn">from</span> <span class="nn">yggscr.link</span> <span class="k">import</span> <span class="n">cat_subcat_from_href</span>
 <span class="kn">from</span> <span class="nn">logging</span> <span class="k">import</span> <span class="n">DEBUG</span><span class="p">,</span> <span class="n">INFO</span> <span class="c1">#noqa</span>
 
 
@@ -130,11 +131,12 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">tid</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tid</span> <span class="o">=</span> <span class="mi">0</span>
                 <span class="k">pass</span>
         <span class="k">if</span> <span class="n">cat</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">cat</span> <span class="o">=</span> <span class="n">cat</span>
         <span class="k">if</span> <span class="n">href</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">cat</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">subcat</span> <span class="o">=</span> <span class="n">href</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="mi">4</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cat</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">subcat</span> <span class="o">=</span> <span class="n">cat_subcat_from_href</span><span class="p">(</span><span class="n">href</span><span class="p">)</span>
         <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Torrent is </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
 
 <div class="viewcode-block" id="Torrent.set_id"><a class="viewcode-back" href="../../source/yggscr.html#yggscr.torrents.Torrent.set_id">[docs]</a>    <span class="k">def</span> <span class="nf">set_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tid</span><span class="p">):</span>
@@ -145,9 +147,6 @@
 
 <div class="viewcode-block" id="Torrent.get_dl_link"><a class="viewcode-back" href="../../source/yggscr.html#yggscr.torrents.Torrent.get_dl_link">[docs]</a>    <span class="k">def</span> <span class="nf">get_dl_link</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">get_dl_link</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="nb">id</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">tid</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Torrent.download"><a class="viewcode-back" href="../../source/yggscr.html#yggscr.torrents.Torrent.download">[docs]</a>    <span class="k">def</span> <span class="nf">download</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">pass</span></div>
 
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{self.title}</span><span class="s2"> [</span><span class="si">{self.publish_date}</span><span class="s2"> Size:</span><span class="si">{self.nsize}</span><span class="s2"> &quot;</span>\

@@ -165,6 +165,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">browser</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">hooks</span><span class="p">[</span><span class="s1">&#39;response&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gen_state</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Created YggBrowser&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">last_ygg_id</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">login_attempts</span> <span class="o">=</span> <span class="mi">0</span>
 
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> | [YGG] Auth </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
@@ -188,7 +189,7 @@
 <div class="viewcode-block" id="YggBrowser.login"><a class="viewcode-back" href="../../source/yggscr.html#yggscr.ygg.YggBrowser.login">[docs]</a>    <span class="k">def</span> <span class="nf">login</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ygg_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ygg_pass</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
         <span class="k">if</span> <span class="n">ygg_id</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_ygg_id</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">login_attempts</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">login_attempts</span> <span class="o">=</span> <span class="mi">1</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">last_ygg_id</span> <span class="o">=</span> <span class="n">ygg_id</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">login_attempts</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
@@ -198,9 +199,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="n">ygg_id</span> <span class="k">if</span> <span class="n">ygg_id</span> <span class="k">else</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;ygg_id&#39;</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_pass</span> <span class="o">=</span> <span class="n">ygg_pass</span> <span class="k">if</span> <span class="n">ygg_id</span> <span class="k">else</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;ygg_pass&#39;</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Asked to login but provided &quot;</span>
                            <span class="s2">&quot;neither config nor environment variable&quot;</span><span class="p">)</span>
-            <span class="k">pass</span>
             <span class="k">return</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">YGG_HOME</span><span class="p">)</span>
@@ -233,6 +234,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">idstate</span> <span class="o">!=</span> <span class="s2">&quot;Authenticated&quot;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">YggException</span><span class="p">(</span>
                 <span class="s2">&quot;Not logged in, idstate is </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">idstate</span><span class="p">))</span>
+<span class="c1">#            raise ValueError</span>
 
         <span class="n">html</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">response</span><span class="p">()</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
         <span class="n">pos_r</span> <span class="o">=</span> <span class="n">html</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;Ratio&#39;</span><span class="p">)</span>
@@ -348,7 +350,7 @@
         <span class="k">if</span> <span class="n">category</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">category</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
             <span class="n">q</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;category&#39;</span><span class="p">)</span>   <span class="c1"># Formsdict</span>
             <span class="n">q</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;sub_category&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-            <span class="n">q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">get_cat_id</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">,</span> <span class="n">category</span><span class="p">,</span> <span class="n">sub_category</span><span class="p">))</span>
+            <span class="n">q</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">get_cat_id</span><span class="p">(</span><span class="n">category</span><span class="p">,</span> <span class="n">sub_category</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Searching...&quot;</span><span class="p">)</span>
 
@@ -390,8 +392,12 @@
                                        <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">id2href</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">href</span><span class="p">)</span>
         <span class="n">iheaders</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">response</span><span class="p">()</span><span class="o">.</span><span class="n">headers</span>
-        <span class="n">headers</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;Content-type&#39;</span><span class="p">,</span> <span class="n">iheaders</span><span class="p">[</span><span class="s1">&#39;Content-type&#39;</span><span class="p">]),</span>
-                   <span class="p">(</span><span class="s1">&#39;Content-Disposition&#39;</span><span class="p">,</span>  <span class="n">iheaders</span><span class="p">[</span><span class="s1">&#39;Content-Disposition&#39;</span><span class="p">])]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">headers</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;Content-type&#39;</span><span class="p">,</span> <span class="n">iheaders</span><span class="p">[</span><span class="s1">&#39;Content-type&#39;</span><span class="p">]),</span>
+                       <span class="p">(</span><span class="s1">&#39;Content-Disposition&#39;</span><span class="p">,</span>  <span class="n">iheaders</span><span class="p">[</span><span class="s1">&#39;Content-Disposition&#39;</span><span class="p">])]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Couldn&#39;t download torrent&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
         <span class="n">response_body</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">response</span><span class="p">()</span><span class="o">.</span><span class="n">content</span>
         <span class="k">return</span> <span class="n">headers</span><span class="p">,</span> <span class="n">response_body</span></div></div>
 </pre></div>

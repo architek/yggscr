@@ -101,6 +101,11 @@
 <dd></dd></dl>
 
 <dl class="function">
+<dt id="yggscr.client.exec_cmd">
+<code class="descclassname">yggscr.client.</code><code class="descname">exec_cmd</code><span class="sig-paren">(</span><em>cmd</em>, <em>torrent_filename</em>, <em>cat</em>, <em>subcat</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/client.html#exec_cmd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.client.exec_cmd" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
 <dt id="yggscr.client.rtorrent_add_torrent">
 <code class="descclassname">yggscr.client.</code><code class="descname">rtorrent_add_torrent</code><span class="sig-paren">(</span><em>rpc_url</em>, <em>torrent_binary=None</em>, <em>torrent_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/client.html#rtorrent_add_torrent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.client.rtorrent_add_torrent" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -134,8 +139,13 @@
 </dd></dl>
 
 <span class="target" id="module-yggscr.link"></span><dl class="function">
+<dt id="yggscr.link.cat_subcat_from_href">
+<code class="descclassname">yggscr.link.</code><code class="descname">cat_subcat_from_href</code><span class="sig-paren">(</span><em>href</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/link.html#cat_subcat_from_href"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.link.cat_subcat_from_href" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
 <dt id="yggscr.link.get_cat_id">
-<code class="descclassname">yggscr.link.</code><code class="descname">get_cat_id</code><span class="sig-paren">(</span><em>log</em>, <em>cat</em>, <em>subcat=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/link.html#get_cat_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.link.get_cat_id" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">yggscr.link.</code><code class="descname">get_cat_id</code><span class="sig-paren">(</span><em>cat</em>, <em>subcat=None</em>, <em>log=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/link.html#get_cat_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.link.get_cat_id" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
@@ -216,12 +226,6 @@
 </dd></dl>
 
 <dl class="method">
-<dt id="yggscr.shell.YggShell.do_get">
-<code class="descname">do_get</code><span class="sig-paren">(</span><em>url</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/shell.html#YggShell.do_get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.shell.YggShell.do_get" title="Permalink to this definition">¶</a></dt>
-<dd><p>do a simple get on an url</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="yggscr.shell.YggShell.do_login">
 <code class="descname">do_login</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/shell.html#YggShell.do_login"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.shell.YggShell.do_login" title="Permalink to this definition">¶</a></dt>
 <dd><p>login &lt;user&gt; &lt;pass&gt; used to authenticate on ygg</p>
@@ -242,6 +246,12 @@
 <dt id="yggscr.shell.YggShell.do_next">
 <code class="descname">do_next</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/shell.html#YggShell.do_next"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.shell.YggShell.do_next" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns next torrents from previous search or list</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="yggscr.shell.YggShell.do_open">
+<code class="descname">do_open</code><span class="sig-paren">(</span><em>url</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/shell.html#YggShell.do_open"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.shell.YggShell.do_open" title="Permalink to this definition">¶</a></dt>
+<dd><p>do a simple get on an url</p>
 </dd></dl>
 
 <dl class="method">
@@ -358,11 +368,6 @@ n is the number of torrents to display (all by default)</p>
 <dt id="yggscr.torrents.Torrent">
 <em class="property">class </em><code class="descclassname">yggscr.torrents.</code><code class="descname">Torrent</code><span class="sig-paren">(</span><em>torrent_title</em>, <em>torrent_comm</em>, <em>torrent_age</em>, <em>torrent_size</em>, <em>torrent_completed</em>, <em>torrent_seed</em>, <em>torrent_leech</em>, <em>href</em>, <em>thref=None</em>, <em>tid=None</em>, <em>cat=None</em>, <em>subcat=None</em>, <em>uploader=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/torrents.html#Torrent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.torrents.Torrent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<dl class="method">
-<dt id="yggscr.torrents.Torrent.download">
-<code class="descname">download</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/torrents.html#Torrent.download"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.torrents.Torrent.download" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="method">
 <dt id="yggscr.torrents.Torrent.get_dl_link">
 <code class="descname">get_dl_link</code><span class="sig-paren">(</span><em>id=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/torrents.html#Torrent.get_dl_link"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.torrents.Torrent.get_dl_link" title="Permalink to this definition">¶</a></dt>

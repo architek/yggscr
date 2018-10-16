@@ -6,6 +6,9 @@
 # full list see the documentation:
 # http://www.sphinx-doc.org/en/master/config
 
+import sys
+import mock
+
 # -- Path setup --------------------------------------------------------------
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -24,9 +27,9 @@ copyright = '2018, Laurent Kislaire'
 author = 'Laurent Kislaire'
 
 # The short X.Y version
-version = '1.1.15'
+version = '1.1.16'
 # The full version, including alpha/beta/rc tags
-release = '1.1.15'
+release = '1.1.16'
 
 
 # -- General configuration ---------------------------------------------------
@@ -204,3 +207,9 @@ intersphinx_mapping = {'https://docs.python.org/': None}
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
+
+# -- Options for autotdoc extension ----------------------------------------------
+
+# Packages / modules to mock so that build does not fail.
+for module in [ 'yserver.app' ]:
+    sys.modules[module] = mock.MagicMock()

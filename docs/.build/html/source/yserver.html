@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>yserver package &#8212; YggScr 1.1.15 documentation</title>
+    <title>yserver package &#8212; YggScr 1.1.16 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -93,6 +93,12 @@
 <h1>yserver package<a class="headerlink" href="#yserver-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="module-yserver.app">
 <span id="submodules"></span><h2>Submodules<a class="headerlink" href="#module-yserver.app" title="Permalink to this headline">¶</a></h2>
+<p>MagicMock is a subclass of Mock with default implementations
+of most of the magic methods. You can use MagicMock without having to
+configure the magic methods yourself.</p>
+<p>If you use the <cite>spec</cite> or <cite>spec_set</cite> arguments then <em>only</em> magic
+methods that exist in the spec will be created.</p>
+<p>Attributes and the return value of a <cite>MagicMock</cite> will also be <cite>MagicMocks</cite>.</p>
 <span class="target" id="module-yserver.config"></span><dl class="class">
 <dt id="yserver.config.Config">
 <em class="property">class </em><code class="descclassname">yserver.config.</code><code class="descname">Config</code><a class="reference internal" href="../_modules/yserver/config.html#Config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yserver.config.Config" title="Permalink to this definition">¶</a></dt>
@@ -128,6 +134,11 @@
 <dl class="method">
 <dt id="yserver.core.YggServer.dl_torrent">
 <code class="descname">dl_torrent</code><span class="sig-paren">(</span><em>idtorrent</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yserver/core.html#YggServer.dl_torrent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yserver.core.YggServer.dl_torrent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="yserver.core.YggServer.exec_torrent">
+<code class="descname">exec_torrent</code><span class="sig-paren">(</span><em>cat</em>, <em>subcat</em>, <em>idtorrent</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yserver/core.html#YggServer.exec_torrent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yserver.core.YggServer.exec_torrent" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">

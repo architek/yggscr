@@ -43,6 +43,7 @@ class Torrent():
             try:
                 self.tid = int(id)
             except ValueError:
+                self.tid = 0
                 pass
         if cat:
             self.cat = cat
@@ -58,9 +59,6 @@ class Torrent():
 
     def get_dl_link(self, id=None):
         return get_dl_link(id=id or self.tid)
-
-    def download(self):
-        pass
 
     def __str__(self):
         return "{self.title} [{self.publish_date} Size:{self.nsize} "\

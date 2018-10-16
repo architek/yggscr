@@ -12,6 +12,9 @@
 %if state['dgEn']:
    <td class="thead">D</td>
 %end
+%if state['exEn']:
+   <td class="thead">E</td>
+%end
    <td><a class="thead" href='{{state['qs']}}&sort=name&order={{state['norder']}}'>Cat</a></td>
    <td><a class="thead" href='{{state['qs']}}&sort=name&order={{state['norder']}}'>SubCat</a></td>
    <td><a class="thead" href='{{state['qs']}}&sort=name&order={{state['norder']}}'>Titre</a></td>

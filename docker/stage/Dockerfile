@@ -16,6 +16,7 @@ RUN pip install wheel && pip wheel . --wheel-dir=wheels
 
 
 FROM python:3.6-alpine as uwsgi
+
 COPY --from=base yggscr/ /opt/yggscr
 WORKDIR /opt/yggscr
 RUN apk --update --no-cache add uwsgi uwsgi-python3 && \
@@ -23,6 +24,7 @@ RUN apk --update --no-cache add uwsgi uwsgi-python3 && \
 RUN pip install --no-index --find-links=/opt/yggscr/wheels -r requirements-dev.txt
 
 ENV PYTHONPATH /opt/yggscr/src
+ENV def_guid=1001
 
 WORKDIR src/yserver
 ENTRYPOINT ["/opt/yggscr/docker/stage/conf-setup.sh"]

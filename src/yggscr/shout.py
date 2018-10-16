@@ -59,6 +59,7 @@ class YggShout:
         self.colour = colour
         self.last_shouts = []
         self.debug = debug
+        self.diffshouts = []
 
     def get_shouts(self):
         """ Return current shouts from website """

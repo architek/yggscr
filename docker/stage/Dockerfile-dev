@@ -22,7 +22,7 @@ COPY conf /opt/yggscr/conf
 COPY docker /opt/yggscr/docker
 
 WORKDIR src/yserver
-ENV def_guid=1001
+ENV DEF_GUID=1001
 ENTRYPOINT ["/opt/yggscr/docker/stage/conf-setup.sh"]
 
 ARG def_wsgi_ini=ygg.ini

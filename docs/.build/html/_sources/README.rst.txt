@@ -4,8 +4,8 @@ Ygg Scraper
 :Info: This is the README file for Ygg Scraper.
 :Author: Laurent Kislaire <teebeenator@gmail.com>
 :Copyright: © 2018, Laurent Kislaire.
-:Date: 2018-10-16
-:Version: 1.1.16
+:Date: 2018-10-17
+:Version: 1.1.17
 
 .. index: README
 .. image:: https://travis-ci.org/architek/yggscr.svg?branch=master
@@ -13,7 +13,7 @@ Ygg Scraper
 .. image:: https://codecov.io/gh/architek/yggscr/branch/master/graph/badge.svg
    :target: https://codecov.io/gh/architek/yggscr
 .. image:: https://images.microbadger.com/badges/image/architek/yggscr.svg
-   :target: https://href="https://microbadger.com/images/architek/yggscr
+   :target: https://microbadger.com/images/architek/yggscr
 
 PURPOSE
 -------

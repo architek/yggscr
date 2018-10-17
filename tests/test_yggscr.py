@@ -76,7 +76,7 @@ def test_client():
     except: #noqa
         pass
 
-    exec_cmd("ls {f}", ".", "cat", "subcat")
+    exec_cmd("ls .")
 
 
 def test_shout():

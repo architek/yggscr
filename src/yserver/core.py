@@ -251,7 +251,7 @@ class YggServer(bottle.Bottle):
             return self.rssize(torrents, DL_TPL)
         else:
             return self.rssize(torrents, bottle.request.urlparts.scheme + "://" +
-                               bottle.request.urlparts.netloc+"/dl/{id}")
+                               bottle.request.urlparts.netloc+bottle.request.script_name+"dl/{id}")
 
     def top_day(self, name):
         torrents = {
@@ -275,7 +275,6 @@ class YggServer(bottle.Bottle):
     def exec_torrent(self, cat, subcat, idtorrent):
         rtn = []
 
-        cmd = self.config['exec.cmd']
         try:
             _, resp = self.ygg.download_torrent(id=idtorrent)
         except Exception as e:
@@ -285,16 +284,16 @@ class YggServer(bottle.Bottle):
         fp.write(resp)
         fp.flush()
         chmod(fp.name, 444)
-        cmd = cmd.format(f=fp.name, cat=cat, subcat=subcat)
+
+        cmd = self.config['exec.cmd'].format(f=fp.name, cat=cat, subcat=subcat)
         rtn.append("Torrent downloaded, executing command {}".format(cmd))
-        output, error = exec_cmd(cmd, fp.name, cat, subcat)
-        self.log.debug(error.decode('utf-8'))
+        output, error = exec_cmd(cmd)
+        self.log.debug(error)
+
         if error:
-            rtn.append("Exec failed code {}, output {}".format(
-                error.decode('utf-8').replace("\n"," "),
-                output.decode('utf-8').replace("\n"," ")))
+            rtn.append("FAIL {} | {}".format(error, output))
         else:
-            rtn.append("Exec ok, output {}".format(output.decode('utf-8').replace("\n"," ")))
+            rtn.append("OK | {}".format(output))
         self.state['qs'] = 'search?'
         return self.mtemplate('search_results', rtn=rtn)
 

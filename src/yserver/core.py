@@ -148,17 +148,16 @@ class YggServer(bottle.Bottle):
     <title>YggTorrent RSS</title>
     <link>https://yggtorrent.is</link>
     <description>Better than Official YggTorrent RSS Feed</description>
-    {items}
+{items}
     </channel>
     </rss>"""
-        item_tpl = """<item><title>{title}</title>"
-            "<description>Size: {torrent.nsize}, Seeders: {torrent.seed}, "
-            "Leechers: {torrent.leech}</description>
-    <link>{torrent.href}</link><pubDate>{torrent.publish_date}</pubDate>
-    <enclosure url="{uri}"/></item>"""
+        item_tpl = """<item><title>{title}</title>
+            <description>Size: {torrent.nsize}, Seeders: {torrent.seed}, Leechers: {torrent.leech}</description>
+            <link>{torrent.href}</link><pubDate>{torrent.publish_date}</pubDate>
+            <enclosure url="{uri}"/></item>"""
 
         bottle.response.set_header('Content-type', 'application/xml')
-        return rss_tpl.format(items=''.join(
+        return rss_tpl.format(items="\n".join(
                     item_tpl.format(
                         torrent=torrent,
                         uri=base.format(id=torrent.tid),

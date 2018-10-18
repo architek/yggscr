@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>yggscr.ygg &#8212; YggScr 1.1.16 documentation</title>
+    <title>yggscr.ygg &#8212; YggScr 1.1.17 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -199,9 +199,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="n">ygg_id</span> <span class="k">if</span> <span class="n">ygg_id</span> <span class="k">else</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;ygg_id&#39;</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_pass</span> <span class="o">=</span> <span class="n">ygg_pass</span> <span class="k">if</span> <span class="n">ygg_id</span> <span class="k">else</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;ygg_pass&#39;</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="k">pass</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Asked to login but provided &quot;</span>
                            <span class="s2">&quot;neither config nor environment variable&quot;</span><span class="p">)</span>
+            <span class="k">pass</span>
             <span class="k">return</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">YGG_HOME</span><span class="p">)</span>
@@ -234,7 +234,6 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">idstate</span> <span class="o">!=</span> <span class="s2">&quot;Authenticated&quot;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">YggException</span><span class="p">(</span>
                 <span class="s2">&quot;Not logged in, idstate is </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">idstate</span><span class="p">))</span>
-<span class="c1">#            raise ValueError</span>
 
         <span class="n">html</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">response</span><span class="p">()</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
         <span class="n">pos_r</span> <span class="o">=</span> <span class="n">html</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;Ratio&#39;</span><span class="p">)</span>

@@ -15,7 +15,7 @@ if StrictVersion(__version__) < StrictVersion('33.1.1'):
     sys.exit('Sorry, Python3 setuptools < 33.1.1 is not supported')
 
 setup(name='yggscr',
-      version='1.1.16',
+      version='1.1.17',
       description='Yggtorrent scraper library - Webserver - Rss - Shell',
       keywords='yggscr',
       author='Laurent Kislaire',

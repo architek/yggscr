@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>yserver.core &#8212; YggScr 1.1.18 documentation</title>
+    <title>yserver.core &#8212; YggScr 1.1.19 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -236,17 +236,16 @@
 <span class="s2">    &lt;title&gt;YggTorrent RSS&lt;/title&gt;</span>
 <span class="s2">    &lt;link&gt;https://yggtorrent.is&lt;/link&gt;</span>
 <span class="s2">    &lt;description&gt;Better than Official YggTorrent RSS Feed&lt;/description&gt;</span>
-<span class="s2">    </span><span class="si">{items}</span><span class="s2"></span>
+<span class="si">{items}</span><span class="s2"></span>
 <span class="s2">    &lt;/channel&gt;</span>
 <span class="s2">    &lt;/rss&gt;&quot;&quot;&quot;</span>
-        <span class="n">item_tpl</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;&lt;item&gt;&lt;title&gt;</span><span class="si">{title}</span><span class="s2">&lt;/title&gt;&quot;</span>
-<span class="s2">            &quot;&lt;description&gt;Size: </span><span class="si">{torrent.nsize}</span><span class="s2">, Seeders: </span><span class="si">{torrent.seed}</span><span class="s2">, &quot;</span>
-<span class="s2">            &quot;Leechers: </span><span class="si">{torrent.leech}</span><span class="s2">&lt;/description&gt;</span>
-<span class="s2">    &lt;link&gt;</span><span class="si">{torrent.href}</span><span class="s2">&lt;/link&gt;&lt;pubDate&gt;</span><span class="si">{torrent.publish_date}</span><span class="s2">&lt;/pubDate&gt;</span>
-<span class="s2">    &lt;enclosure url=&quot;</span><span class="si">{uri}</span><span class="s2">&quot;/&gt;&lt;/item&gt;&quot;&quot;&quot;</span>
+        <span class="n">item_tpl</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;&lt;item&gt;&lt;title&gt;</span><span class="si">{title}</span><span class="s2">&lt;/title&gt;</span>
+<span class="s2">            &lt;description&gt;Size: </span><span class="si">{torrent.nsize}</span><span class="s2">, Seeders: </span><span class="si">{torrent.seed}</span><span class="s2">, Leechers: </span><span class="si">{torrent.leech}</span><span class="s2">&lt;/description&gt;</span>
+<span class="s2">            &lt;link&gt;</span><span class="si">{torrent.href}</span><span class="s2">&lt;/link&gt;&lt;pubDate&gt;</span><span class="si">{torrent.publish_date}</span><span class="s2">&lt;/pubDate&gt;</span>
+<span class="s2">            &lt;enclosure url=&quot;</span><span class="si">{uri}</span><span class="s2">&quot;/&gt;&lt;/item&gt;&quot;&quot;&quot;</span>
 
         <span class="n">bottle</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s1">&#39;Content-type&#39;</span><span class="p">,</span> <span class="s1">&#39;application/xml&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">rss_tpl</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">items</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">rss_tpl</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">items</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
                     <span class="n">item_tpl</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                         <span class="n">torrent</span><span class="o">=</span><span class="n">torrent</span><span class="p">,</span>
                         <span class="n">uri</span><span class="o">=</span><span class="n">base</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">torrent</span><span class="o">.</span><span class="n">tid</span><span class="p">),</span>

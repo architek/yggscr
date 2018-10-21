@@ -15,9 +15,9 @@
 %if state['exEn']:
    <td class="thead">E</td>
 %end
-   <td><a class="thead" href='{{state['qs']}}&sort=name&order={{state['norder']}}'>Cat</a></td>
-   <td><a class="thead" href='{{state['qs']}}&sort=name&order={{state['norder']}}'>SubCat</a></td>
-   <td><a class="thead" href='{{state['qs']}}&sort=name&order={{state['norder']}}'>Titre</a></td>
+   <td><a class="thead" href='{{state['qs']}}&sort=cat&order={{state['norder']}}'>Cat</a></td>
+   <td><a class="thead" href='{{state['qs']}}&sort=subcat&order={{state['norder']}}'>SubCat</a></td>
+   <td><a class="thead" href='{{state['qs']}}&sort=title&order={{state['norder']}}'>Titre</a></td>
    <td><a class="thead" href='{{state['qs']}}&sort=publish_date&order={{state['norder']}}'>Date</a></td>
    <td><a class="thead" href='{{state['qs']}}&sort=size&order={{state['norder']}}'>Taille</a></td>
    <td><a class="thead" href='{{state['qs']}}&sort=seed&order={{state['norder']}}'>Seed</a></td>

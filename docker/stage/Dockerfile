@@ -2,10 +2,12 @@ FROM python:3.6-alpine as base
 
 ARG BUILD_DATE
 ARG VCS_REF
-LABEL org.label-schema.build-date=$BUILD_DATE \
+LABEL org.label-schema.schema-version=1.0 \
+      org.label-schema.build-date=$BUILD_DATE \
+      org.label-schema.name=architek/yggscr \
+      org.label-schema.description=YggTorrent scrapper \
       org.label-schema.vcs-url="https://github.com/architek/yggscr" \
-      org.label-schema.vcs-ref=$VCS_REF \
-      org.label-schema.schema-version="1.0.0-rc1"
+      org.label-schema.vcs-ref=$VCS_REF
 LABEL maintainer="Laurent Kislaire <teebeenator@gmail.com>"
 
 RUN apk --update --no-cache add git && \

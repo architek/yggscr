@@ -22,7 +22,7 @@ with open('src/yggscr/__build__.py', 'w') as f:
     f.write("__builddate__ = '{}'\n__fullversion__ = '{}'".format(builddate, fullversion))
 
 setup(name='yggscr',
-      version='1.1.19',
+      version='1.2.0',
       description='Yggtorrent scraper library - Webserver - Rss - Shell',
       keywords='yggscr',
       author='Laurent Kislaire',

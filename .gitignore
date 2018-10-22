@@ -1,3 +1,4 @@
+src/yggscr/__build__.py
 .venv
 .buildlog
 .dock

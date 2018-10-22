@@ -21,6 +21,7 @@ from . import shout
 from . import torrents
 from . import ygg
 from . import ylogging
+from .__build__ import __builddate__, __fullversion__ #noqa
 
 
 __title__ = 'Ygg Scraper'

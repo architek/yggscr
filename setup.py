@@ -2,6 +2,8 @@
 # -*- encoding: utf-8 -*-
 import io
 import sys
+import datetime
+import subprocess
 from distutils.version import StrictVersion
 
 try:
@@ -13,6 +15,11 @@ if sys.version_info < (3, 4):
     sys.exit('Sorry, Python < 3.4 is not supported')
 if StrictVersion(__version__) < StrictVersion('33.1.1'):
     sys.exit('Sorry, Python3 setuptools < 33.1.1 is not supported')
+
+with open('src/yggscr/__build__.py', 'w') as f:
+    builddate = format(datetime.datetime.now())[:19]
+    fullversion = subprocess.check_output(['git', 'describe']).strip().decode('ascii')
+    f.write("__builddate__ = '{}'\n__fullversion__ = '{}'".format(builddate, fullversion))
 
 setup(name='yggscr',
       version='1.1.19',

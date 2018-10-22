@@ -3,7 +3,6 @@
 import io
 import sys
 import datetime
-import subprocess
 from distutils.version import StrictVersion
 
 try:
@@ -18,8 +17,7 @@ if StrictVersion(__version__) < StrictVersion('33.1.1'):
 
 with open('src/yggscr/__build__.py', 'w') as f:
     builddate = format(datetime.datetime.now())[:19]
-    fullversion = subprocess.check_output(['git', 'describe']).strip().decode('ascii')
-    f.write("__builddate__ = '{}'\n__fullversion__ = '{}'".format(builddate, fullversion))
+    f.write("__builddate__ = '{}'".format(builddate))
 
 setup(name='yggscr',
       version='1.2.0',

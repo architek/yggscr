@@ -9,7 +9,7 @@ from urllib.parse import urlencode
 from yggscr.link import cats
 from yggscr.ygg import YggBrowser
 from yserver.config import Config
-from yggscr import __builddate__, __fullversion__
+from yggscr import __builddate__, __version__
 from yggscr.const import RSS_TPL, DL_TPL, get_dl_link
 from yggscr.exceptions import YggException, LoginFailed, TooManyFailedLogins
 from yggscr.client import rtorrent_add_torrent, transmission_add_torrent, deluge_add_torrent, exec_cmd
@@ -216,7 +216,7 @@ class YggServer(bottle.Bottle):
             rtn=["Welcome " + (
                 "Anonymous - Connect for more options"
                 if self.state['ano'] else self.config['ygg.username']),
-                 "Running version {} buit at {}.".format(__builddate__, __fullversion__)
+                 "Running version {} buit at {}.".format(__builddate__, __version__)
                 ]
                         )
 

@@ -5,7 +5,7 @@ ARG VCS_REF
 LABEL org.label-schema.schema-version=1.0 \
       org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.name=architek/yggscr \
-      org.label-schema.description=YggTorrent scrapper \
+      org.label-schema.description="YggTorrent scrapper" \
       org.label-schema.vcs-url="https://github.com/architek/yggscr" \
       org.label-schema.vcs-ref=$VCS_REF
 LABEL maintainer="Laurent Kislaire <teebeenator@gmail.com>"
@@ -18,9 +18,11 @@ RUN pip install wheel && pip wheel . --wheel-dir=wheels
 
 
 FROM python:3.6-alpine as uwsgi
+ARG BUILD_DATE
 
 COPY --from=base yggscr/ /opt/yggscr
 WORKDIR /opt/yggscr
+RUN echo "__builddate__ = '$BUILD_DATE'" > src/yggscr/__build__.py
 RUN apk --update --no-cache add uwsgi uwsgi-python3 && \
     mkdir /run/ygg/ && chown -R uwsgi:uwsgi /run/ygg
 RUN pip install --no-index --find-links=/opt/yggscr/wheels -r requirements-dev.txt

@@ -9,12 +9,15 @@ RUN pip install wheel && pip wheel . --wheel-dir=wheels
 
 
 FROM python:3.6-alpine as uwsgi
+ARG BUILD_DATE
 
 COPY --from=base-dev yggscr/ /opt/yggscr
 WORKDIR /opt/yggscr
+RUN echo "__builddate__ = '$BUILD_DATE'" > src/yggscr/__build__.py
 RUN apk --update --no-cache add uwsgi uwsgi-python3 && \
     mkdir /run/ygg/ && chown -R uwsgi:uwsgi /run/ygg
 RUN pip install --no-index --find-links=/opt/yggscr/wheels -r requirements-dev.txt
+
 
 ENV PYTHONPATH /opt/yggscr/src
 

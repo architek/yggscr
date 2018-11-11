@@ -9,10 +9,11 @@ import requests
 import threading
 from time import sleep, time
 from hashlib import sha256
-import supybot.ircdb as ircdb
+import supybot.ircdb as ircdb   #noqa
 from supybot.commands import (wrap, optional)
 import supybot.callbacks as callbacks
 from yggscr.ygg import YggBrowser
+from yggscr.link import list_cat_subcat
 from yggscr.shout import (YggShout, ShoutMessage)
 from yggscr.exceptions import YggException
 from collections import defaultdict
@@ -20,7 +21,7 @@ from collections import defaultdict
 # import supybot.plugins as plugins
 import supybot.ircutils as ircutils
 from bs4 import BeautifulSoup
-from logging import INFO, DEBUG
+from logging import INFO, DEBUG  #noqa
 
 try:
     from supybot.i18n import PluginInternationalization
@@ -32,6 +33,7 @@ except ImportError:
         return x
 
 shout_err = 0
+
 
 class YBot(callbacks.Plugin):
     """sup ygg bot"""
@@ -129,7 +131,7 @@ class YBot(callbacks.Plugin):
         """Will list available cat/subcat combinaisons
         """
         irc.reply("Available (cat, subcat) combinaisons:{}".
-                  format(self.yggb.cat_subcat()))
+                  format(list_cat_subcat()))
     ycat = wrap(ycat)
 
     def ylogin(self, irc, msg, args, yuser, ypass):
@@ -212,9 +214,11 @@ class YBot(callbacks.Plugin):
         mmin, mmax, mmean = float("inf"), float("-inf"), float("inf")
 
         if n is None:
-            n=1
-        if n>100: n=100
-        if n>10 and quiet is False: n=10
+            n = 1
+        if n > 100:
+            n = 100
+        if n > 10 and quiet is False:
+            n = 10
 
         for _ in range(n):
             try:
@@ -226,21 +230,22 @@ class YBot(callbacks.Plugin):
                 mmin = min(mmin, dt)
                 t.append(dt)
                 if not quiet:
-                    irc.reply("{:>2} ping {} time={:>7.2f}ms http {}".format(1+_ if n>1 else "", self.yggb.browser.url, dt, sts),prefixNick=False)
+                    irc.reply("{:>2} ping {} time={:>7.2f}ms http {}".format(
+                        1+_ if n > 1 else "", self.yggb.browser.url, dt, sts), prefixNick=False)
                 statuses[sts] += 1
             except Exception as e:
                 pass
                 mmax = float("inf")
-                irc.reply("{:>2} timeout! [{}]".format(1+_, e),prefixNick=False)
-        if n==1:
+                irc.reply("{:>2} timeout! [{}]".format(1+_, e), prefixNick=False)
+        if n == 1:
             return
         if t:
             mmean = sum(t)/len(t)
         str_statuses = ' | '.join('{}:{}'.format(key, value) for key, value in statuses.items())
         irc.reply("{} packet{} transmitted, {} received, {:.2%} packet loss, http codes {}".
-                  format(n, "s" if n > 1 else "", len(t), 1-len(t)/n, str_statuses),prefixNick=False)
+                  format(n, "s" if n > 1 else "", len(t), 1-len(t)/n, str_statuses), prefixNick=False)
         irc.reply("rtt min/avg/max = {:.2f}/{:.2f}/{:.2f} ms".
-                  format(mmin, mmean, mmax),prefixNick=False)
+                  format(mmin, mmean, mmax), prefixNick=False)
 
     yping = wrap(yping, [optional('PositiveInt'), optional('boolean')])
 
@@ -261,7 +266,6 @@ class YBot(callbacks.Plugin):
 
         # 1: unknown, 2: Membre, 3: supermod, 4: mod, 5: tp, 8: nouveau membre, 9: desactivé
         gcolours = {1: 'blue', 3: 'orange', 4: 'green', 5: 'pink', 8: 'purple', 9: 'brown'}
-
 
         # Don't colorize members unless w_colour for color tracking
         if group == 2:
@@ -287,8 +291,8 @@ class YBot(callbacks.Plugin):
         user = "{0: >12}".format(shout.user)
         user = self.colorize_user(user, shout.group, w_colour)
         fmt = self.registryValue('shout.fmt')
-        msg = shout.message.replace('\n',' ').replace('\n',' ')
-        return  fmt.format(time=shout.mtime, id=shout.id, fuser=user, user=shout.user, group=shout.group, message=msg)
+        msg = shout.message.replace('\n', ' ').replace('\n', ' ')
+        return fmt.format(time=shout.mtime, id=shout.id, fuser=user, user=shout.user, group=shout.group, message=msg)
 
     def yshout(self, irc, msg, args, n, w_colour=False, hfile=None):
         """[int n] [boolean user_colorized] [injected html file]
@@ -299,12 +303,12 @@ class YBot(callbacks.Plugin):
         rate_err = self.registryValue('shout.rate_err')
         if hfile:
             try:
-                with open(hfile,"r") as fn:
+                with open(hfile, "r") as fn:
                     html = fn.read()
             except:
                 irc.error("Can't read file %s" % hfile)
                 return
-            shout = ShoutMessage(shout=None, soup=BeautifulSoup(html,'html.parser'))
+            shout = ShoutMessage(shout=None, soup=BeautifulSoup(html, 'html.parser'))
             irc.reply(self.shoutify(shout, False), prefixNick=False)
             return
         try:
@@ -314,7 +318,7 @@ class YBot(callbacks.Plugin):
             self.log.info("Could not dump shout, aborting. Error %s. Tid %s" % (e, threading.get_ident()))
             shout_err += 1
             if shout_err % rate_err == 0:
-                irc.error("Shout ({} messages suppressed) (Exception {})".format(rate_err,e))
+                irc.error("Shout ({} messages suppressed) (Exception {})".format(rate_err, e))
                 irc.error("Connection details: {}".format(self.yggb))
             return
         if n is None:

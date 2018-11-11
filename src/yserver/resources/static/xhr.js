@@ -16,7 +16,7 @@ var off=0;
 function disp_msg_fade(msg) {
     var msgModal = '<div id="mod-cont">'+msg+'</div>';
     $('#modal').append(msgModal);
-    $('#mod-cont').fade_inout(2500);
+    $('#mod-cont').fade_inout(4000);
 }
 function prog_fade(msg, ndelay) {
     setTimeout(function() {

@@ -216,7 +216,7 @@ class YggServer(bottle.Bottle):
             rtn=["Welcome " + (
                 "Anonymous - Connect for more options"
                 if self.state['ano'] else self.config['ygg.username']),
-                 "Running version {} buit at {}.".format(__builddate__, __version__)
+                 "Running version {} built on {}.".format(__version__, __builddate__)
                 ]
                         )
 

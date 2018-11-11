@@ -4,6 +4,7 @@ from cmd2 import Cmd
 import logging
 from . import ygg
 from . import ylogging
+from . import link
 from functools import wraps
 from .exceptions import YggException
 # from pprint import (PrettyPrinter, pprint)
@@ -191,7 +192,7 @@ class YggShell(Cmd):
     def do_lscat(self, line):
         'list categories and subcategories'
         print("List of cat, subcat combinaisons:\n%s" %
-              self.ygg_browser.cat_subcat())
+              link.list_cat_subcat())
 
     def do_ping(self, line):
         'perform a connection to /'

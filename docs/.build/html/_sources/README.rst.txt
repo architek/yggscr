@@ -35,7 +35,7 @@ Ygg scraper with:
 DOCUMENTATION
 -------------
 
-The full documentation is here_.
+The full documentation is here_. This includes links to docker images.
 
 .. _here: https://architek.github.io/yggscr/.build/html/index.html
 

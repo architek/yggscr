@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>yggscr package &#8212; YggScr 1.2.0 documentation</title>
+    <title>yggscr package &#8212; YggScr 1.2.1 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -369,6 +369,22 @@ n is the number of torrents to display (all by default)</p>
 <code class="descclassname">yggscr.shout.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/shout.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.shout.main" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<span class="target" id="module-yggscr.stats"></span><dl class="class">
+<dt id="yggscr.stats.Stats">
+<em class="property">class </em><code class="descclassname">yggscr.stats.</code><code class="descname">Stats</code><a class="reference internal" href="../_modules/yggscr/stats.html#Stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.stats.Stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="yggscr.stats.Stats.add">
+<code class="descname">add</code><span class="sig-paren">(</span><em>vals</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/stats.html#Stats.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.stats.Stats.add" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="yggscr.stats.Stats.upd_speed">
+<code class="descname">upd_speed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/stats.html#Stats.upd_speed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.stats.Stats.upd_speed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 <span class="target" id="module-yggscr.torrents"></span><dl class="class">
 <dt id="yggscr.torrents.Torrent">
 <em class="property">class </em><code class="descclassname">yggscr.torrents.</code><code class="descname">Torrent</code><span class="sig-paren">(</span><em>torrent_title</em>, <em>torrent_comm</em>, <em>torrent_age</em>, <em>torrent_size</em>, <em>torrent_completed</em>, <em>torrent_seed</em>, <em>torrent_leech</em>, <em>href</em>, <em>thref=None</em>, <em>tid=None</em>, <em>cat=None</em>, <em>subcat=None</em>, <em>uploader=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/torrents.html#Torrent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.torrents.Torrent" title="Permalink to this definition">¶</a></dt>
@@ -396,22 +412,6 @@ n is the number of torrents to display (all by default)</p>
 <dd></dd></dl>
 
 <span class="target" id="module-yggscr.ygg"></span><dl class="class">
-<dt id="yggscr.ygg.Stats">
-<em class="property">class </em><code class="descclassname">yggscr.ygg.</code><code class="descname">Stats</code><a class="reference internal" href="../_modules/yggscr/ygg.html#Stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.ygg.Stats" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<dl class="method">
-<dt id="yggscr.ygg.Stats.add">
-<code class="descname">add</code><span class="sig-paren">(</span><em>vals</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/ygg.html#Stats.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.ygg.Stats.add" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="yggscr.ygg.Stats.upd_speed">
-<code class="descname">upd_speed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/ygg.html#Stats.upd_speed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.ygg.Stats.upd_speed" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
 <dt id="yggscr.ygg.YggBrowser">
 <em class="property">class </em><code class="descclassname">yggscr.ygg.</code><code class="descname">YggBrowser</code><span class="sig-paren">(</span><em>scraper=None</em>, <em>browser=None</em>, <em>proxy=None</em>, <em>loglevel=20</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/ygg.html#YggBrowser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.ygg.YggBrowser" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#yggscr.sbrowser.SBrowser" title="yggscr.sbrowser.SBrowser"><code class="xref py py-class docutils literal notranslate"><span class="pre">yggscr.sbrowser.SBrowser</span></code></a></p>
@@ -439,11 +439,6 @@ n is the number of torrents to display (all by default)</p>
 <dl class="method">
 <dt id="yggscr.ygg.YggBrowser.get_stats">
 <code class="descname">get_stats</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/ygg.html#YggBrowser.get_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.ygg.YggBrowser.get_stats" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="yggscr.ygg.YggBrowser.id2href">
-<code class="descname">id2href</code><span class="sig-paren">(</span><em>id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/ygg.html#YggBrowser.id2href"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.ygg.YggBrowser.id2href" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">

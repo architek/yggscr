@@ -39,6 +39,11 @@ Submodules
     :undoc-members:
     :show-inheritance:
 
+.. automodule:: yggscr.stats
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 .. automodule:: yggscr.torrents
     :members:
     :undoc-members:

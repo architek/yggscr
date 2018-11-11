@@ -2,65 +2,23 @@
 
 import re
 import os
-import time
 import json
 from logging import CRITICAL, ERROR, WARNING, INFO, DEBUG #noqa
 import datetime
 from bs4 import BeautifulSoup
 from yggscr import ylogging
+from yggscr.stats import Stats
 from yggscr.torrents import Torrent
 from yggscr.sbrowser import SBrowser
 from yggscr.exceptions import YggException, LoginFailed, TooManyFailedLogins
 from yggscr.const import YGG_HOME, TOP_DAY_URL, TOP_WEEK_URL, TOP_MONTH_URL, \
-                   EXCLUS_URL, TOP_SEED_URL, SEARCH_URL, DL_TPL
+                   EXCLUS_URL, TOP_SEED_URL, SEARCH_URL, get_dl_link
 from yggscr.link import get_cat_id, list_cat_subcat
 
 from urllib.parse import urlparse, parse_qs
 
 # from pprint import (PrettyPrinter, pprint)
 # pp = PrettyPrinter(indent=4)
-
-
-class Stats():
-    def __init__(self):
-        self.first = {"time": None,
-                      "up": None, "down": None}
-        self.last = {"time": None,
-                     "up": None, "down": None}
-
-    def upd_speed(self):
-        GiB = 1024*1024
-        ctime = time.time()
-        if self.last["time"] is None:
-            i_up = i_down = "?"
-        else:
-            i_up = round(GiB*(self.up-self.last["up"])/(
-                ctime-self.last["time"]))
-            i_down = round(GiB*(self.down-self.last["down"])/(
-                ctime-self.last["time"]))
-        self.last = {"time": ctime, "up": self.up, "down": self.down}
-        if self.first["time"] is None:
-            self.first = {
-                "time": time.time(),
-                "up": self.up,
-                "down": self.down
-            }
-            m_up = m_down = "?"
-        else:
-            m_up = round(GiB*(self.up-self.first["up"])/(
-                ctime-self.first["time"]))
-            m_down = round(GiB*(self.down-self.first["down"])/(
-                ctime-self.first["time"]))
-        return i_up, m_up, i_down, m_down
-
-    # Will only work for ratio above 1 but makes the search more robust
-    # Note that website is inconsistent (TiB vs TB, GiB vs GB)
-    def add(self, vals):
-        self.down, self.up = sorted(
-            float(e[0]) if e[1] == 'G' else float(e[0]) * 1024
-            for e in vals)
-        self.iup, self.mup, self.idown, self.mdown = self.upd_speed()
-        self.ratio = round(self.up/self.down, 4)
 
 
 class YggBrowser(SBrowser):
@@ -144,8 +102,7 @@ class YggBrowser(SBrowser):
     def get_stats(self):
         self.open(YGG_HOME)
         if self.idstate != "Authenticated":
-            raise YggException(
-                "Not logged in, idstate is {}".format(self.idstate))
+            raise YggException("Not logged in, idstate is {}".format(self.idstate))
 
         html = str(self.response().content)
         pos_r = html.find('Ratio')
@@ -156,11 +113,8 @@ class YggBrowser(SBrowser):
         else:
             self.stats.add(vals)
 
-        return {'down': self.stats.down, 'up': self.stats.up,
-                'ratio': self.stats.ratio,
-                'i_up': self.stats.iup, 'i_down': self.stats.idown,
-                'm_up': self.stats.mup, 'm_down': self.stats.mdown
-                }
+        # Return dict of first level keys
+        return {k: v for (k, v) in self.stats.__dict__.items() if not isinstance(v, dict)}
 
     def _get_torrents_xhr(self, url, method="get", timeout=None):
         torrent_list = []
@@ -295,12 +249,9 @@ class YggBrowser(SBrowser):
         self.open(YGG_HOME)
         return self.response().status_code
 
-    def id2href(self, id):
-        return DL_TPL.format(id=id)
-
     def download_torrent(self, torrent=None, id=None):
         href = torrent.get_dl_link() if torrent is not None \
-                                       else self.id2href(id)
+                                       else get_dl_link(id)
         self.open(href)
         iheaders = self.response().headers
         try:

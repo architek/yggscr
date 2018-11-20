@@ -213,12 +213,12 @@ class YggServer(bottle.Bottle):
     def index(self):
         return self.mtemplate(
             'index',
-            rtn=["Welcome " + (
-                "Anonymous - Connect for more options"
-                if self.state['ano'] else self.config['ygg.username']),
-                 "Running version {} built on {}.".format(__version__, __builddate__)
-                ]
-                        )
+            rtn=["Running version {} built on {}.".format(__version__, __builddate__),
+                 "Welcome " + (
+                 "Anonymous - Connect for more options"
+                    if self.state['ano'] else self.config['ygg.username']),
+                 ]
+            )
 
     def search_index(self):
         q = bottle.request.copy().query.decode()

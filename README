@@ -242,6 +242,38 @@ Example for 2 configurations (internal LAN/external WAN)::
 		}
 	}
 
+Graphs
+======
+
+It's easy to generate graphs using this library. The following script plots upload, download and ratio graphs using kibana (use a cron to trigger the cyclic execution)::
+
+   #!/usr/bin/env python3
+
+   from yggscr.ygg import YggBrowser
+   from time import strftime, localtime
+   from datetime import datetime
+   from elasticsearch import Elasticsearch
+
+
+   def get_stats(username, password):
+       y = YggBrowser()
+       y.login(username, password)
+       r = y.get_stats()
+       t = datetime.utcnow().strftime('%Y/%m/%d %H:%M:%S')
+       return {'ratio': r['ratio'], 'up': r['up'], 'down': r['down'], 't': t}
+
+
+   def write_index(index, data, doc_type='ratio_torrent', host='localhost', port=9200):
+       es = Elasticsearch([{'host': host, 'port': port}])
+       es.index(index=index, doc_type=doc_type, body=data)
+       print("Wrote data {}".format(data))
+
+
+   data = get_stats('myuser', 'mypassword')
+   write_index('ygg', data)
+
+.. image:: https://user-images.githubusercontent.com/490053/48807902-53c52c00-ed1f-11e8-83e9-8bad86b6e50b.png
+
 NOTES
 -----
 

@@ -272,7 +272,7 @@ It's easy to generate graphs using this library. The following script plots uplo
    data = get_stats('myuser', 'mypassword')
    write_index('ygg', data)
 
-.. image:: https://user-images.githubusercontent.com/490053/48807902-53c52c00-ed1f-11e8-83e9-8bad86b6e50b.png
+.. image:: https://user-images.githubusercontent.com/490053/48959144-d8a08780-ef63-11e8-91de-0f417a7c4ce3.png
 
 NOTES
 -----

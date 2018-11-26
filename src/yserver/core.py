@@ -1,4 +1,5 @@
 import re
+import cgi
 import html
 import bottle
 import logging
@@ -281,8 +282,10 @@ class YggServer(bottle.Bottle):
             _, resp = self.ygg.download_torrent(id=idtorrent)
         except Exception as e:
             rtn.append("Couldn't download torrent [{}]".format(e))
-
-        fp = tempfile.NamedTemporaryFile(prefix="yggscr-", suffix=".torrent")
+        h = self.ygg.response().headers
+        value, params = cgi.parse_header(h['Content-Disposition'])
+        fname = params['filename'][:-len(".torrent")]
+        fp = tempfile.NamedTemporaryFile(prefix="yggscr-{}-".format(fname), suffix=".torrent")
         fp.write(resp)
         fp.flush()
         chmod(fp.name, 444)
@@ -293,9 +296,9 @@ class YggServer(bottle.Bottle):
         self.log.debug(error)
 
         if error:
-            rtn.append("FAIL {} | {}".format(error, output))
+            rtn.append("|".join(("FAIL", str(error))))
         else:
-            rtn.append("OK | {}".format(output))
+            rtn.append("|".join(("OK", str(output))))
         self.state['qs'] = 'search?'
         return self.mtemplate('search_results', rtn=rtn)
 

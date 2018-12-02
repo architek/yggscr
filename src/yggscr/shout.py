@@ -6,6 +6,7 @@ from bs4 import NavigableString
 
 from .ygg import YggBrowser
 from .const import SHOUT_URL
+import requests
 
 
 class ShoutMessage(object):
@@ -62,20 +63,19 @@ class YggShout:
         self.diffshouts = []
 
     def get_shouts(self):
-        """ Return current shouts from website """
+        """ Set current shouts from website """
         self.robs.open(SHOUT_URL, timeout=3)
-        return [ShoutMessage(soup=li, shout=self)
-                for li in list(reversed(
-                     [li for li in self.robs.parsed().find_all("li")
-                      if li.has_attr('data-id')]
-                ))]
+        self.new_shouts = [ShoutMessage(soup=li, shout=self)
+                           for li in list(reversed(
+                            [li for li in self.robs.parsed().find_all("li")
+                                if li.has_attr('data-id')]
+                           ))]
 
     def do_diff(self):
-        """ Http Get new shouts, compute and return list of new shouts """
-        newshouts = self.get_shouts()
+        """ Compute and return list of new shouts """
         last_index = None
         self.diffshouts = []
-        for shout in newshouts:
+        for shout in self.new_shouts:
             try:
                 index = self.last_shouts.index(shout)
             except ValueError:
@@ -86,7 +86,7 @@ class YggShout:
                         for i in range(last_index+1, index-1):
                             self.diffshouts.append([True, self.last_shouts[i]])
                 last_index = index
-        self.last_shouts = list(newshouts)
+        self.last_shouts = self.new_shouts
         return self.diffshouts
 
     def __str__(self):
@@ -113,12 +113,37 @@ def main():
         soup = BeautifulSoup(html, 'html.parser')
         print(soup.get_text())
         exit(0)
-    yggshout = YggShout()
+
+    print("Started")
+    yggshout = None
     while(True):
-        yggshout.get_shouts()
+        nt = 0
+        while nt < 10:
+            try:
+                if yggshout is None:
+                    yggshout = YggShout()
+                if nt == 5:
+                    print("Max retries reached... Reconnecting")
+                    yggshout = YggShout()
+                    time.sleep(1)
+                yggshout.get_shouts()
+                break
+            except requests.exceptions.Timeout as e:
+                dt = 1 + 15*(nt % 5)
+                print("ERROR: Can't get shout messages... [{}] - Trying again in {}s...".format(e, dt))
+                time.sleep(dt)
+                nt += 1
+            except requests.exceptions.ConnectionError as e:
+                print("Connection error...[{}]".format(e))
+                nt += 1
+        if nt >=10:
+            print("FATAL: No connection")
+            exit(2)
+        elif nt > 0:
+            print("Reconnected")
         for removed, shout in yggshout.do_diff():
-            pre = "REMOVED" if removed else ""
-            shout.message += pre
+            if removed:
+                shout.message += "<-- REMOVED"
             print(shout)
         time.sleep(2)
 

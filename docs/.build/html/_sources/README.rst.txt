@@ -4,8 +4,8 @@ Ygg Scraper
 :Info: This is the README file for Ygg Scraper.
 :Author: Laurent Kislaire <teebeenator@gmail.com>
 :Copyright: © 2018, Laurent Kislaire.
-:Date: 2018-11-11
-:Version: 1.2.1
+:Date: 2018-12-02
+:Version: 1.2.2
 
 .. index: README
 .. image:: https://travis-ci.org/architek/yggscr.svg?branch=master
@@ -241,6 +241,38 @@ Example for 2 configurations (internal LAN/external WAN)::
 			}
 		}
 	}
+
+Graphs
+======
+
+It's easy to generate graphs using this library. The following script plots upload, download and ratio graphs using kibana (use a cron to trigger the cyclic execution)::
+
+   #!/usr/bin/env python3
+
+   from yggscr.ygg import YggBrowser
+   from time import strftime, localtime
+   from datetime import datetime
+   from elasticsearch import Elasticsearch
+
+
+   def get_stats(username, password):
+       y = YggBrowser()
+       y.login(username, password)
+       r = y.get_stats()
+       t = datetime.utcnow().strftime('%Y/%m/%d %H:%M:%S')
+       return {'ratio': r['ratio'], 'up': r['up'], 'down': r['down'], 't': t}
+
+
+   def write_index(index, data, doc_type='ratio_torrent', host='localhost', port=9200):
+       es = Elasticsearch([{'host': host, 'port': port}])
+       es.index(index=index, doc_type=doc_type, body=data)
+       print("Wrote data {}".format(data))
+
+
+   data = get_stats('myuser', 'mypassword')
+   write_index('ygg', data)
+
+.. image:: https://user-images.githubusercontent.com/490053/48959144-d8a08780-ef63-11e8-91de-0f417a7c4ce3.png
 
 NOTES
 -----

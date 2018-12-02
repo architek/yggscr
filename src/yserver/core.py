@@ -138,8 +138,8 @@ class YggServer(bottle.Bottle):
                       key=lambda k: getattr(k, sort),
                       reverse=next(bcyc)) if sort else results
 
-    def mtemplate(self, tpl, rtn=[], **kwargs):
-        return bottle.template(tpl, request=bottle.request,
+    def mtemplate(self, tpl, rtn=[], request=None, **kwargs):
+        return bottle.template(tpl, request=request or bottle.request,
                                state=self.state, rtn=rtn, **kwargs)
 
     def rssize(self, torrents, base):
@@ -278,9 +278,12 @@ class YggServer(bottle.Bottle):
         rtn = []
 
         try:
+            old_req = bottle.request
             _, resp = self.ygg.download_torrent(id=idtorrent)
         except Exception as e:
             rtn.append("Couldn't download torrent [{}]".format(e))
+            self.state['qs'] = 'search?'
+            return self.mtemplate('search_results', rtn=rtn, request = old_req)
 
         fp = tempfile.NamedTemporaryFile(prefix="yggscr-", suffix=".torrent")
         fp.write(resp)
@@ -303,10 +306,13 @@ class YggServer(bottle.Bottle):
         rtn = []
 
         try:
+            old_req = bottle.request
             _, resp = self.ygg.download_torrent(id=idtorrent)
             rtn.append("Torrent downloaded, sending to {} client...".format(client))
         except Exception as e:
             rtn.append("Couldn't download torrent [{}]".format(e))
+            self.state['qs'] = 'search?'
+            return self.mtemplate('search_results', rtn=rtn, request = old_req)
 
         try:
             if client == "ts":

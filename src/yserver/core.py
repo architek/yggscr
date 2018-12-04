@@ -22,6 +22,12 @@ bcyc = cycle([True, False])
 class YggServer(bottle.Bottle):
     def __init__(self, cfg="yserver.cfg"):
         super(YggServer, self).__init__()
+        self.cfg = cfg
+        self.start()
+        self.setup_routes()
+        self.debug()
+
+    def start(self):
         self.state = {
             'sorted_torrents': '',
             'rtEn': False,
@@ -34,16 +40,15 @@ class YggServer(bottle.Bottle):
         }
 
         self.config = Config()
-        self.config.load_config(cfg)
+        self.config.load_config(self.cfg)
 
         self.ygg = YggBrowser(
             proxy=self.config['proxy'],
             loglevel=logging.DEBUG if self.config.bool('debug') else logging.INFO,
         )
         self.log = self.ygg.log
-        self.debug()
 
-        self.log.debug("Yserver configuration used: {}".format(cfg))
+        self.log.debug("Yserver configuration used: {}".format(self.cfg))
 
         self.auth()
         self.log.info("Anonymous: {}, Proxy: {}, Ygg Auth: {}".format(
@@ -52,7 +57,6 @@ class YggServer(bottle.Bottle):
             self.ygg.idstate,
         ))
         self.setup_client_cols()
-        self.setup_routes()
 
     def debug(self):
         if self.config.bool('debug'):
@@ -100,6 +104,7 @@ class YggServer(bottle.Bottle):
         self.add_hook('before_request', self.reco)
         for l, m in (
             ('/', self.index),
+            ('/reco', self.index_reco),
             ('/search', self.search_index),
             ('/rssearch', self.rssearch),
             ('/top/<name:re:(day|week|month|exclus)>', self.top_day),
@@ -211,10 +216,18 @@ class YggServer(bottle.Bottle):
         return bottle.static_file(filepath, root='resources/images')
 
     # Routes
+    def index_reco(self):
+        # FIXME cfscrape randomizes User Agent in a global, we keep the same ua without properly reloading cfscrape
+        self.ygg.browser.session.close()
+        self.start()
+        bottle.redirect("/")
+
     def index(self):
+        ua = self.ygg.response().request.headers['User-Agent']
         return self.mtemplate(
             'index',
             rtn=["Running version {} built on {}.".format(__version__, __builddate__),
+                 "Showing as {}".format(ua),
                  "Welcome " + (
                  "Anonymous - Connect for more options"
                     if self.state['ano'] else self.config['ygg.username']),
@@ -300,9 +313,9 @@ class YggServer(bottle.Bottle):
         self.log.debug(error)
 
         if error:
-            rtn.append("|".join(("FAIL", str(error))))
+            rtn.append("|".join(filter(None, ("FAIL", str(error)))))
         else:
-            rtn.append("|".join(("OK", str(output))))
+            rtn.append("|".join(filter(None, ("OK", str(output)))))
         self.state['qs'] = 'search?'
         return self.mtemplate('search_results', rtn=rtn)
 
@@ -341,8 +354,7 @@ class YggServer(bottle.Bottle):
                 r = deluge_add_torrent(host, port, user, passw, resp)
                 rtn.append("Deluged RPC returned {}".format(r))
         except Exception as e:
-            msg = "Adding torrent failed [{}]".format(e)
-            rtn.append(msg)
+            rtn.append("|".join(filter(None, ("Adding torrent failed", str(e)))))
             pass
         else:
             rtn.append("Ok")

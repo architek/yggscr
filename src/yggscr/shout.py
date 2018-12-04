@@ -135,7 +135,8 @@ def main():
                 break
             except (requests.exceptions.Timeout, socket.timeout) as e:
                 dt = 1 + 15*(nt % 5)
-                print("ERROR: Can't get shout messages... [{}] - Trying again in {}s...".format(e, dt))
+                if nt > 1:
+                    print("ERROR: Can't get shout messages... [{}] - Trying again in {}s...".format(e, dt))
                 time.sleep(dt)
                 nt += 1
             except requests.exceptions.ConnectionError as e:
@@ -144,7 +145,7 @@ def main():
         if nt >= 10:
             print("FATAL: No connection")
             exit(2)
-        elif nt > 0:
+        elif nt > 1:
             print("Reconnected")
         for removed, shout in yggshout.do_diff():
             if removed:

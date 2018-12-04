@@ -7,6 +7,7 @@ from bs4 import NavigableString
 from .ygg import YggBrowser
 from .const import SHOUT_URL
 import requests
+import socket
 
 
 class ShoutMessage(object):
@@ -99,22 +100,25 @@ class YggShout:
         return res
 
 
+def parse_file(hfile):
+    try:
+        with open(hfile, "r") as fn:
+            html = fn.read()
+    except FileNotFoundError:
+        print("Can't read file {}".format(hfile))
+        exit(1)
+    from bs4 import BeautifulSoup
+    soup = BeautifulSoup(html, 'html.parser')
+    print(soup.get_text())
+
+
 def main():
     import sys
     if len(sys.argv) > 1:
         hfile = sys.argv[1]
-        try:
-            with open(hfile, "r") as fn:
-                html = fn.read()
-        except FileNotFoundError:
-            print("Can't read file {}".format(hfile))
-            exit(1)
-        from bs4 import BeautifulSoup
-        soup = BeautifulSoup(html, 'html.parser')
-        print(soup.get_text())
+        parse_file(hfile)
         exit(0)
 
-    print("Started")
     yggshout = None
     while(True):
         nt = 0
@@ -122,13 +126,14 @@ def main():
             try:
                 if yggshout is None:
                     yggshout = YggShout()
+                    print("Started")
                 if nt == 5:
                     print("Max retries reached... Reconnecting")
                     yggshout = YggShout()
                     time.sleep(1)
                 yggshout.get_shouts()
                 break
-            except requests.exceptions.Timeout as e:
+            except (requests.exceptions.Timeout, socket.timeout) as e:
                 dt = 1 + 15*(nt % 5)
                 print("ERROR: Can't get shout messages... [{}] - Trying again in {}s...".format(e, dt))
                 time.sleep(dt)
@@ -136,7 +141,7 @@ def main():
             except requests.exceptions.ConnectionError as e:
                 print("Connection error...[{}]".format(e))
                 nt += 1
-        if nt >=10:
+        if nt >= 10:
             print("FATAL: No connection")
             exit(2)
         elif nt > 0:

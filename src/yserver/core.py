@@ -220,7 +220,7 @@ class YggServer(bottle.Bottle):
         # FIXME cfscrape randomizes User Agent in a global, we keep the same ua without properly reloading cfscrape
         self.ygg.browser.session.close()
         self.start()
-        bottle.redirect("/")
+        return self.index()
 
     def index(self):
         ua = self.ygg.response().request.headers['User-Agent']

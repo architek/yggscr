@@ -1,7 +1,9 @@
 import re
 import cgi
 import html
+import shlex
 import bottle
+import pathlib
 import logging
 import tempfile
 from os import chmod
@@ -301,13 +303,13 @@ class YggServer(bottle.Bottle):
 
         h = self.ygg.response().headers
         value, params = cgi.parse_header(h['Content-Disposition'])
-        fname = params['filename'][:-len(".torrent")]
+        fname = pathlib.Path(bytes(params['filename'][:-len(".torrent")], "iso8859-1").decode("utf-8"))
         fp = tempfile.NamedTemporaryFile(prefix="yggscr-{}-".format(fname), suffix=".torrent")
         fp.write(resp)
         fp.flush()
         chmod(fp.name, 444)
 
-        cmd = self.config['exec.cmd'].format(f=fp.name, cat=cat, subcat=subcat)
+        cmd = self.config['exec.cmd'].format(f=shlex.quote(fp.name), cat=shlex.quote(cat), subcat=shlex.quote(subcat))
         rtn.append("Torrent downloaded, executing command {}".format(cmd))
         output, error = exec_cmd(cmd)
         self.log.debug(error)

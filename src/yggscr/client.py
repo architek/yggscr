@@ -32,5 +32,5 @@ def deluge_add_torrent(ip, port, user, password, torrent_binary):
 
 
 def exec_cmd(cmd):
-    process = subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+    process = subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False)
     return [e.decode('utf-8').replace("\n", " ") for e in process.communicate()]

@@ -135,7 +135,7 @@ def main():
                 break
             except (requests.exceptions.Timeout, socket.timeout) as e:
                 dt = 1 + 15*(nt % 5)
-                if nt > 1:
+                if nt > 0:
                     print("ERROR: Can't get shout messages... [{}] - Trying again in {}s...".format(e, dt))
                 time.sleep(dt)
                 nt += 1
@@ -151,7 +151,7 @@ def main():
             if removed:
                 shout.message += "<-- REMOVED"
             print(shout)
-        time.sleep(2)
+        time.sleep(15)
 
 
 if __name__ == '__main__':

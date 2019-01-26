@@ -1,11 +1,10 @@
 FROM python:3.6-alpine as base
 
-RUN apk --update --no-cache add git && \
+RUN apk --update --no-cache add git nodejs && \
     git clone https://github.com/architek/yggscr.git && rm -rf yggscr/.git && \
     apk del git
 WORKDIR yggscr/
 RUN pip install wheel && pip wheel . --wheel-dir=wheels
-RUN apk install nodejs
 
 FROM python:3.6-alpine as uwsgi
 ARG BUILD_DATE

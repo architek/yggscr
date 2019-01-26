@@ -13,7 +13,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
    
@@ -95,6 +95,7 @@
 <span class="kn">from</span> <span class="nn">.ygg</span> <span class="k">import</span> <span class="n">YggBrowser</span>
 <span class="kn">from</span> <span class="nn">.const</span> <span class="k">import</span> <span class="n">SHOUT_URL</span>
 <span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">socket</span>
 
 
 <div class="viewcode-block" id="ShoutMessage"><a class="viewcode-back" href="../../source/yggscr.html#yggscr.shout.ShoutMessage">[docs]</a><span class="k">class</span> <span class="nc">ShoutMessage</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -187,22 +188,25 @@
         <span class="k">return</span> <span class="n">res</span></div>
 
 
+<div class="viewcode-block" id="parse_file"><a class="viewcode-back" href="../../source/yggscr.html#yggscr.shout.parse_file">[docs]</a><span class="k">def</span> <span class="nf">parse_file</span><span class="p">(</span><span class="n">hfile</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">hfile</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fn</span><span class="p">:</span>
+            <span class="n">html</span> <span class="o">=</span> <span class="n">fn</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Can&#39;t read file </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hfile</span><span class="p">))</span>
+        <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="kn">from</span> <span class="nn">bs4</span> <span class="k">import</span> <span class="n">BeautifulSoup</span>
+    <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="s1">&#39;html.parser&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">soup</span><span class="o">.</span><span class="n">get_text</span><span class="p">())</span></div>
+
+
 <div class="viewcode-block" id="main"><a class="viewcode-back" href="../../source/yggscr.html#yggscr.shout.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
     <span class="kn">import</span> <span class="nn">sys</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">hfile</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">hfile</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fn</span><span class="p">:</span>
-                <span class="n">html</span> <span class="o">=</span> <span class="n">fn</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-        <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Can&#39;t read file </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hfile</span><span class="p">))</span>
-            <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-        <span class="kn">from</span> <span class="nn">bs4</span> <span class="k">import</span> <span class="n">BeautifulSoup</span>
-        <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="s1">&#39;html.parser&#39;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">soup</span><span class="o">.</span><span class="n">get_text</span><span class="p">())</span>
+        <span class="n">parse_file</span><span class="p">(</span><span class="n">hfile</span><span class="p">)</span>
         <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Started&quot;</span><span class="p">)</span>
     <span class="n">yggshout</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">while</span><span class="p">(</span><span class="kc">True</span><span class="p">):</span>
         <span class="n">nt</span> <span class="o">=</span> <span class="mi">0</span>
@@ -210,30 +214,32 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">yggshout</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">yggshout</span> <span class="o">=</span> <span class="n">YggShout</span><span class="p">()</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Started&quot;</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">nt</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
                     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Max retries reached... Reconnecting&quot;</span><span class="p">)</span>
                     <span class="n">yggshout</span> <span class="o">=</span> <span class="n">YggShout</span><span class="p">()</span>
                     <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
                 <span class="n">yggshout</span><span class="o">.</span><span class="n">get_shouts</span><span class="p">()</span>
                 <span class="k">break</span>
-            <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">Timeout</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">except</span> <span class="p">(</span><span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">Timeout</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">timeout</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="n">dt</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="mi">15</span><span class="o">*</span><span class="p">(</span><span class="n">nt</span> <span class="o">%</span> <span class="mi">5</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERROR: Can&#39;t get shout messages... [</span><span class="si">{}</span><span class="s2">] - Trying again in </span><span class="si">{}</span><span class="s2">s...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">dt</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">nt</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERROR: Can&#39;t get shout messages... [</span><span class="si">{}</span><span class="s2">] - Trying again in </span><span class="si">{}</span><span class="s2">s...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">dt</span><span class="p">))</span>
                 <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
                 <span class="n">nt</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ConnectionError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Connection error...[</span><span class="si">{}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
                 <span class="n">nt</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">if</span> <span class="n">nt</span> <span class="o">&gt;=</span><span class="mi">10</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">nt</span> <span class="o">&gt;=</span> <span class="mi">10</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;FATAL: No connection&quot;</span><span class="p">)</span>
             <span class="n">exit</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">nt</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">nt</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Reconnected&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">removed</span><span class="p">,</span> <span class="n">shout</span> <span class="ow">in</span> <span class="n">yggshout</span><span class="o">.</span><span class="n">do_diff</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">removed</span><span class="p">:</span>
                 <span class="n">shout</span><span class="o">.</span><span class="n">message</span> <span class="o">+=</span> <span class="s2">&quot;&lt;-- REMOVED&quot;</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">shout</span><span class="p">)</span>
-        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span></div>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span></div>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
@@ -250,7 +256,7 @@
       &copy;2018, Laurent Kislaire.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

@@ -5,7 +5,7 @@ Changelog
 :Author: Laurent Kislaire <teebeenator@gmail.com>
 :Copyright: © 2018, Laurent Kislaire.
 :License: ISC (see /LICENSE or :doc:`Appendix B <LICENSE>`.)
-:Date: 2018-12-10
+:Date: 2019-01-26
 :Version: 1.2.4
 
 .. index:: CHANGELOG

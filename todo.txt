@@ -1,0 +1,3 @@
+trawa: tester URI avec nom de fichiers à la con
+Trouver un moyen pour avoir les fichiers dont detecté par kodi
+fischerspooner: ne trouve pas le dl link

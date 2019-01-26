@@ -5,7 +5,7 @@ Ygg Scraper
 :Author: Laurent Kislaire <teebeenator@gmail.com>
 :Copyright: © 2018, Laurent Kislaire.
 :Date: 2019-01-26
-:Version: 1.2.4
+:Version: 1.2.5
 
 .. index: README
 .. image:: https://travis-ci.org/architek/yggscr.svg?branch=master

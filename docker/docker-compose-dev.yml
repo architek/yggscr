@@ -13,7 +13,7 @@ services:
               target: /run/ygg/
               volume:
                   nocopy: true
-            - "../conf:/opt/yggscr/conf/:ro"
+            - "../conf-priv:/opt/yggscr/conf/:ro"
         ports:
             - "8333:80"
 
@@ -23,7 +23,7 @@ services:
             dockerfile: $PWD/docker/stage/Dockerfile-dev
         volumes:
             - "usocket:/run/ygg/"
-            - "../conf/:/opt/yggscr/conf/:ro"
+            - "../conf-priv/:/opt/yggscr/conf/:ro"
 
 volumes:
     usocket:

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import requests
 
-YGG_HOST = "www.yggtorrent.gg"
+YGG_HOST = "www2.yggtorrent.gg"   # YGG_HOST = "www.yggtorrent.gg" Waiting for ygg to correct their webserver...
 YGG_HOME = "https://" + YGG_HOST
 
 

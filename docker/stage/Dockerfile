@@ -1,6 +1,6 @@
 FROM python:3.6-alpine as base
 
-RUN apk --update --no-cache add git nodejs && \
+RUN apk --update --no-cache add git && \
     git clone https://github.com/architek/yggscr.git && rm -rf yggscr/.git && \
     apk del git
 WORKDIR yggscr/
@@ -20,7 +20,7 @@ LABEL maintainer="Laurent Kislaire <teebeenator@gmail.com>"
 COPY --from=base yggscr/ /opt/yggscr
 WORKDIR /opt/yggscr
 RUN echo "__builddate__ = '$BUILD_DATE'" > src/yggscr/__build__.py
-RUN apk --update --no-cache add uwsgi uwsgi-python3 && \
+RUN apk --update --no-cache add uwsgi uwsgi-python3 nodejs && \
     mkdir /run/ygg/ && chown -R uwsgi:uwsgi /run/ygg
 RUN pip install --no-index --find-links=/opt/yggscr/wheels -r requirements-dev.txt
 

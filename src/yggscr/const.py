@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import requests
 
-YGG_HOST = "www.yggtorrent.to"
+YGG_HOST = "www.yggtorrent.gg"
 YGG_HOME = "https://" + YGG_HOST
 
 
@@ -11,16 +11,16 @@ def detect_redir():
     ir = requests.get(YGG_HOME, allow_redirects=False)
     if ir.status_code in [307, 301]:
         YGG_HOME = ir.headers['Location']
-    DL_TPL = YGG_HOME           + "engine/download_torrent?id={id}"
-    TORRENT_URL = YGG_HOME      + "torrents/"
-    SEARCH_URL = YGG_HOME       + "engine/search"
-    TOP_DAY_URL = YGG_HOME      + "engine/ajax_top_query/day"
-    TOP_WEEK_URL = YGG_HOME     + "engine/ajax_top_query/week"
-    TOP_MONTH_URL = YGG_HOME    + "engine/ajax_top_query/month"
-    EXCLUS_URL = YGG_HOME       + "torrents/exclus"
-    TOP_SEED_URL = YGG_HOME     + "engine/mostseeded"
-    RSS_TPL = YGG_HOME          + "rss?type=1&parent_category={category}"
-    SHOUT_URL = YGG_HOME        + "forum/index.php?shoutbox/refresh"
+    DL_TPL = YGG_HOME           + "/engine/download_torrent?id={id}"
+    TORRENT_URL = YGG_HOME      + "/torrents/"
+    SEARCH_URL = YGG_HOME       + "/engine/search"
+    TOP_DAY_URL = YGG_HOME      + "/engine/ajax_top_query/day"
+    TOP_WEEK_URL = YGG_HOME     + "/engine/ajax_top_query/week"
+    TOP_MONTH_URL = YGG_HOME    + "/engine/ajax_top_query/month"
+    EXCLUS_URL = YGG_HOME       + "/torrents/exclus"
+    TOP_SEED_URL = YGG_HOME     + "/engine/mostseeded"
+    RSS_TPL = YGG_HOME          + "/rss?type=1&parent_category={category}"
+    SHOUT_URL = YGG_HOME        + "/forum/index.php?shoutbox/refresh"
 
 
 def get_dl_link(id):

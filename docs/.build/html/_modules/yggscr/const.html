@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>yggscr.const &#8212; YggScr 1.2.6 documentation</title>
+    <title>yggscr.const &#8212; YggScr 1.2.7 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -89,7 +89,7 @@
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="kn">import</span> <span class="nn">requests</span>
 
-<span class="n">YGG_HOST</span> <span class="o">=</span> <span class="s2">&quot;www.yggtorrent.to&quot;</span>
+<span class="n">YGG_HOST</span> <span class="o">=</span> <span class="s2">&quot;www2.yggtorrent.gg&quot;</span>   <span class="c1"># YGG_HOST = &quot;www.yggtorrent.gg&quot; Waiting for ygg to correct their webserver...</span>
 <span class="n">YGG_HOME</span> <span class="o">=</span> <span class="s2">&quot;https://&quot;</span> <span class="o">+</span> <span class="n">YGG_HOST</span>
 
 
@@ -99,16 +99,16 @@
     <span class="n">ir</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">YGG_HOME</span><span class="p">,</span> <span class="n">allow_redirects</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">ir</span><span class="o">.</span><span class="n">status_code</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">307</span><span class="p">,</span> <span class="mi">301</span><span class="p">]:</span>
         <span class="n">YGG_HOME</span> <span class="o">=</span> <span class="n">ir</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Location&#39;</span><span class="p">]</span>
-    <span class="n">DL_TPL</span> <span class="o">=</span> <span class="n">YGG_HOME</span>           <span class="o">+</span> <span class="s2">&quot;engine/download_torrent?id=</span><span class="si">{id}</span><span class="s2">&quot;</span>
-    <span class="n">TORRENT_URL</span> <span class="o">=</span> <span class="n">YGG_HOME</span>      <span class="o">+</span> <span class="s2">&quot;torrents/&quot;</span>
-    <span class="n">SEARCH_URL</span> <span class="o">=</span> <span class="n">YGG_HOME</span>       <span class="o">+</span> <span class="s2">&quot;engine/search&quot;</span>
-    <span class="n">TOP_DAY_URL</span> <span class="o">=</span> <span class="n">YGG_HOME</span>      <span class="o">+</span> <span class="s2">&quot;engine/ajax_top_query/day&quot;</span>
-    <span class="n">TOP_WEEK_URL</span> <span class="o">=</span> <span class="n">YGG_HOME</span>     <span class="o">+</span> <span class="s2">&quot;engine/ajax_top_query/week&quot;</span>
-    <span class="n">TOP_MONTH_URL</span> <span class="o">=</span> <span class="n">YGG_HOME</span>    <span class="o">+</span> <span class="s2">&quot;engine/ajax_top_query/month&quot;</span>
-    <span class="n">EXCLUS_URL</span> <span class="o">=</span> <span class="n">YGG_HOME</span>       <span class="o">+</span> <span class="s2">&quot;torrents/exclus&quot;</span>
-    <span class="n">TOP_SEED_URL</span> <span class="o">=</span> <span class="n">YGG_HOME</span>     <span class="o">+</span> <span class="s2">&quot;engine/mostseeded&quot;</span>
-    <span class="n">RSS_TPL</span> <span class="o">=</span> <span class="n">YGG_HOME</span>          <span class="o">+</span> <span class="s2">&quot;rss?type=1&amp;parent_category=</span><span class="si">{category}</span><span class="s2">&quot;</span>
-    <span class="n">SHOUT_URL</span> <span class="o">=</span> <span class="n">YGG_HOME</span>        <span class="o">+</span> <span class="s2">&quot;forum/index.php?shoutbox/refresh&quot;</span></div>
+    <span class="n">DL_TPL</span> <span class="o">=</span> <span class="n">YGG_HOME</span>           <span class="o">+</span> <span class="s2">&quot;/engine/download_torrent?id=</span><span class="si">{id}</span><span class="s2">&quot;</span>
+    <span class="n">TORRENT_URL</span> <span class="o">=</span> <span class="n">YGG_HOME</span>      <span class="o">+</span> <span class="s2">&quot;/torrents/&quot;</span>
+    <span class="n">SEARCH_URL</span> <span class="o">=</span> <span class="n">YGG_HOME</span>       <span class="o">+</span> <span class="s2">&quot;/engine/search&quot;</span>
+    <span class="n">TOP_DAY_URL</span> <span class="o">=</span> <span class="n">YGG_HOME</span>      <span class="o">+</span> <span class="s2">&quot;/engine/ajax_top_query/day&quot;</span>
+    <span class="n">TOP_WEEK_URL</span> <span class="o">=</span> <span class="n">YGG_HOME</span>     <span class="o">+</span> <span class="s2">&quot;/engine/ajax_top_query/week&quot;</span>
+    <span class="n">TOP_MONTH_URL</span> <span class="o">=</span> <span class="n">YGG_HOME</span>    <span class="o">+</span> <span class="s2">&quot;/engine/ajax_top_query/month&quot;</span>
+    <span class="n">EXCLUS_URL</span> <span class="o">=</span> <span class="n">YGG_HOME</span>       <span class="o">+</span> <span class="s2">&quot;/torrents/exclus&quot;</span>
+    <span class="n">TOP_SEED_URL</span> <span class="o">=</span> <span class="n">YGG_HOME</span>     <span class="o">+</span> <span class="s2">&quot;/engine/mostseeded&quot;</span>
+    <span class="n">RSS_TPL</span> <span class="o">=</span> <span class="n">YGG_HOME</span>          <span class="o">+</span> <span class="s2">&quot;/rss?type=1&amp;parent_category=</span><span class="si">{category}</span><span class="s2">&quot;</span>
+    <span class="n">SHOUT_URL</span> <span class="o">=</span> <span class="n">YGG_HOME</span>        <span class="o">+</span> <span class="s2">&quot;/forum/index.php?shoutbox/refresh&quot;</span></div>
 
 
 <div class="viewcode-block" id="get_dl_link"><a class="viewcode-back" href="../../source/yggscr.html#yggscr.const.get_dl_link">[docs]</a><span class="k">def</span> <span class="nf">get_dl_link</span><span class="p">(</span><span class="nb">id</span><span class="p">):</span>

@@ -38,8 +38,8 @@ class ShoutMessage(object):
             print("Parsing\n%s" % soup.prettify())
         message = ""
         id = soup.get('data-id')
-        username = soup.find("a", class_="username ").text.strip()
-        group_id = soup.find("a", class_="username ")['user-group-id']
+        username = soup.find("a", class_="username").text.strip()
+        group_id = soup.find("a", class_="username")['user-group-id']
         mtime = soup.time['datetime'][:-5]
         for e in soup.div.contents:
             if isinstance(e, NavigableString):

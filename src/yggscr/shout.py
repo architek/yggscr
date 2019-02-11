@@ -121,37 +121,40 @@ def main():
 
     yggshout = None
     while(True):
-        nt = 0
-        while nt < 10:
-            try:
-                if yggshout is None:
-                    yggshout = YggShout()
-                    print("Started")
-                if nt == 5:
-                    print("Max retries reached... Reconnecting")
-                    yggshout = YggShout()
-                    time.sleep(1)
-                yggshout.get_shouts()
-                break
-            except (requests.exceptions.Timeout, socket.timeout) as e:
-                dt = 1 + 15*(nt % 5)
-                if nt > 0:
-                    print("ERROR: Can't get shout messages... [{}] - Trying again in {}s...".format(e, dt))
-                time.sleep(dt)
-                nt += 1
-            except requests.exceptions.ConnectionError as e:
-                print("Connection error...[{}]".format(e))
-                nt += 1
-        if nt >= 10:
-            print("FATAL: No connection")
-            exit(2)
-        elif nt > 1:
-            print("Reconnected")
-        for removed, shout in yggshout.do_diff():
-            if removed:
-                shout.message += "<-- REMOVED"
-            print(shout)
-        time.sleep(15)
+        try:
+            nt = 0
+            while nt < 10:
+                try:
+                    if yggshout is None:
+                        yggshout = YggShout()
+                        print("Started")
+                    if nt == 5:
+                        print("Max retries reached... Reconnecting")
+                        yggshout = YggShout()
+                        time.sleep(1)
+                    yggshout.get_shouts()
+                    break
+                except (requests.exceptions.Timeout, socket.timeout) as e:
+                    dt = 1 + 15*(nt % 5)
+                    if nt > 0:
+                        print("ERROR: Can't get shout messages... [{}] - Trying again in {}s...".format(e, dt))
+                    time.sleep(dt)
+                    nt += 1
+                except requests.exceptions.ConnectionError as e:
+                    print("Connection error...[{}]".format(e))
+                    nt += 1
+            if nt >= 10:
+                print("FATAL: No connection")
+                exit(2)
+            elif nt > 1:
+                print("Reconnected")
+            for removed, shout in yggshout.do_diff():
+                if removed:
+                    shout.message += "<-- REMOVED"
+                print(shout)
+            time.sleep(15)
+        except KeyboardInterrupt:
+            sys.exit(0)
 
 
 if __name__ == '__main__':

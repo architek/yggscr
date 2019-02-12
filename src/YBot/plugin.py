@@ -312,6 +312,7 @@ class YBot(callbacks.Plugin):
             irc.reply(self.shoutify(shout, False), prefixNick=False)
             return
         try:
+            self.shout.get_shouts()
             diff = self.shout.do_diff()
             shout_err = 0
         except Exception as e:

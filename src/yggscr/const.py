@@ -13,7 +13,9 @@ def detect_redir():
     if ir.status_code in [307, 301]:
         url = ir.headers['Location']
         split_url = urlsplit(url)
-        YGG_HOME = "{}://{}".format(split_url.scheme, split_url.netloc)
+        YGG_HOST = split_url.netloc
+
+    YGG_HOME = "https://" + YGG_HOST
     DL_TPL = YGG_HOME           + "/engine/download_torrent?id={id}"
     TORRENT_URL = YGG_HOME      + "/torrents/"
     SEARCH_URL = YGG_HOME       + "/engine/search"

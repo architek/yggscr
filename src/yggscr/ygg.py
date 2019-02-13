@@ -15,7 +15,7 @@ from yggscr.const import YGG_HOME, TOP_DAY_URL, TOP_WEEK_URL, TOP_MONTH_URL, \
                    EXCLUS_URL, TOP_SEED_URL, SEARCH_URL, get_dl_link
 from yggscr.link import get_cat_id, list_cat_subcat
 
-from urllib.parse import urlparse, parse_qs
+from urllib.parse import urlparse, parse_qs, urlsplit
 
 # from pprint import (PrettyPrinter, pprint)
 # pp = PrettyPrinter(indent=4)
@@ -44,7 +44,7 @@ class YggBrowser(SBrowser):
 
     def gen_state(self):
         def upd_state(r, *args, **kwargs):
-            if YGG_HOME in r.url and "forum" not in r.url \
+            if urlsplit(YGG_HOME).netloc == urlsplit(r.url).netloc and "forum" not in r.url \
                     and r.encoding is not None:
                 old_state = self.idstate
                 if "Mon compte" in r.text:

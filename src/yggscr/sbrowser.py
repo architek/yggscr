@@ -52,10 +52,11 @@ class SBrowser:
         """
         if https_proxy:
             self.proxy = https_proxy
-            self.browser.session.proxies = {'https': self.proxy}
             self.log.debug("Proxy set to {}".format(self.browser.session.proxies))
         else:
             self.proxy = None
+            self.log.debug("Proxy removed")
+        self.browser.session.proxies = {'https': self.proxy}
 
     def connection_details(self):
         """

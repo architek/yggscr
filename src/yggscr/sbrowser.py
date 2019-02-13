@@ -50,13 +50,9 @@ class SBrowser:
          * socks5h://user:pass@host:port : SOCKS proxy
          * socks5://user:pass@host:port  : SOCKS proxy with local DNS resolver
         """
-        if https_proxy:
-            self.proxy = https_proxy
-            self.log.debug("Proxy set to {}".format(self.browser.session.proxies))
-        else:
-            self.proxy = None
-            self.log.debug("Proxy removed")
+        self.proxy = https_proxy
         self.browser.session.proxies = {'https': self.proxy}
+        self.log.debug("Proxy set to {}".format(self.browser.session.proxies))
 
     def connection_details(self):
         """

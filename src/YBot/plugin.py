@@ -179,7 +179,7 @@ class YBot(callbacks.Plugin):
             irc.error("You need to be authenticated at ygg")
         else:
             try:
-                r = self.yggb.stats()
+                r = self.yggb.get_stats()
             except (requests.exceptions.ProxyError,
                     requests.exceptions.ConnectionError) as e:
                 irc.error("Network Error: %s" % e)

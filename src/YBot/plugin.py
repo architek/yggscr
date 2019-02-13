@@ -45,7 +45,7 @@ class YBot(callbacks.Plugin):
         self.__parent = super(YBot, self)
         self.__parent.__init__(irc)
         self.yggb = YggBrowser(loglevel=DEBUG)
-        self.yggb.proxify("socks5h://192.168.1.9:9100")
+        #self.yggb.proxify("socks5h://192.168.1.9:9100")
         self.shout = YggShout(self.yggb)
         shout_err = 0
         self.col = dict()

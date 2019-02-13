@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>yggscr.shout &#8212; YggScr 1.2.8 documentation</title>
+    <title>yggscr.shout &#8212; YggScr 1.2.9 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -209,37 +209,40 @@
 
     <span class="n">yggshout</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">while</span><span class="p">(</span><span class="kc">True</span><span class="p">):</span>
-        <span class="n">nt</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">while</span> <span class="n">nt</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">yggshout</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">yggshout</span> <span class="o">=</span> <span class="n">YggShout</span><span class="p">()</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Started&quot;</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">nt</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Max retries reached... Reconnecting&quot;</span><span class="p">)</span>
-                    <span class="n">yggshout</span> <span class="o">=</span> <span class="n">YggShout</span><span class="p">()</span>
-                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-                <span class="n">yggshout</span><span class="o">.</span><span class="n">get_shouts</span><span class="p">()</span>
-                <span class="k">break</span>
-            <span class="k">except</span> <span class="p">(</span><span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">Timeout</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">timeout</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="n">dt</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="mi">15</span><span class="o">*</span><span class="p">(</span><span class="n">nt</span> <span class="o">%</span> <span class="mi">5</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">nt</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERROR: Can&#39;t get shout messages... [</span><span class="si">{}</span><span class="s2">] - Trying again in </span><span class="si">{}</span><span class="s2">s...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">dt</span><span class="p">))</span>
-                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
-                <span class="n">nt</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ConnectionError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Connection error...[</span><span class="si">{}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
-                <span class="n">nt</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">if</span> <span class="n">nt</span> <span class="o">&gt;=</span> <span class="mi">10</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;FATAL: No connection&quot;</span><span class="p">)</span>
-            <span class="n">exit</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">nt</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Reconnected&quot;</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">removed</span><span class="p">,</span> <span class="n">shout</span> <span class="ow">in</span> <span class="n">yggshout</span><span class="o">.</span><span class="n">do_diff</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">removed</span><span class="p">:</span>
-                <span class="n">shout</span><span class="o">.</span><span class="n">message</span> <span class="o">+=</span> <span class="s2">&quot;&lt;-- REMOVED&quot;</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">shout</span><span class="p">)</span>
-        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span></div>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">nt</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">while</span> <span class="n">nt</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">yggshout</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">yggshout</span> <span class="o">=</span> <span class="n">YggShout</span><span class="p">()</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Started&quot;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">nt</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Max retries reached... Reconnecting&quot;</span><span class="p">)</span>
+                        <span class="n">yggshout</span> <span class="o">=</span> <span class="n">YggShout</span><span class="p">()</span>
+                        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="n">yggshout</span><span class="o">.</span><span class="n">get_shouts</span><span class="p">()</span>
+                    <span class="k">break</span>
+                <span class="k">except</span> <span class="p">(</span><span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">Timeout</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">timeout</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="n">dt</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="mi">15</span><span class="o">*</span><span class="p">(</span><span class="n">nt</span> <span class="o">%</span> <span class="mi">5</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">nt</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERROR: Can&#39;t get shout messages... [</span><span class="si">{}</span><span class="s2">] - Trying again in </span><span class="si">{}</span><span class="s2">s...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">dt</span><span class="p">))</span>
+                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
+                    <span class="n">nt</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ConnectionError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Connection error...[</span><span class="si">{}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+                    <span class="n">nt</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">nt</span> <span class="o">&gt;=</span> <span class="mi">10</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;FATAL: No connection&quot;</span><span class="p">)</span>
+                <span class="n">exit</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">nt</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Reconnected&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">removed</span><span class="p">,</span> <span class="n">shout</span> <span class="ow">in</span> <span class="n">yggshout</span><span class="o">.</span><span class="n">do_diff</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">removed</span><span class="p">:</span>
+                    <span class="n">shout</span><span class="o">.</span><span class="n">message</span> <span class="o">+=</span> <span class="s2">&quot;&lt;-- REMOVED&quot;</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">shout</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>

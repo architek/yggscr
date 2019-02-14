@@ -5,8 +5,8 @@ before_script:
     - python -V # Print out python version for debugging
 
 stages:
-    - test
     - build
+    - test
     - deploy
 
 job_build:

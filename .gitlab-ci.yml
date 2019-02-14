@@ -31,8 +31,8 @@ job_test:
     only:
         - merge_requests
         - branch
-    except:
-        - master
+          #    except:
+          #        - master
 
 job_deployment_staging:
     stage: deploy

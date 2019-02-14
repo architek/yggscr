@@ -31,7 +31,7 @@ before_install:
 # command to install dependencies
 install:
   - pip install coveralls codecov
-  - python3 setup.py -q install
+  - python3 setup.py install
 
 # command to run tests
 script:

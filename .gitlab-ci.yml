@@ -15,7 +15,7 @@ job_test:
         - echo "Running tests"
         - python setup.py build
         - python setup.py -q install
-        - pip install pytest
+        - pip install -r requirements.txt
         - python -m pytest
 
     only:

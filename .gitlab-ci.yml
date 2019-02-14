@@ -1,13 +1,20 @@
 image: python:3.6-slim
 
 before_script:
-    - apt-get update -qq && apt-get install -y nodejs nodejs-legacy
     - python -V # Print out python version for debugging
-
+    - pip install virtualenv
+    - virtualenv venv
+    - source venv/bin/activate
+    
 stages:
     - build
     - test
     - deploy
+
+cache:
+  paths:
+    - .cache/pip
+    - venv/
 
 job_build:
     stage: build
@@ -24,13 +31,14 @@ job_test:
     stage: test
     script:
         - echo "Running tests"
+        - apt-get update -qq && apt-get install -y nodejs nodejs-legacy
         - pip install -r requirements.txt
         - python -m pytest
     dependencies:
         - job_build
     only:
-        - merge_requests
         - branches
+        - merge_requests
     except:
         - master
 

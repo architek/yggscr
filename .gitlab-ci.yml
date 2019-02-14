@@ -19,32 +19,30 @@ cache:
 
 job_build:
     stage: build
-    script:
-        - echo "Building the app"
-        - python setup.py build
-        - python setup.py -q install
     only:
-        - branches
         - tags
         - merge_requests
         - master
         - dev
+    script:
+        - echo "Building the app"
+        - python setup.py build
+        - python setup.py -q install
 
 job_test:
     stage: test
+    dependencies:
+        - job_build
+    only:
+        - merge_requests
+        - dev
+    except:
+        - master
     script:
         - echo "Running tests"
         - apt-get update -qq && apt-get install -y nodejs nodejs-legacy
         - pip install -r requirements.txt
         - python -m pytest
-    dependencies:
-        - job_build
-    only:
-        - branches
-        - merge_requests
-        - dev
-    except:
-        - master
 
 job_deployment_staging:
     stage: deploy

@@ -13,7 +13,7 @@ stages:
 
 cache:
   paths:
-    - .cache/pip
+#    - .cache/pip
     - venv/
     - src/yggscr/__build__.py
 
@@ -27,6 +27,8 @@ job_build:
         - branches
         - tags
         - merge_requests
+        - master
+        - dev
 
 job_test:
     stage: test
@@ -40,6 +42,7 @@ job_test:
     only:
         - branches
         - merge_requests
+        - dev
     except:
         - master
 

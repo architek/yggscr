@@ -30,6 +30,9 @@ job_test:
         - job_build
     only:
         - merge_requests
+        - branch
+    except:
+        - master
 
 job_deployment_staging:
     stage: deploy

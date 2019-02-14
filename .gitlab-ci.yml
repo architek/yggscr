@@ -9,17 +9,6 @@ stages:
     - build
     - deploy
 
-job_test:
-    stage: test
-    script:
-        - echo "Running tests"
-        - pip install -r requirements.txt
-        - python -m pytest
-    dependencies:
-        - job_build
-    only:
-        - merge_requests
-
 job_build:
     stage: build
     script:
@@ -29,6 +18,17 @@ job_build:
     only:
         - branches
         - tags
+        - merge_requests
+
+job_test:
+    stage: test
+    script:
+        - echo "Running tests"
+        - pip install -r requirements.txt
+        - python -m pytest
+    dependencies:
+        - job_build
+    only:
         - merge_requests
 
 job_deployment_staging:

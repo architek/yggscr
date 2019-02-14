@@ -17,7 +17,6 @@ addons:
     packages:
       - python3-setuptools
       - nodejs
-      - nodejs-legacy
 
 branches:
   only:

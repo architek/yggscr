@@ -15,8 +15,8 @@ job_test:
         - echo "Running tests"
         - python setup.py build
         - python setup.py -q install
-        - pip install nose
-        - nosetests -w tests
+        - pip install pytest
+        - python -m pytest
 
     only:
         - branches

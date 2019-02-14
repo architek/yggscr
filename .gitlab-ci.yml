@@ -26,8 +26,8 @@ job_test:
         - echo "Running tests"
         - pip install -r requirements.txt
         - python -m pytest
-    dependencies:
-        - job_build
+          #    dependencies:
+          #        - job_build
     only:
         - merge_requests
         - branch

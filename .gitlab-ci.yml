@@ -12,6 +12,7 @@ stages:
 # NOT RUN FOR MASTER BRANCH
 job_test:
     stage: test
+
     script:
         - echo "Running tests"
         - python setup.py build
@@ -21,27 +22,32 @@ job_test:
 
     only:
         - branches
-#    except:
-#       - master
+    except:
+       - master
 
 # ONLY RUN FOR DEV BRANCH
 job_run:
     stage: build
+
     script:
         - echo "Building the app"
-        - python setup.py build
+        - python setup.py install
 
-#   only:
-#       - Dev
+    only:
+        - branches
+    except:
+       - master
 
 
 # ONLY MASTER
 job_deployment_staging:
     stage: deploy
+
     script:
         - echo "Deploy MASTER BRANCH of the app into staging"
         - python setup.py build
         - python setup.py -q install
+
     environment:
         name: staging
     only:

@@ -13,55 +13,56 @@ stages:
 
 cache:
   paths:
-#    - .cache/pip
     - venv/
     - src/yggscr/__build__.py
+    - .cache/pip
 
+# Only build on merge requests
+# As push to dev or master is not allowed anyway
 job_build:
     stage: build
     only:
-        - tags
         - merge_requests
-        - master
-        - dev
+    
     script:
         - echo "Building the app"
         - python setup.py build
         - python setup.py -q install
 
+# Only test on merge requests
+# As push to dev or master is not allowed anyway
+# Don't perform tests on master
 job_test:
     stage: test
     dependencies:
         - job_build
     only:
         - merge_requests
-        - dev
     except:
         - master
+    
     script:
         - echo "Running tests"
         - apt-get update -qq && apt-get install -y nodejs nodejs-legacy
         - pip install -r requirements.txt
         - python -m pytest
 
+# Staging master branch
 job_deployment_staging:
     stage: deploy
-
-    script:
-        - echo "Deploy MASTER BRANCH of the app into staging"
-        - python setup.py build
-        - python setup.py -q install
-
     environment:
         name: staging
     only:
         - master
 
+    script:
+        - echo "Deploy master branch of the app into staging"
+        - python setup.py build
+        - python setup.py -q install
+
+# Manual job to production
 job_deploy_prod:
     stage: deploy
-    script:
-        - echo "Deploy MASTER BRANCH into the production server"
-        - python setup.py sdist
     environment:
         name: production
 #    allow_failure: false
@@ -69,3 +70,6 @@ job_deploy_prod:
     only:
         - master
 
+    script:
+        - echo "Deploy master branch into the production server"
+        - python setup.py sdist

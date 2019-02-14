@@ -1,6 +1,7 @@
 image: python:3.6-slim
 
 before_script:
+    - apt-get update -qq && apt-get install -y nodejs
     - python -V # Print out python version for debugging
 
 stages:

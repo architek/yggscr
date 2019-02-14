@@ -15,6 +15,7 @@ cache:
   paths:
     - .cache/pip
     - venv/
+    - src/yggscr/__build__.py
 
 job_build:
     stage: build

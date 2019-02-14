@@ -1,0 +1,30 @@
+version: "3.7"
+
+services:
+    nginx:
+        depends_on:
+            - stage
+        build:
+            context: ../
+            dockerfile: $PWD/docker/nginx/Dockerfile
+        volumes:
+            - type: volume
+              source: usocket
+              target: /run/ygg/
+              volume:
+                  nocopy: true
+            - "../conf:/opt/yggscr/conf/:ro"
+        ports:
+            - "8333:80"
+
+    stage:
+        build:
+            context: ../
+            dockerfile: $PWD/docker/stage/Dockerfile
+        volumes:
+            - "usocket:/run/ygg/"
+            - "../conf:/opt/yggscr/conf/:ro"
+
+
+volumes:
+    usocket:

@@ -1,0 +1,36 @@
+FROM python:3.6-alpine as base-dev
+
+COPY setup.py requirements-dev.txt yggscr/
+COPY src yggscr/src
+COPY docs yggscr/docs
+
+WORKDIR yggscr/
+RUN pip install wheel && pip wheel . --wheel-dir=wheels
+
+
+FROM python:3.6-alpine as uwsgi
+ARG BUILD_DATE
+
+COPY --from=base-dev yggscr/ /opt/yggscr
+WORKDIR /opt/yggscr
+RUN echo "__builddate__ = '$BUILD_DATE'" > src/yggscr/__build__.py
+RUN apk --update --no-cache add uwsgi uwsgi-python3 nodejs && \
+    mkdir /run/ygg/ && chown -R uwsgi:uwsgi /run/ygg
+RUN pip install --no-index --find-links=/opt/yggscr/wheels -r requirements-dev.txt
+
+
+ENV PYTHONPATH /opt/yggscr/src
+
+COPY conf /opt/yggscr/conf
+COPY docker /opt/yggscr/docker
+
+WORKDIR src/yserver
+ENV DEF_GUID=1001
+ENTRYPOINT ["/opt/yggscr/docker/stage/conf-setup.sh"]
+
+ARG def_wsgi_ini=ygg.ini
+ENV WSGI_INI=$def_wsgi_ini
+CMD uwsgi --ini $WSGI_INI --pythonpath /usr/local/lib/python3.6/site-packages --pythonpath /opt/yggscr/src
+
+EXPOSE 8333
+VOLUME /run/ygg/

@@ -1,0 +1,301 @@
+===========
+Ygg Scraper
+===========
+:Info: This is the README file for Ygg Scraper.
+:Author: Laurent Kislaire <teebeenator@gmail.com>
+:Copyright: © 2018, Laurent Kislaire.
+:Date: 2019-02-13
+:Version: 1.2.11
+
+.. index: README
+.. image:: https://travis-ci.org/architek/yggscr.svg?branch=master
+   :target: https://travis-ci.org/architek/yggscr
+.. image:: https://codecov.io/gh/architek/yggscr/branch/master/graph/badge.svg
+   :target: https://codecov.io/gh/architek/yggscr
+.. image:: https://images.microbadger.com/badges/image/architek/yggscr.svg
+   :target: https://microbadger.com/images/architek/yggscr
+
+PURPOSE
+-------
+Ygg scraper with:
+
+- **Shell** interface - Any python Cmd2_ features can be used: completion, scripts and much more
+- **RSS** feed with torrent using passkey
+- **Transmission / Rtorrent / Deluge** add torrent directly from webapp
+- **Irc** Limnoria_ interface
+- Cloud Flare bypass using cfscrape_ 
+- Http and Socks proxy support
+
+.. _Cmd2: https://github.com/python-cmd2/cmd2
+.. _Limnoria: https://github.com/ProgVal/Limnoria
+.. _cfscrape: https://github.com/Anorov/cloudflare-scrape
+
+.. image:: https://user-images.githubusercontent.com/490053/43690510-8dc22da8-990b-11e8-902a-ba135ed9e449.png
+
+DOCUMENTATION
+-------------
+
+The full documentation is here_. This includes links to docker images.
+
+.. _here: https://architek.github.io/yggscr/.build/html/index.html
+
+INSTALLATION
+------------
+
+Install using a virtualenv::
+
+    
+    # Clone and fetch install utils
+    git clone https://github.com/architek/yggscr.git && cd yggscr
+    sudo apt-get install git build-essential python-dev virtualenv
+    
+    # Create virtualenv
+    virtualenv -p python3 .venv
+    .venv/bin/python -m pip install --upgrade pip setuptools wheel
+    
+    # Build in virtualenv
+    source .venv/bin/activate
+    ./setup.py install
+    
+    # Test
+    cd src/yserver
+    yserver
+    yshell
+
+    # To leave virtualenv
+    deactivate
+
+*Note*: The user configured in yserver.ini needs read access to the virtualenv directory.
+
+*Note*: You need at least setuptools 33.1.1. 
+
+On *Debian Jessie* you can use official backports::
+
+    echo "deb http://ftp.debian.org/debian/ jessie-backports main contrib non-free" >> /etc/apt/sources.list
+    sudo apt update
+    sudo apt install python3-setuptools -t jessie-backports
+
+*Note*: If you want the CloudFlare bypass to work, you also need to install the debian package *nodejs*
+
+USAGE
+-----
+
+Directly from the shell
+=======================
+
+Start shell::
+
+	$ yshell
+	Welcome to Ygg Shell. Type help or ? to list commands.
+
+	> help
+
+	Documented commands (type help <topic>):
+	========================================
+	alias   help           login  print     quit             shell      unalias
+	edit    history        lscat  proxify   response         shortcuts
+	exclus  list_torrents  next   py        search_torrents  stats    
+	get     load           ping   pyscript  set              top_day  
+
+	> search_torrents q:cyber c:film s:docu
+	* Cyber guérilla 2.0 (2015) Science&Vie; [VFF] [HDTV] [1080p] x264  [0.93GB] S:26 L:0 | https://yggtorrent.com/torrent/filmvidéo/documentaire/184378-cyber+guérilla+2+0+2015+sciencevie+vff+hdtv+1080p+x264 | None | None
+	* Infrarouge On Nous Ecoute Partie 1 Cyber guerre L Arme Fatale 2015  [1.11GB] S:6 L:0 | https://yggtorrent.com/torrent/filmvidéo/documentaire/22526-infrarouge+on+nous+ecoute+partie+1+cyber+guerre+l+arme+fatale+2015 | None | None
+	> stats
+	EXCEPTION of type 'YggException' occurred with message: 'Not connected'
+	To enable full traceback, run the following command:  'set debug true'
+	> login TheBoss Passw0rdz
+	> stats
+	Ratio:4.19
+	Down (GB):73.24
+	Up (GB):306.66
+
+As an IRC bot
+=============
+
+Symlink the YBot subdirectory in your supybot plugin directory.
+Ask the bot for help ;-)
+
+As standalone web server
+========================
+
+This server allows searching, downloading torrent file, sending to rtorrent,transmission or deluge client and authenticated RSS.
+
+Fill in your settings in defaults.cfg (at least Hostname, Port to listen to, username and password) and launch the server::
+
+	yserver
+
+To access webapp, connect to http://localhost:8333 (or any other config you've set)
+
+Behind apache or nginx using wsgi
+=================================
+
+The same can be run behind any webserver, here is nginx described::
+
+	apt install uwsgi uwsgi-plugin-python3
+
+Create nginx vhost::
+
+	upstream _bottle {
+	    server unix:/run/uwsgi/app/yserver/socket;
+	}
+
+	server {
+	    server_name ygg.com;
+	    root /var/www;
+
+	    listen 80;
+	    listen [::]:80;
+
+	    location / {
+		# restrict to 192.168.1.0/24
+		allow 192.168.1.1/24;
+		deny all;
+		uwsgi_read_timeout 20s;
+		uwsgi_send_timeout 20s;
+		include uwsgi_params;
+		uwsgi_pass _bottle;
+	    }
+	}
+
+Create file /etc/uwsgi/apps-available/yserver.ini::
+
+	[uwsgi]
+	plugins = python3
+	socket = /run/uwsgi/app/yserver/socket
+
+	virtualenv = /home/user/git/yggscr/.venv
+	chdir = /home/user/git/yggscr/src/yserver
+	file = app.py
+
+	master = true
+
+	uid = www-data
+	gid = www-data
+
+	workers = 2
+	threads = 2
+	socket-timeout = 6000000
+	;harakiri = 20
+
+	;paste-logger = true
+	;disable-logging = true
+	debug = true
+	;reloader = true
+	;catch-all : set to false to let debugging middleware handle exceptions
+	;catch-all = false
+
+	need-app = true
+	vacuum = true
+
+	;set-placeholder = ano=true
+
+Create directory for socket for nginx to communicate with uwsgi::
+
+	mkdir -p /run/uwsgi/app/yserver
+	chown www-data:www-data /run/uwsgi/app/yserver
+
+Edit yserver.cfg to fit to your need
+Enable uwsgi app and reload nginx::
+
+	cd /etc/uwsgi/apps-enabled
+	ln -s ../apps-available/yserver.ini
+	systemctl restart uwsgi.service
+	systemctl restart nginx
+
+Anonymous Public mode
+=====================
+
+Note that it's possible to run the webapp without any credentials (see uwsgi 'ano' option). The realtime stats will not be shown and its up to the consumer application to provide the authentication cookie (e.g. the browser itself).
+
+You can have as many instances of the webapp running as you have .ini files. An example can be different configurations (anonymous, user1, user2). Each application has its own configuration and nginx can connect to the correct application through the relevant unix socket.
+
+Example for 2 configurations (internal LAN/external WAN)::
+
+	http {
+	    [...]
+		geo $client { 
+			default extra;
+			192.168.1.1/24 intra;
+		}
+	}
+
+	upstream _bottle {
+	    server unix:/run/uwsgi/app/yserver/socket;
+	}
+
+	upstream _bottle_ano {
+	    server unix:/run/uwsgi/app/yserver-ano/socket;
+	}
+
+	server {
+	    [...]
+		location / {
+			uwsgi_read_timeout 20s;
+			uwsgi_send_timeout 20s;
+			include uwsgi_params;
+			if ( $client = "extra" ) {
+				uwsgi_pass _bottle_ano;
+			}
+			if ( $client = "intra" ) {
+				uwsgi_pass _bottle;
+			}
+		}
+	}
+
+Graphs
+======
+
+It's easy to generate graphs using this library. The following script plots upload, download and ratio graphs using kibana (use a cron to trigger the cyclic execution)::
+
+   #!/usr/bin/env python3
+
+   from yggscr.ygg import YggBrowser
+   from time import strftime, localtime
+   from datetime import datetime
+   from elasticsearch import Elasticsearch
+
+
+   def get_stats(username, password):
+       y = YggBrowser()
+       y.login(username, password)
+       r = y.get_stats()
+       t = datetime.utcnow().strftime('%Y/%m/%d %H:%M:%S')
+       return {'ratio': r['ratio'], 'up': r['up'], 'down': r['down'], 't': t}
+
+
+   def write_index(index, data, doc_type='ratio_torrent', host='localhost', port=9200):
+       es = Elasticsearch([{'host': host, 'port': port}])
+       es.index(index=index, doc_type=doc_type, body=data)
+       print("Wrote data {}".format(data))
+
+
+   data = get_stats('myuser', 'mypassword')
+   write_index('ygg', data)
+
+.. image:: https://user-images.githubusercontent.com/490053/48959144-d8a08780-ef63-11e8-91de-0f417a7c4ce3.png
+
+NOTES
+-----
+
+Because I'm too lazy to do a proper html page, not all options are visible. The webapp is a "passthrough" relay. Any unknown parameter is sent to the server. 
+
+The following is an anonymous rss feed about electro music (combining categories)::
+
+	https://server.example.com/ano/rssearch?category=audio&sub_category=musique&option_genre%3Amultiple[]=1&option_genre%3Amultiple[]=15&option_genre%3Amultiple[]=33&option_genre%3Amultiple[]=34&option_genre%3Amultiple[]=35&option_genre%3Amultiple[]=119&option_genre%3Amultiple[]=124
+
+
+COPYRIGHT
+---------
+Copyright (c) 2018, Laurent Kislaire
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.

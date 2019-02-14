@@ -1,4 +1,12 @@
+src/yggscr/__build__.py
+.venv
+.buildlog
+.dock
+.pypt/gh-token
 x.shell
+docs/.build/doctrees
+docs/source
+conf-priv/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

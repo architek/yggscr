@@ -1,0 +1,29 @@
+yserver package
+===============
+
+Submodules
+----------
+
+.. automodule:: yserver.app
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. automodule:: yserver.config
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. automodule:: yserver.core
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: yserver
+    :members:
+    :undoc-members:
+    :show-inheritance:

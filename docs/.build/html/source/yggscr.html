@@ -1,0 +1,541 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>yggscr package &#8212; YggScr 1.2.11 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="yserver package" href="yserver.html" />
+    <link rel="prev" title="Docker Images" href="../docker_link.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">YggScr</a></h1>
+
+
+
+<p class="blurb">A light yggtorrent interface</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=architek&repo=yggscr&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html">Contribute</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../LICENSE.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../README.html">Ygg Scraper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docker_link.html">Docker Images</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">yggscr API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-yggscr.client">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-yggscr">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="yserver.html">yserver API</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="../docker_link.html" title="previous chapter">Docker Images</a></li>
+      <li>Next: <a href="yserver.html" title="next chapter">yserver package</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="yggscr-package">
+<h1>yggscr package<a class="headerlink" href="#yggscr-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-yggscr.client">
+<span id="submodules"></span><h2>Submodules<a class="headerlink" href="#module-yggscr.client" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="yggscr.client.deluge_add_torrent">
+<code class="descclassname">yggscr.client.</code><code class="descname">deluge_add_torrent</code><span class="sig-paren">(</span><em>ip</em>, <em>port</em>, <em>user</em>, <em>password</em>, <em>torrent_binary</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/client.html#deluge_add_torrent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.client.deluge_add_torrent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="yggscr.client.exec_cmd">
+<code class="descclassname">yggscr.client.</code><code class="descname">exec_cmd</code><span class="sig-paren">(</span><em>cmd</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/client.html#exec_cmd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.client.exec_cmd" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="yggscr.client.rtorrent_add_torrent">
+<code class="descclassname">yggscr.client.</code><code class="descname">rtorrent_add_torrent</code><span class="sig-paren">(</span><em>rpc_url</em>, <em>torrent_binary=None</em>, <em>torrent_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/client.html#rtorrent_add_torrent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.client.rtorrent_add_torrent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="yggscr.client.transmission_add_torrent">
+<code class="descclassname">yggscr.client.</code><code class="descname">transmission_add_torrent</code><span class="sig-paren">(</span><em>ip</em>, <em>port</em>, <em>user</em>, <em>password</em>, <em>torrent_binary</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/client.html#transmission_add_torrent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.client.transmission_add_torrent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<span class="target" id="module-yggscr.const"></span><dl class="function">
+<dt id="yggscr.const.detect_redir">
+<code class="descclassname">yggscr.const.</code><code class="descname">detect_redir</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/const.html#detect_redir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.const.detect_redir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="yggscr.const.get_dl_link">
+<code class="descclassname">yggscr.const.</code><code class="descname">get_dl_link</code><span class="sig-paren">(</span><em>id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/const.html#get_dl_link"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.const.get_dl_link" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<span class="target" id="module-yggscr.exceptions"></span><dl class="exception">
+<dt id="yggscr.exceptions.LoginFailed">
+<em class="property">exception </em><code class="descclassname">yggscr.exceptions.</code><code class="descname">LoginFailed</code><a class="reference internal" href="../_modules/yggscr/exceptions.html#LoginFailed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.exceptions.LoginFailed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="yggscr.exceptions.TooManyFailedLogins">
+<em class="property">exception </em><code class="descclassname">yggscr.exceptions.</code><code class="descname">TooManyFailedLogins</code><a class="reference internal" href="../_modules/yggscr/exceptions.html#TooManyFailedLogins"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.exceptions.TooManyFailedLogins" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="yggscr.exceptions.YggException">
+<em class="property">exception </em><code class="descclassname">yggscr.exceptions.</code><code class="descname">YggException</code><a class="reference internal" href="../_modules/yggscr/exceptions.html#YggException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.exceptions.YggException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
+</dd></dl>
+
+<span class="target" id="module-yggscr.link"></span><dl class="function">
+<dt id="yggscr.link.cat_subcat_from_href">
+<code class="descclassname">yggscr.link.</code><code class="descname">cat_subcat_from_href</code><span class="sig-paren">(</span><em>href</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/link.html#cat_subcat_from_href"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.link.cat_subcat_from_href" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="yggscr.link.get_cat_id">
+<code class="descclassname">yggscr.link.</code><code class="descname">get_cat_id</code><span class="sig-paren">(</span><em>cat</em>, <em>subcat=None</em>, <em>log=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/link.html#get_cat_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.link.get_cat_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="yggscr.link.get_link">
+<code class="descclassname">yggscr.link.</code><code class="descname">get_link</code><span class="sig-paren">(</span><em>cat</em>, <em>subcat</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/link.html#get_link"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.link.get_link" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="yggscr.link.list_cat_subcat">
+<code class="descclassname">yggscr.link.</code><code class="descname">list_cat_subcat</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/link.html#list_cat_subcat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.link.list_cat_subcat" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="yggscr.link.list_cats">
+<code class="descclassname">yggscr.link.</code><code class="descname">list_cats</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/link.html#list_cats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.link.list_cats" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="yggscr.link.list_subcats">
+<code class="descclassname">yggscr.link.</code><code class="descname">list_subcats</code><span class="sig-paren">(</span><em>cat</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/link.html#list_subcats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.link.list_subcats" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<span class="target" id="module-yggscr.sbrowser"></span><dl class="class">
+<dt id="yggscr.sbrowser.SBrowser">
+<em class="property">class </em><code class="descclassname">yggscr.sbrowser.</code><code class="descname">SBrowser</code><span class="sig-paren">(</span><em>scraper=None</em>, <em>browser=None</em>, <em>proxy=None</em>, <em>loglevel=20</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/sbrowser.html#SBrowser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.sbrowser.SBrowser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="yggscr.sbrowser.SBrowser.connection_details">
+<code class="descname">connection_details</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/sbrowser.html#SBrowser.connection_details"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.sbrowser.SBrowser.connection_details" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return WAN connection detail</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="yggscr.sbrowser.SBrowser.is_cloudflare">
+<code class="descname">is_cloudflare</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/sbrowser.html#SBrowser.is_cloudflare"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.sbrowser.SBrowser.is_cloudflare" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="yggscr.sbrowser.SBrowser.open">
+<code class="descname">open</code><span class="sig-paren">(</span><em>url</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/sbrowser.html#SBrowser.open"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.sbrowser.SBrowser.open" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="yggscr.sbrowser.SBrowser.parsed">
+<code class="descname">parsed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/sbrowser.html#SBrowser.parsed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.sbrowser.SBrowser.parsed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="yggscr.sbrowser.SBrowser.proxify">
+<code class="descname">proxify</code><span class="sig-paren">(</span><em>https_proxy=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/sbrowser.html#SBrowser.proxify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.sbrowser.SBrowser.proxify" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Sets an https-only proxy:</dt>
+<dd><ul class="first last simple">
+<li><a class="reference external" href="https://user:pass&#64;host:port">https://user:pass&#64;host:port</a>   : HTTP  proxy</li>
+<li>socks5h://user:pass&#64;host:port : SOCKS proxy</li>
+<li>socks5://user:pass&#64;host:port  : SOCKS proxy with local DNS resolver</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="yggscr.sbrowser.SBrowser.response">
+<code class="descname">response</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/sbrowser.html#SBrowser.response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.sbrowser.SBrowser.response" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-yggscr.shell"></span><dl class="class">
+<dt id="yggscr.shell.YggShell">
+<em class="property">class </em><code class="descclassname">yggscr.shell.</code><code class="descname">YggShell</code><span class="sig-paren">(</span><em>ygg_browser=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/shell.html#YggShell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.shell.YggShell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">cmd2.Cmd</span></code></p>
+<p>Ygg command line interface</p>
+<dl class="method">
+<dt id="yggscr.shell.YggShell.do_exclus">
+<code class="descname">do_exclus</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/shell.html#YggShell.do_exclus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.shell.YggShell.do_exclus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get exclu</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="yggscr.shell.YggShell.do_login">
+<code class="descname">do_login</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/shell.html#YggShell.do_login"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.shell.YggShell.do_login" title="Permalink to this definition">¶</a></dt>
+<dd><p>login &lt;user&gt; &lt;pass&gt; used to authenticate on ygg</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="yggscr.shell.YggShell.do_logout">
+<code class="descname">do_logout</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/shell.html#YggShell.do_logout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.shell.YggShell.do_logout" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="yggscr.shell.YggShell.do_lscat">
+<code class="descname">do_lscat</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/shell.html#YggShell.do_lscat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.shell.YggShell.do_lscat" title="Permalink to this definition">¶</a></dt>
+<dd><p>list categories and subcategories</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="yggscr.shell.YggShell.do_next">
+<code class="descname">do_next</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/shell.html#YggShell.do_next"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.shell.YggShell.do_next" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns next torrents from previous search or list</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="yggscr.shell.YggShell.do_open">
+<code class="descname">do_open</code><span class="sig-paren">(</span><em>url</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/shell.html#YggShell.do_open"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.shell.YggShell.do_open" title="Permalink to this definition">¶</a></dt>
+<dd><p>do a simple get on an url</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="yggscr.shell.YggShell.do_ping">
+<code class="descname">do_ping</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/shell.html#YggShell.do_ping"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.shell.YggShell.do_ping" title="Permalink to this definition">¶</a></dt>
+<dd><p>perform a connection to /</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="yggscr.shell.YggShell.do_print">
+<code class="descname">do_print</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/shell.html#YggShell.do_print"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.shell.YggShell.do_print" title="Permalink to this definition">¶</a></dt>
+<dd><p>prints connection status</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="yggscr.shell.YggShell.do_proxify">
+<code class="descname">do_proxify</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/shell.html#YggShell.do_proxify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.shell.YggShell.do_proxify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets or resets proxy settings
+proxify [xxx://user:pass&#64;host:port]
+proxify without arguments will set no proxy
+proxify http://1.1.1.1:8080 to select an http proxy
+proxify socks5h://1.1.1.1 to select a socks proxy with remote dns
+proxify socks5://1.1.1.1 to select a socks proxy with local dns</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="yggscr.shell.YggShell.do_response">
+<code class="descname">do_response</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/shell.html#YggShell.do_response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.shell.YggShell.do_response" title="Permalink to this definition">¶</a></dt>
+<dd><p>get last response</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="yggscr.shell.YggShell.do_search_torrents">
+<code class="descname">do_search_torrents</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/shell.html#YggShell.do_search_torrents"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.shell.YggShell.do_search_torrents" title="Permalink to this definition">¶</a></dt>
+<dd><p>search torrents
+search_torrents q:&lt;pattern&gt; [c:&lt;category&gt;] [s:&lt;subcategory&gt;]
+[s:&lt;subcategory&gt;] [opt1:val] [opt2:val1] [opt2:val2] [d:False] [n:3]
+any other option will be passed unchanged to the webserver
+d is for detail which will fetch each torrent url for more details
+n is the number of torrents to display (all by default)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="yggscr.shell.YggShell.do_stats">
+<code class="descname">do_stats</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/shell.html#YggShell.do_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.shell.YggShell.do_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>stats to return ratio statistics once authenticated</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="yggscr.shell.YggShell.do_top_day">
+<code class="descname">do_top_day</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/shell.html#YggShell.do_top_day"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.shell.YggShell.do_top_day" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get Top day</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="yggscr.shell.YggShell.do_top_month">
+<code class="descname">do_top_month</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/shell.html#YggShell.do_top_month"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.shell.YggShell.do_top_month" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get Top month</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="yggscr.shell.YggShell.do_top_week">
+<code class="descname">do_top_week</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/shell.html#YggShell.do_top_week"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.shell.YggShell.do_top_week" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get Top week</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="yggscr.shell.YggShell.print_torrents">
+<code class="descname">print_torrents</code><span class="sig-paren">(</span><em>torrents</em>, <em>n=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/shell.html#YggShell.print_torrents"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.shell.YggShell.print_torrents" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="yggscr.shell.wrapper">
+<code class="descclassname">yggscr.shell.</code><code class="descname">wrapper</code><span class="sig-paren">(</span><em>method</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/shell.html#wrapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.shell.wrapper" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<span class="target" id="module-yggscr.shout"></span><dl class="class">
+<dt id="yggscr.shout.ShoutMessage">
+<em class="property">class </em><code class="descclassname">yggscr.shout.</code><code class="descname">ShoutMessage</code><span class="sig-paren">(</span><em>shout</em>, <em>soup=None</em>, <em>mtime=None</em>, <em>user=None</em>, <em>group=None</em>, <em>message=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/shout.html#ShoutMessage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.shout.ShoutMessage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="yggscr.shout.ShoutMessage.parse_shout">
+<code class="descname">parse_shout</code><span class="sig-paren">(</span><em>soup</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/shout.html#ShoutMessage.parse_shout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.shout.ShoutMessage.parse_shout" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="yggscr.shout.YggShout">
+<em class="property">class </em><code class="descclassname">yggscr.shout.</code><code class="descname">YggShout</code><span class="sig-paren">(</span><em>robs=None</em>, <em>debug=False</em>, <em>irc=False</em>, <em>colour=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/shout.html#YggShout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.shout.YggShout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="yggscr.shout.YggShout.do_diff">
+<code class="descname">do_diff</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/shout.html#YggShout.do_diff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.shout.YggShout.do_diff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute and return list of new shouts</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="yggscr.shout.YggShout.get_shouts">
+<code class="descname">get_shouts</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/shout.html#YggShout.get_shouts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.shout.YggShout.get_shouts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set current shouts from website</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="yggscr.shout.main">
+<code class="descclassname">yggscr.shout.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/shout.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.shout.main" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="yggscr.shout.parse_file">
+<code class="descclassname">yggscr.shout.</code><code class="descname">parse_file</code><span class="sig-paren">(</span><em>hfile</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/shout.html#parse_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.shout.parse_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<span class="target" id="module-yggscr.stats"></span><dl class="class">
+<dt id="yggscr.stats.Stats">
+<em class="property">class </em><code class="descclassname">yggscr.stats.</code><code class="descname">Stats</code><a class="reference internal" href="../_modules/yggscr/stats.html#Stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.stats.Stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="yggscr.stats.Stats.add">
+<code class="descname">add</code><span class="sig-paren">(</span><em>vals</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/stats.html#Stats.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.stats.Stats.add" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="yggscr.stats.Stats.upd_speed">
+<code class="descname">upd_speed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/stats.html#Stats.upd_speed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.stats.Stats.upd_speed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-yggscr.torrents"></span><dl class="class">
+<dt id="yggscr.torrents.Torrent">
+<em class="property">class </em><code class="descclassname">yggscr.torrents.</code><code class="descname">Torrent</code><span class="sig-paren">(</span><em>torrent_title</em>, <em>torrent_comm</em>, <em>torrent_age</em>, <em>torrent_size</em>, <em>torrent_completed</em>, <em>torrent_seed</em>, <em>torrent_leech</em>, <em>href</em>, <em>thref=None</em>, <em>tid=None</em>, <em>cat=None</em>, <em>subcat=None</em>, <em>uploader=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/torrents.html#Torrent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.torrents.Torrent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="yggscr.torrents.Torrent.get_dl_link">
+<code class="descname">get_dl_link</code><span class="sig-paren">(</span><em>id=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/torrents.html#Torrent.get_dl_link"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.torrents.Torrent.get_dl_link" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="yggscr.torrents.Torrent.set_id">
+<code class="descname">set_id</code><span class="sig-paren">(</span><em>tid</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/torrents.html#Torrent.set_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.torrents.Torrent.set_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="yggscr.torrents.Torrent.set_tref">
+<code class="descname">set_tref</code><span class="sig-paren">(</span><em>thref</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/torrents.html#Torrent.set_tref"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.torrents.Torrent.set_tref" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="yggscr.torrents.htn">
+<code class="descclassname">yggscr.torrents.</code><code class="descname">htn</code><span class="sig-paren">(</span><em>hsize</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/torrents.html#htn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.torrents.htn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<span class="target" id="module-yggscr.ygg"></span><dl class="class">
+<dt id="yggscr.ygg.YggBrowser">
+<em class="property">class </em><code class="descclassname">yggscr.ygg.</code><code class="descname">YggBrowser</code><span class="sig-paren">(</span><em>scraper=None</em>, <em>browser=None</em>, <em>proxy=None</em>, <em>loglevel=20</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/ygg.html#YggBrowser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.ygg.YggBrowser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#yggscr.sbrowser.SBrowser" title="yggscr.sbrowser.SBrowser"><code class="xref py py-class docutils literal notranslate"><span class="pre">yggscr.sbrowser.SBrowser</span></code></a></p>
+<p>Ygg Scrapper with CloudFlare bypass</p>
+<dl class="method">
+<dt id="yggscr.ygg.YggBrowser.cat_subcat">
+<code class="descname">cat_subcat</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/ygg.html#YggBrowser.cat_subcat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.ygg.YggBrowser.cat_subcat" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="yggscr.ygg.YggBrowser.download_torrent">
+<code class="descname">download_torrent</code><span class="sig-paren">(</span><em>torrent=None</em>, <em>id=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/ygg.html#YggBrowser.download_torrent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.ygg.YggBrowser.download_torrent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="yggscr.ygg.YggBrowser.exclus">
+<code class="descname">exclus</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/ygg.html#YggBrowser.exclus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.ygg.YggBrowser.exclus" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="yggscr.ygg.YggBrowser.gen_state">
+<code class="descname">gen_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/ygg.html#YggBrowser.gen_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.ygg.YggBrowser.gen_state" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="yggscr.ygg.YggBrowser.get_stats">
+<code class="descname">get_stats</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/ygg.html#YggBrowser.get_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.ygg.YggBrowser.get_stats" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="yggscr.ygg.YggBrowser.login">
+<code class="descname">login</code><span class="sig-paren">(</span><em>ygg_id=None</em>, <em>ygg_pass=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/ygg.html#YggBrowser.login"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.ygg.YggBrowser.login" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="yggscr.ygg.YggBrowser.logout">
+<code class="descname">logout</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/ygg.html#YggBrowser.logout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.ygg.YggBrowser.logout" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="yggscr.ygg.YggBrowser.next_torrents">
+<code class="descname">next_torrents</code><span class="sig-paren">(</span><em>nmax=100</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/ygg.html#YggBrowser.next_torrents"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.ygg.YggBrowser.next_torrents" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="yggscr.ygg.YggBrowser.ping">
+<code class="descname">ping</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/ygg.html#YggBrowser.ping"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.ygg.YggBrowser.ping" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="yggscr.ygg.YggBrowser.search_torrents">
+<code class="descname">search_torrents</code><span class="sig-paren">(</span><em>detail=False</em>, <em>q=None</em>, <em>nmax=100</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/ygg.html#YggBrowser.search_torrents"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.ygg.YggBrowser.search_torrents" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="yggscr.ygg.YggBrowser.top_day">
+<code class="descname">top_day</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/ygg.html#YggBrowser.top_day"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.ygg.YggBrowser.top_day" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="yggscr.ygg.YggBrowser.top_month">
+<code class="descname">top_month</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/ygg.html#YggBrowser.top_month"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.ygg.YggBrowser.top_month" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="yggscr.ygg.YggBrowser.top_seeded">
+<code class="descname">top_seeded</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/ygg.html#YggBrowser.top_seeded"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.ygg.YggBrowser.top_seeded" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="yggscr.ygg.YggBrowser.top_week">
+<code class="descname">top_week</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/ygg.html#YggBrowser.top_week"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.ygg.YggBrowser.top_week" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-yggscr.ylogging"></span><dl class="function">
+<dt id="yggscr.ylogging.consolelog">
+<code class="descclassname">yggscr.ylogging.</code><code class="descname">consolelog</code><span class="sig-paren">(</span><em>name</em>, <em>loglevel</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/ylogging.html#consolelog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.ylogging.consolelog" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-yggscr">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-yggscr" title="Permalink to this headline">¶</a></h2>
+<p>Yggtorrent scraper library - Webserver - Rss - Shell</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Copyright:</th><td class="field-body">© 2018, Laurent Kislaire.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">License:</th><td class="field-body">ISC (see /LICENSE).</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2018, Laurent Kislaire.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/source/yggscr.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

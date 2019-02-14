@@ -1,0 +1,6 @@
+FROM nginx
+COPY conf/ygg.conf /opt/yggscr/conf/
+COPY docker /opt/yggscr/docker
+CMD ["nginx", "-g", "daemon off;"]
+ENTRYPOINT ["/opt/yggscr/docker/nginx/conf-setup.sh"]
+EXPOSE 80

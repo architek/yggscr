@@ -1,0 +1,28 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[dev-packages]
+pylint = "*"
+"autopep8" = "*"
+
+[packages]
+requests = {version = ">=2.18.4", extras = ["socks"]}
+twine = "*"
+pytest = "*"
+coverage = "*"
+pytest-cov = "*"
+mock = "*"
+robobrowser = "*"
+"cmd2" = ">=0.8.0"
+cfscrape = ">=1.9.4"
+bottle = ">=0.12.13"
+bottle-werkzeug = ">=0.1.1"
+transmissionrpc = ">=0.11"
+deluge-client = ">=1.6.0"
+configparser = ">=3.5.0"
+Sphinx = "*"
+
+[requires]
+python_version = "3.6"

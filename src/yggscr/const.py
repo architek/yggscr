@@ -7,7 +7,7 @@ YGG_HOME = "https://" + YGG_HOST
 
 
 def detect_redir():
-    global YGG_HOME, DL_TPL, TORRENT_URL, SEARCH_URL, TOP_DAY_URL, TOP_WEEK_URL, TOP_MONTH_URL, \
+    global YGG_HOME, YGG_HOST, DL_TPL, TORRENT_URL, SEARCH_URL, TOP_DAY_URL, TOP_WEEK_URL, TOP_MONTH_URL, \
            EXCLUS_URL, TOP_SEED_URL, RSS_TPL, SHOUT_URL
     ir = requests.get(YGG_HOME, allow_redirects=False)
     if ir.status_code in [307, 301]:

@@ -16,6 +16,7 @@ addons:
   apt:
     packages:
       - python3-setuptools
+      - nodejs
 
 branches:
   only:

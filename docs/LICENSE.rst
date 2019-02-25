@@ -5,8 +5,8 @@ License
 :Author: Laurent Kislaire <teebeenator@gmail.com>
 :Copyright: © 2018, Laurent Kislaire.
 :License: ISC (see /LICENSE or :doc:`Appendix B <LICENSE>`.)
-:Date: 2019-02-13
-:Version: 1.2.11
+:Date: 2019-02-21
+:Version: 1.2.12
 
 .. index:: LICENSE
 

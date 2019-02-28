@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>yggscr.const &#8212; YggScr 1.2.11 documentation</title>
+    <title>yggscr.const &#8212; YggScr 1.2.12 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -95,7 +95,7 @@
 
 
 <div class="viewcode-block" id="detect_redir"><a class="viewcode-back" href="../../source/yggscr.html#yggscr.const.detect_redir">[docs]</a><span class="k">def</span> <span class="nf">detect_redir</span><span class="p">():</span>
-    <span class="k">global</span> <span class="n">YGG_HOME</span><span class="p">,</span> <span class="n">DL_TPL</span><span class="p">,</span> <span class="n">TORRENT_URL</span><span class="p">,</span> <span class="n">SEARCH_URL</span><span class="p">,</span> <span class="n">TOP_DAY_URL</span><span class="p">,</span> <span class="n">TOP_WEEK_URL</span><span class="p">,</span> <span class="n">TOP_MONTH_URL</span><span class="p">,</span> \
+    <span class="k">global</span> <span class="n">YGG_HOME</span><span class="p">,</span> <span class="n">YGG_HOST</span><span class="p">,</span> <span class="n">DL_TPL</span><span class="p">,</span> <span class="n">TORRENT_URL</span><span class="p">,</span> <span class="n">SEARCH_URL</span><span class="p">,</span> <span class="n">TOP_DAY_URL</span><span class="p">,</span> <span class="n">TOP_WEEK_URL</span><span class="p">,</span> <span class="n">TOP_MONTH_URL</span><span class="p">,</span> \
            <span class="n">EXCLUS_URL</span><span class="p">,</span> <span class="n">TOP_SEED_URL</span><span class="p">,</span> <span class="n">RSS_TPL</span><span class="p">,</span> <span class="n">SHOUT_URL</span>
     <span class="n">ir</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">YGG_HOME</span><span class="p">,</span> <span class="n">allow_redirects</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">ir</span><span class="o">.</span><span class="n">status_code</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">307</span><span class="p">,</span> <span class="mi">301</span><span class="p">]:</span>

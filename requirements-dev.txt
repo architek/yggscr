@@ -10,3 +10,4 @@ configparser>=3.5.0
 pytest
 pytest-coverage
 sphinx
+mock

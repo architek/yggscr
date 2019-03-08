@@ -55,8 +55,10 @@ setup(name='yggscr',
           'deluge_client>=1.6.0',
           'configparser>=3.5.0',
       ],
-      tests_requires=["pytest"],
-#      test_suite="tests",
+      tests_require=[
+          "pytest",
+      ],
+      test_suite="tests",
       entry_points={
           'console_scripts': [
               'yshell = yggscr.__main__:main',

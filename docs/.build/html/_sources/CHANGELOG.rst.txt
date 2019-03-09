@@ -3,10 +3,10 @@ Changelog
 =========
 :Info: This is the changelog for Ygg Scraper.
 :Author: Laurent Kislaire <teebeenator@gmail.com>
-:Copyright: © 2018, Laurent Kislaire.
+:Copyright: © 2018-2019, Laurent Kislaire.
 :License: ISC (see /LICENSE or :doc:`Appendix B <LICENSE>`.)
 :Date: 2019-03-09
-:Version: 1.2.13
+:Version: 1.2.14
 
 .. index:: CHANGELOG
 

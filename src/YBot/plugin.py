@@ -1,5 +1,5 @@
 ###
-# Copyright (c) 2018, Laurent
+# Copyright (c) 2018-2019, Laurent
 # All rights reserved.
 #
 ###

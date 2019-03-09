@@ -22,10 +22,10 @@ def wrapper(method):
         except (requests.exceptions.RequestException) as e:
             print("Network error:%s" % e)
             return
-        if torrents is None:
-            print("No results")
-        else:
+        if torrents:
             self.print_torrents(torrents)
+        else:
+            print("No results")
     return _impl
 
 
@@ -148,26 +148,29 @@ class YggShell(Cmd):
             raise YggException(
                 "Error: Syntax is search_torrents " +
                 "q:<pattern> [c:<category>] [s:<subcategory>] [d:True]")
-        if torrents is None:
-            print("No results")
-        else:
+        if torrents:
             self.print_torrents(torrents)
+        else:
+            print("No results")
 
     def do_next(self, line):
         'returns next torrents from previous search or list'
         line = line.strip()
         if line:
             if line.startswith('n:'):
-                n = line[2:]
+                try:
+                    n = int(line[2:])
+                except ValueError:
+                    raise YggException("Error: Syntax is next [n:nmax]")
             else:
                 raise YggException("Error: Syntax is next [n:nmax]")
         else:
             n = 3
         torrents = self.ygg_browser.next_torrents(nmax=n)
-        if torrents is None:
-            print("No results")
-        else:
+        if torrents:
             self.print_torrents(torrents)
+        else:
+            print("No results")
 
     @wrapper
     def do_top_day(self, line):

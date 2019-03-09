@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>yggscr package &#8212; YggScr 1.2.12 documentation</title>
+    <title>yggscr package &#8212; YggScr 1.2.13 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -222,7 +222,7 @@
 <span class="target" id="module-yggscr.shell"></span><dl class="class">
 <dt id="yggscr.shell.YggShell">
 <em class="property">class </em><code class="descclassname">yggscr.shell.</code><code class="descname">YggShell</code><span class="sig-paren">(</span><em>ygg_browser=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/shell.html#YggShell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.shell.YggShell" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">cmd2.Cmd</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">cmd2.cmd2.Cmd</span></code></p>
 <p>Ygg command line interface</p>
 <dl class="method">
 <dt id="yggscr.shell.YggShell.do_exclus">
@@ -366,7 +366,12 @@ n is the number of torrents to display (all by default)</p>
 
 <dl class="function">
 <dt id="yggscr.shout.main">
-<code class="descclassname">yggscr.shout.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/shout.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.shout.main" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">yggscr.shout.</code><code class="descname">main</code><span class="sig-paren">(</span><em>argv=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/shout.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.shout.main" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="yggscr.shout.main_loop">
+<code class="descclassname">yggscr.shout.</code><code class="descname">main_loop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/yggscr/shout.html#main_loop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#yggscr.shout.main_loop" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
@@ -526,7 +531,7 @@ n is the number of torrents to display (all by default)</p>
       &copy;2018, Laurent Kislaire.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.3</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.4</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

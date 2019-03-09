@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>yggscr.shell &#8212; YggScr 1.2.12 documentation</title>
+    <title>yggscr.shell &#8212; YggScr 1.2.13 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -110,10 +110,10 @@
         <span class="k">except</span> <span class="p">(</span><span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">RequestException</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Network error:</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">e</span><span class="p">)</span>
             <span class="k">return</span>
-        <span class="k">if</span> <span class="n">torrents</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No results&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">torrents</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">print_torrents</span><span class="p">(</span><span class="n">torrents</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No results&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">_impl</span></div>
 
 
@@ -236,26 +236,29 @@
             <span class="k">raise</span> <span class="n">YggException</span><span class="p">(</span>
                 <span class="s2">&quot;Error: Syntax is search_torrents &quot;</span> <span class="o">+</span>
                 <span class="s2">&quot;q:&lt;pattern&gt; [c:&lt;category&gt;] [s:&lt;subcategory&gt;] [d:True]&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">torrents</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No results&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">torrents</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">print_torrents</span><span class="p">(</span><span class="n">torrents</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">print_torrents</span><span class="p">(</span><span class="n">torrents</span><span class="p">)</span></div>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No results&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="YggShell.do_next"><a class="viewcode-back" href="../../source/yggscr.html#yggscr.shell.YggShell.do_next">[docs]</a>    <span class="k">def</span> <span class="nf">do_next</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
         <span class="s1">&#39;returns next torrents from previous search or list&#39;</span>
         <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">line</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;n:&#39;</span><span class="p">):</span>
-                <span class="n">n</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">2</span><span class="p">:])</span>
+                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">YggException</span><span class="p">(</span><span class="s2">&quot;Error: Syntax is next [n:nmax]&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">YggException</span><span class="p">(</span><span class="s2">&quot;Error: Syntax is next [n:nmax]&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">n</span> <span class="o">=</span> <span class="mi">3</span>
         <span class="n">torrents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ygg_browser</span><span class="o">.</span><span class="n">next_torrents</span><span class="p">(</span><span class="n">nmax</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">torrents</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No results&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">torrents</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">print_torrents</span><span class="p">(</span><span class="n">torrents</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">print_torrents</span><span class="p">(</span><span class="n">torrents</span><span class="p">)</span></div>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No results&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="YggShell.do_top_day"><a class="viewcode-back" href="../../source/yggscr.html#yggscr.shell.YggShell.do_top_day">[docs]</a>    <span class="nd">@wrapper</span>
     <span class="k">def</span> <span class="nf">do_top_day</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
@@ -307,7 +310,7 @@
       &copy;2018, Laurent Kislaire.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.3</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.4</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

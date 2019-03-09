@@ -11,3 +11,4 @@ pytest
 pytest-coverage
 sphinx
 mock
+wheel

@@ -6,6 +6,7 @@
 
 
 import pytest
+from mock import patch, Mock
 from src.yggscr.exceptions import YggException
 from src.yggscr.ygg import YggBrowser, Stats
 from src.yggscr.sbrowser import SBrowser
@@ -13,6 +14,8 @@ from src.yggscr.shout import ShoutMessage, YggShout
 from src.yggscr.torrents import htn, Torrent
 from src.yggscr.client import rtorrent_add_torrent, transmission_add_torrent, deluge_add_torrent, exec_cmd
 from src.yggscr.link import list_cats, list_subcats, get_link, get_cat_id, list_cat_subcat, cat_subcat_from_href
+from src.yggscr.const import get_dl_link, detect_redir, YGG_HOME
+from transmissionrpc.error import TransmissionError
 
 
 def test_link():
@@ -51,16 +54,18 @@ def test_ygg():
         print(t)
 
 
-def test_client():
+def test_client(tmp_path, monkeypatch):
     """Test bt client"""
     try:
         rtorrent_add_torrent("http://127.0.0.1/RPC2", b'0')
-    except: #noqa
+    except ConnectionRefusedError:
         pass
 
     try:
-        rtorrent_add_torrent("http://127.0.0.1/RPC2", None, 'foo.torrent')
-    except: #noqa
+        f = tmp_path / "foo.torrent"
+        f.write_bytes(b'00')
+        rtorrent_add_torrent("http://127.0.0.1/RPC2", None, str(f))
+    except ConnectionRefusedError:
         pass
 
     with pytest.raises(ValueError):
@@ -68,13 +73,19 @@ def test_client():
 
     try:
         transmission_add_torrent("127.0.0.1", 65432, "user", "pass", b'0')
-    except: #noqa
+    except TransmissionError:
         pass
+
+    with patch("src.yggscr.client.tclient"):
+        transmission_add_torrent("127.0.0.1", 65432, "user", "pass", b'0')
 
     try:
         deluge_add_torrent("127.0.0.1", 65432, "user", "pass", b'0')
-    except: #noqa
+    except ConnectionRefusedError:
         pass
+
+    with patch("src.yggscr.client.DelugeRPCClient"):
+        deluge_add_torrent("127.0.0.1", 65432, "user", "pass", b'0')
 
     exec_cmd("ls .")
 
@@ -94,3 +105,18 @@ def test_torrents():
     t.get_dl_link()
     t.set_tref('plop')
     t.set_id('12')
+
+
+def _mock_response(status=200, headers=None):
+        mock_resp = Mock()
+        mock_resp.status_code = status
+        mock_resp.headers = headers
+        return mock_resp
+
+
+@patch('requests.get')
+def test_more(mock_get):
+    get_dl_link(42)
+    mock_resp = _mock_response(status=301, headers={'Location': 'https://ygg2.yggtorrent.gg'})
+    mock_get.return_value = mock_resp
+    detect_redir()

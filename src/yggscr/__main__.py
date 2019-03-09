@@ -17,7 +17,3 @@ from yggscr.shell import YggShell
 def main():
     """Main routine of Ygg Scraper shell."""
     YggShell().cmdloop()
-
-
-if __name__ == '__main__':
-    main()

@@ -107,7 +107,7 @@ class YggBrowser(SBrowser):
         html = str(self.response().content)
         pos_r = html.find('Ratio')
         html = html[pos_r-500:pos_r+500]
-        vals = re.findall(r'\b([0-9\.]+)([GT])[oB]\b', html)
+        vals = re.findall(r'\b([0-9\.]+)([GTP])[oB]\b', html)
         if len(vals) != 2:
             raise YggException("Can't find ratio information")
         else:
@@ -239,7 +239,7 @@ class YggBrowser(SBrowser):
         if s_href:
             self.browser.follow_link(s_href)
         else:
-            return None
+            return []
         return self._parse_torrents(n=nmax)
 
     def cat_subcat(self):

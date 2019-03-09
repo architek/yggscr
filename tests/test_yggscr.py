@@ -92,7 +92,7 @@ def test_client1():
     exec_cmd("ls .")
 
 
-@pytest.mark.skipif(sys.version_info == (3, 5), reason="python3.5 doesn't have tmp_path")
+@pytest.mark.skipif(sys.version_info[:2] == (3, 5), reason="python3.5 doesn't have tmp_path")
 def test_client2(tmp_path):
     try:
         f = tmp_path / "foo.torrent"
@@ -113,7 +113,7 @@ def test_shout1():
     main_loop()
 
 
-@pytest.mark.skipif(sys.version_info == (3, 5), reason="python3.5 doesn't have tmp_path")
+@pytest.mark.skipif(sys.version_info[:2] == (3, 5), reason="python3.5 doesn't have tmp_path")
 def test_shout2(tmp_path):
     f = tmp_path / "foo.txt"
     f.write_text("")

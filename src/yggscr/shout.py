@@ -8,6 +8,7 @@ from .ygg import YggBrowser
 from .const import SHOUT_URL
 import requests
 import socket
+import sys
 
 
 class ShoutMessage(object):
@@ -34,8 +35,6 @@ class ShoutMessage(object):
             and self.group == other.group and self.message == other.message
 
     def parse_shout(self, soup):
-        if self.shout is not None and self.shout.debug:
-            print("Parsing\n%s" % soup.prettify())
         message = ""
         id = soup.get('data-id')
         username = soup.find("a", class_="username").text.strip()
@@ -101,61 +100,64 @@ class YggShout:
 
 
 def parse_file(hfile):
-    try:
-        with open(hfile, "r") as fn:
-            html = fn.read()
-    except FileNotFoundError:
-        print("Can't read file {}".format(hfile))
-        exit(1)
+    with open(hfile, "r") as fn:
+        html = fn.read()
     from bs4 import BeautifulSoup
     soup = BeautifulSoup(html, 'html.parser')
     print(soup.get_text())
 
 
-def main():
-    import sys
-    if len(sys.argv) > 1:
-        hfile = sys.argv[1]
-        parse_file(hfile)
-        exit(0)
+yggshout = None
 
-    yggshout = None
-    while(True):
+
+def main_loop():
+    global yggshout
+    nt = 0
+    while nt < 10:
         try:
-            nt = 0
-            while nt < 10:
-                try:
-                    if yggshout is None:
-                        yggshout = YggShout()
-                        print("Started")
-                    if nt == 5:
-                        print("Max retries reached... Reconnecting")
-                        yggshout = YggShout()
-                        time.sleep(1)
-                    yggshout.get_shouts()
-                    break
-                except (requests.exceptions.Timeout, socket.timeout) as e:
-                    dt = 1 + 15*(nt % 5)
-                    if nt > 0:
-                        print("ERROR: Can't get shout messages... [{}] - Trying again in {}s...".format(e, dt))
-                    time.sleep(dt)
-                    nt += 1
-                except requests.exceptions.ConnectionError as e:
-                    print("Connection error...[{}]".format(e))
-                    nt += 1
-            if nt >= 10:
-                print("FATAL: No connection")
-                exit(2)
-            elif nt > 1:
-                print("Reconnected")
-            for removed, shout in yggshout.do_diff():
-                if removed:
-                    shout.message += "<-- REMOVED"
-                print(shout)
-            time.sleep(15)
-        except KeyboardInterrupt:
-            sys.exit(0)
+            if yggshout is None:
+                yggshout = YggShout()
+                print("Started")
+            if nt == 5:
+                print("Max retries reached... Reconnecting")
+                yggshout = YggShout()
+                time.sleep(1)
+            yggshout.get_shouts()
+            break
+        except (requests.exceptions.Timeout, socket.timeout) as e:
+            dt = 1 + 15*(nt % 5)
+            if nt > 0:
+                print("ERROR: Can't get shout messages... [{}] - Trying again in {}s...".format(e, dt))
+            time.sleep(dt)
+            nt += 1
+        except requests.exceptions.ConnectionError as e:
+            print("Connection error...[{}]".format(e))
+            nt += 1
+    if nt >= 10:
+        print("FATAL: No connection")
+        sys.exit(2)
+    elif nt > 1:
+        print("Reconnected")
+    for removed, shout in yggshout.do_diff():
+        if removed:
+            shout.message += "<-- REMOVED"
+        print(shout)
 
 
-if __name__ == '__main__':
-    main()
+def main(argv=None):
+    if argv is None:
+        argv = sys.argv
+    if len(argv) > 1:
+        hfile = argv[1]
+        try:
+            parse_file(hfile)
+        except (FileNotFoundError, IsADirectoryError) as e:
+            print("Can't read file, {}".format(e))
+            sys.exit(1)
+    else:
+        while True:
+            try:
+                main_loop()
+                time.sleep(15)
+            except KeyboardInterrupt:
+                return

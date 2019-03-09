@@ -8,6 +8,7 @@
 import pytest
 import logging
 import time
+import sys
 from mock import patch, Mock
 from src.yggscr.exceptions import YggException
 from src.yggscr.ygg import YggBrowser
@@ -62,17 +63,10 @@ def test_ygg():
         print(t)
 
 
-def test_client(tmp_path, monkeypatch):
+def test_client1():
     """Test bt client"""
     try:
         rtorrent_add_torrent("http://127.0.0.1/RPC2", b'0')
-    except ConnectionRefusedError:
-        pass
-
-    try:
-        f = tmp_path / "foo.torrent"
-        f.write_bytes(b'00')
-        rtorrent_add_torrent("http://127.0.0.1/RPC2", None, str(f))
     except ConnectionRefusedError:
         pass
 
@@ -98,7 +92,17 @@ def test_client(tmp_path, monkeypatch):
     exec_cmd("ls .")
 
 
-def test_shout(tmp_path):
+@pytest.mark.skipif(sys.version_info == (3, 5), reason="python3.5 doesn't have tmp_path")
+def test_client2(tmp_path):
+    try:
+        f = tmp_path / "foo.torrent"
+        f.write_bytes(b'00')
+        rtorrent_add_torrent("http://127.0.0.1/RPC2", None, str(f))
+    except ConnectionRefusedError:
+        pass
+
+
+def test_shout1():
     s = ShoutMessage(True)
     s = ShoutMessage(True, None, 1, 1, 1, "message")
     print("{}".format(s))
@@ -107,6 +111,10 @@ def test_shout(tmp_path):
     main_loop()
     time.sleep(2)
     main_loop()
+
+
+@pytest.mark.skipif(sys.version_info == (3, 5), reason="python3.5 doesn't have tmp_path")
+def test_shout2(tmp_path):
     f = tmp_path / "foo.txt"
     f.write_text("")
     main_shout(["foo", str(f)])

@@ -39,7 +39,7 @@ class Stats():
     # Note that website is inconsistent (TiB vs TB, GiB vs GB)
     def add(self, vals):
         self.down, self.up = sorted(
-            float(e[0]) if e[1] == 'G' else float(e[0]) * 1024
+            float(e[0]) if e[1] == 'G' else float(e[0]) * 1024 if e[1] == 'T' else float(e[0]) * 1024 * 1024
             for e in vals)
         self.i_up, self.m_up, self.i_down, self.m_down = self.upd_speed()
         self.ratio = round(self.up/self.down, 4)

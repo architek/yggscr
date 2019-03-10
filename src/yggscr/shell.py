@@ -20,7 +20,7 @@ def wrapper(method):
         try:
             torrents = method(self, *method_args, **method_kwargs)
         except (requests.exceptions.RequestException) as e:
-            print("Network error:%s" % e)
+            print("Wrapped Network error:%s" % e)
             return
         if torrents:
             self.print_torrents(torrents)
@@ -73,7 +73,7 @@ class YggShell(Cmd):
             self.ygg_browser.login(args[0], args[1])
             print("Connected as %s" % args[0])
         except (requests.exceptions.RequestException) as e:
-            print("Network error:%s" % e)
+            print("Login Network error:%s" % e)
             return
         except IndexError:
             print("ERROR: Syntax is login id pass")
@@ -124,14 +124,14 @@ class YggShell(Cmd):
                         q[k].append(v)
                     else:
                         q[k] = [q[k], v]
-        except ValueError:
-            raise YggException("Error: Invalid syntax in search_torrents")
+        except ValueError as e:
+            raise YggException("Error: Invalid syntax in search_torrents {}".format(e))
         try:
             q['name'] = q.pop('q')
             q['category'] = q.pop('c', "")
             q['sub_category'] = q.pop('s', "")
-        except KeyError:
-            raise YggException("Error: Invalid syntax in search_torrents")
+        except KeyError as e:
+            raise YggException("Error: Invalid syntax in search_torrents {}".format(e))
 
         detail = q.pop('d', False)
         n = int(q.pop('n', 3))
@@ -144,10 +144,10 @@ class YggShell(Cmd):
         except (requests.exceptions.RequestException) as e:
             print("Network error:%s" % e)
             return
-        except KeyError:
-            raise YggException(
-                "Error: Syntax is search_torrents " +
-                "q:<pattern> [c:<category>] [s:<subcategory>] [d:True]")
+        # except KeyError:
+        #    raise YggException(
+        #        "Error: Syntax is search_torrents " +
+        #        "q:<pattern> [c:<category>] [s:<subcategory>] [d:True]")
         if torrents:
             self.print_torrents(torrents)
         else:

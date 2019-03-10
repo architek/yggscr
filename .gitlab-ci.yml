@@ -44,7 +44,7 @@ job_test:
     script:
         - echo "Running tests"
         - apt-get update -qq && apt-get install -y nodejs nodejs-legacy
-        - pip install -r requirements.txt
+        - pip install -r requirements-dev.txt
         - python -m pytest
 
 # Staging master branch

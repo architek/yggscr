@@ -5,21 +5,22 @@
 # See /LICENSE for licensing information.
 
 
-import pytest
 import logging
 import time
 import sys
+import robobrowser
+import requests
+import pytest
 from mock import patch, Mock
+from transmissionrpc.error import TransmissionError
 from src.yggscr.exceptions import YggException
-from src.yggscr.ygg import YggBrowser
+import src.yggscr.ygg
 from src.yggscr.stats import Stats
 from src.yggscr.sbrowser import SBrowser
-from src.yggscr.shout import ShoutMessage, YggShout, main_loop, main as main_shout
 from src.yggscr.torrents import htn, Torrent
 from src.yggscr.client import rtorrent_add_torrent, transmission_add_torrent, deluge_add_torrent, exec_cmd
 from src.yggscr.link import list_cats, list_subcats, get_link, get_cat_id, list_cat_subcat, cat_subcat_from_href
 from src.yggscr.const import get_dl_link, detect_redir
-from transmissionrpc.error import TransmissionError
 
 
 def test_link():
@@ -42,7 +43,7 @@ def test_link():
         print('cat["'+c+'"]=['+a+'];')
 
 
-def test_ygg():
+def test_core():
     """Test search."""
     s = Stats()
     s.add([('10.5', 'T'), ('8.2', 'G')])
@@ -51,16 +52,23 @@ def test_ygg():
     print("{}".format(s))
     s.proxify("socks5h://user:pass@127.0.0.1:port")
     print(s.parsed())
-    y = YggBrowser()
-    y.download_torrent()
+    y = src.yggscr.ygg.YggBrowser()
+    y.download_torrent(id=41909)
     y.next_torrents()
+    y.cat_subcat()
     with pytest.raises(Exception):
         y.get_stats()
     y.login()
-    y.logout()
     ts = y.search_torrents(q={'name': 'cyber'})
     for t in ts:
         print(t)
+    y.logout()
+    for _ in range(1, 4):
+        with pytest.raises(src.yggscr.ygg.LoginFailed):
+            y.login("a b")
+        time.sleep(1)
+    with pytest.raises(src.yggscr.ygg.TooManyFailedLogins):
+        y.login("a b")
 
 
 def test_client1():
@@ -101,28 +109,6 @@ def test_client2(tmp_path):
     except ConnectionRefusedError:
         pass
 
-
-def test_shout1():
-    s = ShoutMessage(True)
-    s = ShoutMessage(True, None, 1, 1, 1, "message")
-    print("{}".format(s))
-    s = YggShout()
-    print("{}".format(s))
-    main_loop()
-    time.sleep(2)
-    main_loop()
-
-
-@pytest.mark.skipif(sys.version_info[:2] == (3, 5), reason="python3.5 doesn't have tmp_path")
-def test_shout2(tmp_path):
-    f = tmp_path / "foo.txt"
-    f.write_text("")
-    main_shout(["foo", str(f)])
-    with patch("src.yggscr.shout.sys.exit") as mock_exit:
-        main_shout(["foo", "nonexistent"])
-        assert mock_exit.call_args[0][0] == 1
-
-
 def test_torrents():
     htn("12")
     t = Torrent("title", "12", "1970", "12GO", "12", "12", "12", "http://test/foo/bar/baz")
@@ -133,10 +119,10 @@ def test_torrents():
 
 
 def _mock_response(status=200, headers=None):
-        mock_resp = Mock()
-        mock_resp.status_code = status
-        mock_resp.headers = headers
-        return mock_resp
+    mock_resp = Mock()
+    mock_resp.status_code = status
+    mock_resp.headers = headers
+    return mock_resp
 
 
 @patch('requests.get')
@@ -146,3 +132,34 @@ def test_more(mock_get):
     mock_resp = _mock_response(status=301, headers={'Location': 'https://wtf.yggtorrent.gg'})
     mock_get.return_value = mock_resp
     detect_redir()
+
+
+def test_sbrowser_failures():
+    # Initialise
+    s = SBrowser()
+    s.open("http://example.com")
+
+    # Verify example doesn't use CF
+    assert s.is_cloudflare() is False
+    print(s.is_cloudflare())
+
+    # Generate exception on cfscrape, verify internal handling of RoboError
+    with patch("cfscrape.CloudflareScraper.is_cloudflare_challenge",
+               side_effect=robobrowser.exceptions.RoboError()):
+        print(s.is_cloudflare())
+    # Generate unhandled exception on cfscrape, verify exception raised
+    with patch("cfscrape.CloudflareScraper.is_cloudflare_challenge",
+               side_effect=Exception("!")):
+        with pytest.raises(Exception):
+            print(s.is_cloudflare())
+
+    s = SBrowser()
+    s.connection_details()
+    with patch("robobrowser.RoboBrowser.open", side_effect=requests.exceptions.ProxyError()):
+        assert s.connection_details() == {'ip': 'Unknown'}
+    with patch("robobrowser.RoboBrowser.open", side_effect=requests.exceptions.ConnectionError):
+        assert s.connection_details() == {'ip': 'Unknown'}
+    with patch("robobrowser.RoboBrowser.open", side_effect=ValueError()):
+        assert s.connection_details() == {'ip': 'Unknown'}
+    with patch("robobrowser.RoboBrowser.open", side_effect=Exception()):
+        assert s.connection_details() == {'ip': 'Unknown'}

@@ -7,6 +7,7 @@
 
 import pytest
 import mock
+import requests
 from src.yggscr.shell import YggShell
 import src.yggscr.exceptions
 import src.yggscr.ygg
@@ -24,7 +25,10 @@ def test_shell_login():
     with pytest.raises(src.yggscr.ygg.YggException):
         y.do_stats("")
     y.do_login("Pepeh70 Diabolo")
+    y.ygg_browser.download_torrent(id=41909)
     y.do_stats("")
+    with mock.patch("src.yggscr.ygg.YggBrowser.get_stats", side_effect=requests.exceptions.RequestException("Net")):
+        y.do_stats("")
     with pytest.raises(Exception):
         y.do_login("Pepeh70 Diabolo")
     y.do_logout("")
@@ -42,30 +46,3 @@ def test_shell_core():
     y.do_proxify("https://192.168.1.1:9000")
     y.do_proxify("")
     y.do_lscat("")
-
-
-def test_shell_search():
-    y = YggShell()
-    y.print_torrents([], n=1)
-    y.do_search_torrents("q:pour")
-    y.do_next("n:3")
-    y.do_next("")
-    y.do_search_torrents("q:tunexistepas c:film n:2 d:True")
-    y.do_next("")
-    with pytest.raises(Exception):
-        y.do_next("foo:3")
-    with pytest.raises(Exception):
-        y.do_next("n:foo")
-    with pytest.raises(Exception):
-        y.do_search_torrents("foo:foo")
-    with pytest.raises(Exception):
-        y.do_search_torrents("foo")
-    y.do_search_torrents("q:cyber d:True")
-
-
-def test_shell_top():
-    y = YggShell()
-    y.do_top_day("")
-    y.do_top_week("")
-    y.do_top_month("")
-    y.do_exclus("")

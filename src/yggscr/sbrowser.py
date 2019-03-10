@@ -1,13 +1,9 @@
 import requests
 import cfscrape
-from robobrowser import RoboBrowser
-from robobrowser import exceptions as robo
+import robobrowser
 import json
 from . import ylogging
 from logging import CRITICAL, ERROR, WARNING, INFO, DEBUG #noqa
-
-from pprint import (PrettyPrinter, pprint) #noqa
-pp = PrettyPrinter(indent=4)
 
 
 class SBrowser:
@@ -16,12 +12,9 @@ class SBrowser:
                  browser=None, proxy=None, loglevel=INFO, **kwargs):
 
         self.log = ylogging.consolelog(name=__name__, loglevel=loglevel)
-        self.log.debug("Starting SBrowser")
-
         self.scraper = scraper or cfscrape.create_scraper()
-        self.browser = browser or RoboBrowser(session=self.scraper, **kwargs)
+        self.browser = browser or robobrowser.RoboBrowser(session=self.scraper, **kwargs)
         self.proxify(proxy)
-
         self.log.debug("Created SBrowser")
 
     def __str__(self):
@@ -40,7 +33,7 @@ class SBrowser:
     def is_cloudflare(self):
         try:
             return self.scraper.is_cloudflare_challenge(self.response())
-        except robo.RoboError:
+        except robobrowser.exceptions.RoboError:
             return None
 
     def proxify(self, https_proxy=None):
@@ -60,16 +53,19 @@ class SBrowser:
         """
         try:
             self.open("https://ipinfo.io/json")
-            self.log.error("IPINFO Server returned (%s)" % self.response().content)
+            self.log.debug("IPINFO Server returned (%s)" % self.response().content)
             res = json.loads(self.response().content.decode('utf-8'))
         except (requests.exceptions.ProxyError,
                 requests.exceptions.ConnectionError):
             return {'ip': 'Unknown'}
         except ValueError:
-            self.log.error(
-                "Server returned no JSON (%s)" % self.response().content)
+            self.log.error("Server returned no JSON (%s)" % self.response().content)
             return {'ip': 'Unknown'}
-        return res
+        except Exception as e:
+            self.log.error("Unknown exception {}".format(e))
+            return {'ip': 'Unknown'}
+        else:
+            return res
 
     def parsed(self):
         return self.browser.parsed

@@ -9,6 +9,7 @@ deluge_client>=1.6.0
 configparser>=3.5.0
 pytest
 pytest-coverage
+pytest-timeout
 sphinx
 mock
 wheel

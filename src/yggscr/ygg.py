@@ -12,7 +12,7 @@ from yggscr.torrents import Torrent
 from yggscr.sbrowser import SBrowser
 from yggscr.exceptions import YggException, LoginFailed, TooManyFailedLogins
 from yggscr.const import YGG_HOME, TOP_DAY_URL, TOP_WEEK_URL, TOP_MONTH_URL, \
-                   EXCLUS_URL, TOP_SEED_URL, SEARCH_URL, get_dl_link
+                   EXCLUS_URL, SEARCH_URL, get_dl_link
 from yggscr.link import get_cat_id, list_cat_subcat
 
 from urllib.parse import urlparse, parse_qs, urlsplit
@@ -159,9 +159,6 @@ class YggBrowser(SBrowser):
         self.open(EXCLUS_URL)
         return self._parse_torrents(table_num=0, n=100)
 
-    def top_seeded(self):
-        return self._get_torrents_xhr(TOP_SEED_URL, method="post")
-
     def _parse_torrents(self, sup=None, detail=False, table_num=1, n=100):
         torrent_list = []
         if sup is None:
@@ -258,7 +255,7 @@ class YggBrowser(SBrowser):
             headers = [('Content-type', iheaders['Content-type']),
                        ('Content-Disposition',  iheaders['Content-Disposition'])]
         except KeyError:
-            self.log.error("Couldn't download torrent")
+            self.log.error("Couldn't download torrent ({} doesn't seem to be a file)".format(href))
             return
         response_body = self.response().content
         return headers, response_body

@@ -6,6 +6,7 @@ from bs4 import NavigableString
 
 from .ygg import YggBrowser
 from .const import SHOUT_URL
+from .exceptions import YggException
 import requests
 import socket
 import sys
@@ -75,17 +76,17 @@ class YggShout:
         """ Compute and return list of new shouts """
         last_index = None
         self.diffshouts = []
-        for shout in self.new_shouts:
-            try:
-                index = self.last_shouts.index(shout)
-            except ValueError:
-                self.diffshouts.append([False, shout])
-            else:
-                if last_index is not None:
-                    if last_index != (index-1):
-                        for i in range(last_index+1, index-1):
+        if self.last_shouts:
+            for shout in self.new_shouts:
+                try:
+                    index = self.last_shouts.index(shout)
+                except ValueError:
+                    self.diffshouts.append([False, shout])
+                else:
+                    if last_index is not None:
+                        for i in range(last_index+1, index):
                             self.diffshouts.append([True, self.last_shouts[i]])
-                last_index = index
+                    last_index = index
         self.last_shouts = self.new_shouts
         return self.diffshouts
 
@@ -110,20 +111,19 @@ def parse_file(hfile):
 yggshout = None
 
 
-def main_loop():
+def main_loop(NTRY=5):
     global yggshout
     nt = 0
-    while nt < 10:
+    while nt < 2*NTRY:
         try:
             if yggshout is None:
                 yggshout = YggShout()
                 print("Started")
-            if nt == 5:
+            elif nt == NTRY:
                 print("Max retries reached... Reconnecting")
                 yggshout = YggShout()
                 time.sleep(1)
             yggshout.get_shouts()
-            break
         except (requests.exceptions.Timeout, socket.timeout) as e:
             dt = 1 + 15*(nt % 5)
             if nt > 0:
@@ -133,10 +133,11 @@ def main_loop():
         except requests.exceptions.ConnectionError as e:
             print("Connection error...[{}]".format(e))
             nt += 1
-    if nt >= 10:
-        print("FATAL: No connection")
-        sys.exit(2)
-    elif nt > 1:
+        else:
+            break
+    else:
+        raise YggException("Shout connection timeout")
+    if nt > 1:
         print("Reconnected")
     for removed, shout in yggshout.do_diff():
         if removed:
@@ -161,3 +162,5 @@ def main(argv=None):
                 time.sleep(15)
             except KeyboardInterrupt:
                 return
+            except YggException as e:
+                print("Fatal: {}".format(e))

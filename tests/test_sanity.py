@@ -8,19 +8,6 @@
 import src.yggscr
 import src.yggscr.shell
 import src.yserver.core
-import src.yggscr.__main__
-
-
-def test_import_yggscr():
-    """Test imports."""
-    src.yggscr
-    src.yggscr.__main__.main()
-
-
-def test_import_yserver():
-    """Test imports."""
-
-    src.yserver
 
 
 def test_import_yshell():

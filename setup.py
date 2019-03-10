@@ -56,7 +56,7 @@ setup(name='yggscr',
           'configparser>=3.5.0',
       ],
       tests_require=[
-          "pytest",
+          "pytest>=3.6.0",
           "mock",
           "pytest-timeout",
       ],

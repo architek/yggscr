@@ -36,8 +36,8 @@ install:
 # command to run tests
 script:
   - pip install -r requirements-dev.txt
-  - pytest --fixtures tests/
-  - pytest tests/
+  - pytest --fixtures
+  - pytest
 
 notifications:
   email:

@@ -35,8 +35,9 @@ install:
 
 # command to run tests
 script:
-  - pip install pytest-cov
-  - pytest
+  - pip install -r requirements-dev.txt
+  - pytest --fixtures tests/
+  - pytest tests/
 
 notifications:
   email:

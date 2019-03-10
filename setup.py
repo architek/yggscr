@@ -58,6 +58,7 @@ setup(name='yggscr',
       tests_require=[
           "pytest",
           "mock",
+          "pytest-timeout",
       ],
       test_suite="tests",
       entry_points={

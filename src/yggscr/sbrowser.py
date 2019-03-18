@@ -11,8 +11,8 @@ class SBrowser:
 
         self.log = log
         # BUG Limnoria vs Python requests or cfscrape
-        # self.scraper = scraper or cfscrape.create_scraper()
-        self.scraper = requests.Session()
+        self.scraper = scraper or cfscrape.create_scraper()
+        # self.scraper = requests.Session()
         self.browser = browser or robobrowser.RoboBrowser(session=self.scraper, **kwargs)
         self.proxify(proxy)
         self.log.debug("Created SBrowser")

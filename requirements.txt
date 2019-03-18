@@ -1,11 +1,3 @@
-requests
-twine
-pytest
-coverage
-pytest-cov
-sphinx
-mock
-
 robobrowser
 cmd2>=0.8.0
 requests[socks]>=2.18.4
@@ -15,4 +7,3 @@ bottle-werkzeug>=0.1.1
 transmissionrpc>=0.11
 deluge_client>=1.6.0
 configparser>=3.5.0
-

@@ -7,4 +7,9 @@ bottle-werkzeug>=0.1.1
 transmissionrpc>=0.11
 deluge_client>=1.6.0
 configparser>=3.5.0
-
+pytest>=3.6.0
+pytest-coverage
+pytest-timeout
+sphinx
+mock
+wheel

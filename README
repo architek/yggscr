@@ -3,9 +3,9 @@ Ygg Scraper
 ===========
 :Info: This is the README file for Ygg Scraper.
 :Author: Laurent Kislaire <teebeenator@gmail.com>
-:Copyright: © 2018, Laurent Kislaire.
-:Date: 2019-02-13
-:Version: 1.2.11
+:Copyright: © 2018-2019, Laurent Kislaire.
+:Date: 2019-03-11
+:Version: 1.2.17
 
 .. index: README
 .. image:: https://travis-ci.org/architek/yggscr.svg?branch=master
@@ -286,7 +286,7 @@ The following is an anonymous rss feed about electro music (combining categories
 
 COPYRIGHT
 ---------
-Copyright (c) 2018, Laurent Kislaire
+Copyright (c) 2018-2019, Laurent Kislaire
 
 Permission to use, copy, modify, and/or distribute this software for any
 purpose with or without fee is hereby granted, provided that the above

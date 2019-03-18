@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>yggscr.ygg &#8212; YggScr 1.2.11 documentation</title>
+    <title>yggscr.ygg &#8212; YggScr 1.2.17 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -100,7 +100,7 @@
 <span class="kn">from</span> <span class="nn">yggscr.sbrowser</span> <span class="k">import</span> <span class="n">SBrowser</span>
 <span class="kn">from</span> <span class="nn">yggscr.exceptions</span> <span class="k">import</span> <span class="n">YggException</span><span class="p">,</span> <span class="n">LoginFailed</span><span class="p">,</span> <span class="n">TooManyFailedLogins</span>
 <span class="kn">from</span> <span class="nn">yggscr.const</span> <span class="k">import</span> <span class="n">YGG_HOME</span><span class="p">,</span> <span class="n">TOP_DAY_URL</span><span class="p">,</span> <span class="n">TOP_WEEK_URL</span><span class="p">,</span> <span class="n">TOP_MONTH_URL</span><span class="p">,</span> \
-                   <span class="n">EXCLUS_URL</span><span class="p">,</span> <span class="n">TOP_SEED_URL</span><span class="p">,</span> <span class="n">SEARCH_URL</span><span class="p">,</span> <span class="n">get_dl_link</span>
+                   <span class="n">EXCLUS_URL</span><span class="p">,</span> <span class="n">SEARCH_URL</span><span class="p">,</span> <span class="n">get_dl_link</span>
 <span class="kn">from</span> <span class="nn">yggscr.link</span> <span class="k">import</span> <span class="n">get_cat_id</span><span class="p">,</span> <span class="n">list_cat_subcat</span>
 
 <span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="k">import</span> <span class="n">urlparse</span><span class="p">,</span> <span class="n">parse_qs</span><span class="p">,</span> <span class="n">urlsplit</span>
@@ -195,7 +195,7 @@
         <span class="n">html</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">response</span><span class="p">()</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
         <span class="n">pos_r</span> <span class="o">=</span> <span class="n">html</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;Ratio&#39;</span><span class="p">)</span>
         <span class="n">html</span> <span class="o">=</span> <span class="n">html</span><span class="p">[</span><span class="n">pos_r</span><span class="o">-</span><span class="mi">500</span><span class="p">:</span><span class="n">pos_r</span><span class="o">+</span><span class="mi">500</span><span class="p">]</span>
-        <span class="n">vals</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\b([0-9\.]+)([GT])[oB]\b&#39;</span><span class="p">,</span> <span class="n">html</span><span class="p">)</span>
+        <span class="n">vals</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\b([0-9\.]+)([GTP])[oB]\b&#39;</span><span class="p">,</span> <span class="n">html</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">vals</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">YggException</span><span class="p">(</span><span class="s2">&quot;Can&#39;t find ratio information&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -246,9 +246,6 @@
 <div class="viewcode-block" id="YggBrowser.exclus"><a class="viewcode-back" href="../../source/yggscr.html#yggscr.ygg.YggBrowser.exclus">[docs]</a>    <span class="k">def</span> <span class="nf">exclus</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">EXCLUS_URL</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_torrents</span><span class="p">(</span><span class="n">table_num</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="YggBrowser.top_seeded"><a class="viewcode-back" href="../../source/yggscr.html#yggscr.ygg.YggBrowser.top_seeded">[docs]</a>    <span class="k">def</span> <span class="nf">top_seeded</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_torrents_xhr</span><span class="p">(</span><span class="n">TOP_SEED_URL</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;post&quot;</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_parse_torrents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sup</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">table_num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
         <span class="n">torrent_list</span> <span class="o">=</span> <span class="p">[]</span>
@@ -327,7 +324,7 @@
         <span class="k">if</span> <span class="n">s_href</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">browser</span><span class="o">.</span><span class="n">follow_link</span><span class="p">(</span><span class="n">s_href</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span>
+            <span class="k">return</span> <span class="p">[]</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_torrents</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">nmax</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="YggBrowser.cat_subcat"><a class="viewcode-back" href="../../source/yggscr.html#yggscr.ygg.YggBrowser.cat_subcat">[docs]</a>    <span class="k">def</span> <span class="nf">cat_subcat</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -346,7 +343,7 @@
             <span class="n">headers</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;Content-type&#39;</span><span class="p">,</span> <span class="n">iheaders</span><span class="p">[</span><span class="s1">&#39;Content-type&#39;</span><span class="p">]),</span>
                        <span class="p">(</span><span class="s1">&#39;Content-Disposition&#39;</span><span class="p">,</span>  <span class="n">iheaders</span><span class="p">[</span><span class="s1">&#39;Content-Disposition&#39;</span><span class="p">])]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Couldn&#39;t download torrent&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Couldn&#39;t download torrent (</span><span class="si">{}</span><span class="s2"> doesn&#39;t seem to be a file)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">href</span><span class="p">))</span>
             <span class="k">return</span>
         <span class="n">response_body</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">response</span><span class="p">()</span><span class="o">.</span><span class="n">content</span>
         <span class="k">return</span> <span class="n">headers</span><span class="p">,</span> <span class="n">response_body</span></div></div>
@@ -359,10 +356,10 @@
     <div class="clearer"></div>
   </div>
     <div class="footer">
-      &copy;2018, Laurent Kislaire.
+      &copy;2018-2019, Laurent Kislaire.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.3</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.4</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

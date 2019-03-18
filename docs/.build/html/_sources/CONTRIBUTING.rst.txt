@@ -2,7 +2,7 @@
 Contribute
 ==========
 :Info: Those are the contribution rules for Ygg Scraper.
-:Copyright: © 2012-2018, Chris Warrick.
+:Copyright: © 2012-2018-2019, Chris Warrick.
 :License: 3-clause BSD
 
 .. index:: contributing

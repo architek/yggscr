@@ -36,16 +36,18 @@ job_test:
     stage: test
     dependencies:
         - job_build
-    only:
-        - merge_requests
+#    only:
+#        - merge_requests
     except:
         - master
     
     script:
         - echo "Running tests"
         - apt-get update -qq && apt-get install -y nodejs nodejs-legacy
-        - pip install -r requirements.txt
-        - python -m pytest
+        - pip install -r requirements-dev.txt
+        - pytest --fixtures tests/
+        - pytest --collect-only tests/
+        - pytest -s tests/
 
 # Staging master branch
 job_deployment_staging:

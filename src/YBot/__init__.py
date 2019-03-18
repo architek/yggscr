@@ -9,7 +9,6 @@
 YBot: sup ygg bot
 """
 
-import yggscr
 import supybot
 import supybot.world as world
 
@@ -29,26 +28,26 @@ __url__ = ''
 
 from . import config
 from . import plugin
-import yggscr
-# from .yggscr import ygg
-# from .yggscr import sbrowser
-# from .yggscr import torrents
-# from .yggscr import shout
-# from .yggscr import link
-# from .yggscr import const
+from yggscr import ylogging
+from yggscr import link
+from yggscr import const
+from yggscr import sbrowser
+from yggscr import ygg
+from yggscr import shout
+from yggscr import torrents
+
 from imp import reload
 # In case we're being reloaded.
-reload(yggscr)
-# reload(ygg)
-# reload(config)
-# reload(plugin)
-# reload(sbrowser)
-# reload(torrents)
-# reload(shout)
-# reload(link)
-# reload(const)
+reload(plugin)
 # Add more reloads here if you add third-party modules and want them to be
 # reloaded when this plugin is reloaded.  Don't forget to import them as well!
+reload(ylogging)
+reload(link)
+reload(const)
+reload(sbrowser)
+reload(ygg)
+reload(shout)
+reload(torrents)
 
 if world.testing:
     from . import test

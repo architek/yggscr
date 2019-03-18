@@ -2,14 +2,14 @@
 
 from __future__ import unicode_literals
 import time
+import socket
+import sys
+import requests
 from bs4 import NavigableString
-
 from .ygg import YggBrowser
 from .const import SHOUT_URL
 from .exceptions import YggException
-import requests
-import socket
-import sys
+import yggscr.ylogging
 
 
 class ShoutMessage(object):
@@ -37,7 +37,7 @@ class ShoutMessage(object):
 
     def parse_shout(self, soup):
         message = ""
-        id = soup.get('data-id')
+        d_id = soup.get('data-id')
         username = soup.find("a", class_="username").text.strip()
         group_id = soup.find("a", class_="username")['user-group-id']
         mtime = soup.time['datetime'][:-5]
@@ -51,12 +51,13 @@ class ShoutMessage(object):
                     message = message + e.string
             elif e.name == "a":
                 message = message + e["href"]
-        return mtime, id, username, int(group_id), str(message)
+        return mtime, d_id, username, int(group_id), str(message)
 
 
 class YggShout:
-    def __init__(self, robs=None, debug=False, irc=False, colour=False):
-        self.robs = robs or YggBrowser()
+    def __init__(self, log, robs=None, debug=False, irc=False, colour=False):
+        self.log = log
+        self.robs = robs or YggBrowser(log=self.log)
         self.irc = irc
         self.colour = colour
         self.last_shouts = []
@@ -111,17 +112,17 @@ def parse_file(hfile):
 yggshout = None
 
 
-def main_loop(NTRY=5):
+def main_loop(log, NTRY=5):
     global yggshout
     nt = 0
     while nt < 2*NTRY:
         try:
             if yggshout is None:
-                yggshout = YggShout()
+                yggshout = YggShout(log=log)
                 print("Started")
             elif nt == NTRY:
                 print("Max retries reached... Reconnecting")
-                yggshout = YggShout()
+                yggshout = YggShout(log=log)
                 time.sleep(1)
             yggshout.get_shouts()
         except (requests.exceptions.Timeout, socket.timeout) as e:
@@ -148,6 +149,7 @@ def main_loop(NTRY=5):
 def main(argv=None):
     if argv is None:
         argv = sys.argv
+    log = yggscr.ylogging.init_default_logger()
     if len(argv) > 1:
         hfile = argv[1]
         try:
@@ -158,7 +160,7 @@ def main(argv=None):
     else:
         while True:
             try:
-                main_loop()
+                main_loop(log)
                 time.sleep(15)
             except KeyboardInterrupt:
                 return

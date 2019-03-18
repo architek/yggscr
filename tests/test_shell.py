@@ -8,26 +8,26 @@
 import pytest
 import mock
 import requests
-from src.yggscr.shell import YggShell
-import src.yggscr.exceptions
-import src.yggscr.ygg
+import yggscr.shell
+import yggscr.exceptions
+import yggscr.ygg
 
 
 def test_shell_login():
-    y = YggShell()
+    y = yggscr.shell.YggShell()
     y.do_logout("")
-    with pytest.raises(src.yggscr.ygg.LoginFailed):
+    with pytest.raises(yggscr.ygg.LoginFailed):
         y.do_login('test test')
     y.do_login("")
     y.do_logout("")
 
     y.do_logout("")
-    with pytest.raises(src.yggscr.ygg.YggException):
+    with pytest.raises(yggscr.ygg.YggException):
         y.do_stats("")
     y.do_login("Pepeh70 Diabolo")
-    y.ygg_browser.download_torrent(id=41909)
+    y.ygg_browser.download_torrent(torrent_id=41909)
     y.do_stats("")
-    with mock.patch("src.yggscr.ygg.YggBrowser.get_stats", side_effect=requests.exceptions.RequestException("Net")):
+    with mock.patch("yggscr.ygg.YggBrowser.get_stats", side_effect=requests.exceptions.RequestException("Net")):
         y.do_stats("")
     with pytest.raises(Exception):
         y.do_login("Pepeh70 Diabolo")
@@ -36,8 +36,8 @@ def test_shell_login():
 
 def test_shell_core():
     """Test shell."""
-    y = YggShell(ygg_browser=mock.MagicMock())
-    y = YggShell()
+    y = yggscr.shell.YggShell(ygg_browser=mock.MagicMock())
+    y = yggscr.shell.YggShell()
     y.do_open('http://www.example.org')
     y.do_print("")
     y.do_response("")

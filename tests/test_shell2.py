@@ -8,14 +8,16 @@
 import pytest
 import mock
 import requests
-from src.yggscr.shell import YggShell
-import src.yggscr.exceptions
-import src.yggscr.ygg
+import yggscr.shell
+import yggscr.exceptions
+import yggscr.ygg
 
 
 def test_shell_search():
-    y = YggShell()
+    y = yggscr.shell.YggShell()
     y.print_torrents([], n=1)
+    assert y.kv_to_dict("foo:bar") == {"foo": "bar"}
+    assert y.kv_to_dict("foo:bar foo:baz alice:bob") == {"foo": ["bar", "baz"], "alice": "bob"}
     y.do_search_torrents("q:pour")
     y.do_next("n:3")
     y.do_next("")
@@ -34,7 +36,7 @@ def test_shell_search():
 
 
 def test_shell_top():
-    y = YggShell()
+    y = yggscr.shell.YggShell()
     y.do_top_day("")
     y.do_top_week("")
     y.do_top_month("")
@@ -42,13 +44,13 @@ def test_shell_top():
 
 
 def test_shell_failures():
-    y = YggShell()
+    y = yggscr.shell.YggShell()
     y.do_login("")
-    with mock.patch("src.yggscr.ygg.YggBrowser.login", side_effect=requests.exceptions.RequestException("Net")):
+    with mock.patch("yggscr.ygg.YggBrowser.login", side_effect=requests.exceptions.RequestException("Net")):
         y.do_login("a b")
-    with mock.patch("src.yggscr.ygg.YggBrowser.__str__", side_effect=requests.exceptions.RequestException("Net")):
+    with mock.patch("yggscr.ygg.YggBrowser.__str__", side_effect=requests.exceptions.RequestException("Net")):
         y.do_print("")
-    with mock.patch("src.yggscr.ygg.YggBrowser.search_torrents", side_effect=requests.exceptions.RequestException("Net")):
+    with mock.patch("yggscr.ygg.YggBrowser.search_torrents", side_effect=requests.exceptions.RequestException("Net")):
         y.do_search_torrents("q:cyber")
-    with pytest.raises(src.yggscr.exceptions.YggException):
+    with pytest.raises(yggscr.exceptions.YggException):
         y.do_search_torrents("cyber")

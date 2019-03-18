@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import re
-from . import exceptions as ygge
+import yggscr.ylogging
+import yggscr.exceptions
+
 
 links = (
     "2145-filmvidéo",
@@ -65,15 +67,15 @@ def get_link(cat, subcat):
     for link in links:
         if cat in link and (not subcat or subcat in link):
             return link
-    raise ygge.YggException("Cat or subcat not found in get_link")
+    raise yggscr.exceptions.YggException("Cat or subcat not found in get_link")
 
 
 def get_cat_id(cat, subcat=None, log=None):
     if log:
-        log.debug("get_cat_id({},{})".format(cat, subcat))
-    if cat == "filmvideo" or cat == "film-vidéo":
+        log.debug("get_cat_id(%s,%s)", cat, subcat)
+    if cat in ("filmvideo", "film-vidéo"):
         cat = "filmvidéo"
-    if cat == "jeu-video" or cat == "jeu-vidéo":
+    if cat in ("jeu-video", "jeu-vidéo"):
         cat = "jeu+vidéo"
     if subcat == "série-tv":
         subcat = "serie-tv"
@@ -84,15 +86,15 @@ def get_cat_id(cat, subcat=None, log=None):
         if not cat_id and re.findall(r'\d+-%s' % re.escape(cat), link):
             cat_id = re.findall(r'\d+', link)[0]
             if log:
-                log.debug('cat_id {}'.format(cat_id))
+                log.debug("cat_id %s", cat_id)
             continue
         if cat_id and subcat and "-{}".format(subcat) in link:
             subcat_id = re.findall(r'\d+', link)[0]
             if log:
-                log.debug('subcat_id {}'.format(subcat_id))
+                log.debug("subcat_id %s", subcat_id)
             break
     if not cat_id or (subcat and not subcat_id):
-        raise ygge.YggException("Cat or subcat not found in get_cat_id")
+        raise yggscr.exceptions.YggException("Cat or subcat not found in get_cat_id")
     return {"category": cat_id, "sub_category": subcat_id}
 
 
@@ -117,11 +119,11 @@ def list_subcats(cat):
 
 
 def list_cats():
-    cats = []
+    mcats = []
     for link in links:
         if '/' not in link:
-            cats.append(link.split('-')[1])
-    return cats
+            mcats.append(link.split('-')[1])
+    return mcats
 
 
 def cat_subcat_from_href(href):

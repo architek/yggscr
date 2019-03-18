@@ -2,12 +2,8 @@
 # pp = PrettyPrinter(indent=4)
 
 from yggscr.const import get_dl_link
-from yggscr import ylogging
 from yggscr.link import cat_subcat_from_href
-from logging import DEBUG, INFO #noqa
-
-
-log = ylogging.consolelog(__name__, INFO)
+from yggscr.ylogging import init_default_logger
 
 
 def htn(hsize):
@@ -22,7 +18,7 @@ def htn(hsize):
 class Torrent():
     def __init__(self, torrent_title, torrent_comm, torrent_age, torrent_size,
                  torrent_completed, torrent_seed, torrent_leech,
-                 href, thref=None,
+                 href, log=None, thref=None,
                  tid=None, cat=None, subcat=None, uploader=None):
         self.href = href
         self.title = torrent_title
@@ -35,21 +31,21 @@ class Torrent():
         self.leech = int(torrent_leech)
         self.thref = thref
         self.uploader = uploader
+        self.log = log or init_default_logger()
         if tid:
             self.tid = int(tid)
         else:
             fn = self.href.split("/")[-1]
-            id = fn.split('-')[0]
+            tid = fn.split('-')[0]
             try:
-                self.tid = int(id)
+                self.tid = int(tid)
             except ValueError:
                 self.tid = 0
-                pass
         if cat:
             self.cat = cat
         if href:
             self.cat, self.subcat = cat_subcat_from_href(href)
-        log.debug("Torrent is {}".format(self))
+        self.log.debug("Torrent is %s", self)
 
     def set_id(self, tid):
         self.tid = tid

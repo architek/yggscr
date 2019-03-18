@@ -4,14 +4,21 @@
 # Copyright © 2018-2019, Laurent Kislaire.
 # See /LICENSE for licensing information.
 
+import pytest
+import yggscr
+import yggscr.shell
+import yserver.core
 
-import src.yggscr
-import src.yggscr.shell
-import src.yserver.core
 
-
-def test_import_yshell():
+def test_instance_yshell():
     """Test imports."""
 
-    s = src.yggscr.shell.YggShell()
-    assert isinstance(s, src.yggscr.shell.YggShell)
+    s = yggscr.shell.YggShell()
+    assert isinstance(s, yggscr.shell.YggShell)
+
+
+def test_import_yserver():
+    """Test imports."""
+
+    with pytest.raises(FileNotFoundError):
+        c = yserver.core.YggServer()

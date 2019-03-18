@@ -9,24 +9,24 @@ import time
 import sys
 import requests
 import pytest
-from mock import patch
-from src.yggscr.exceptions import YggException
-from src.yggscr.shout import ShoutMessage, YggShout, main_loop, main as main_shout
+from mock import patch, MagicMock
+import yggscr.exceptions
+from yggscr.shout import ShoutMessage, YggShout, main_loop, main as main_shout
 
 
 def test_shout1():
     s = ShoutMessage(True)
     s = ShoutMessage(True, None, 1, 1, 1, "message")
     print("{}".format(s))
-    s = YggShout()
+    s = YggShout(log=MagicMock())
     print("{}".format(s))
-    main_loop()
+    main_loop(log=MagicMock())
     time.sleep(2)
-    main_loop()
+    main_loop(log=MagicMock())
 
 
 def test_shout_diff():
-    y = YggShout()
+    y = YggShout(log=MagicMock())
     y.get_shouts()
     y.do_diff()     # set last_shouts
 
@@ -35,7 +35,6 @@ def test_shout_diff():
     del y.new_shouts[1]
     success = False
     for removed, shout in y.do_diff():
-        print("la")
         if removed:
             shout.message += "<-- REMOVED"
             success = True
@@ -62,20 +61,22 @@ def test_shout2(tmp_path):
     </li>
     """)
     main_shout(["foo", str(f)])
-    with patch("src.yggscr.shout.sys.exit") as mock_exit:
+    with patch("yggscr.shout.sys.exit") as mock_exit:
         main_shout(["foo", "nonexistent"])
         assert mock_exit.call_args[0][0] == 1
         main_shout(None)
         assert mock_exit.call_args[0][0] == 1
 
 
+N_MAXTRIES = 1
+
+
 def test_shout_failures():
     # Long test of 1 retry: 16+31 (47s)
     # Long test of 2 retries: 16+31+46 (93s)
-    N_MAXTRIES = 1
     print("Testing connection failure for 47s")
-    with patch("src.yggscr.shout.YggShout.get_shouts", side_effect=requests.exceptions.Timeout):
-        with pytest.raises(YggException):
-            main_loop(N_MAXTRIES)
+    with patch("yggscr.shout.YggShout.get_shouts", side_effect=requests.exceptions.Timeout):
+        with pytest.raises(yggscr.exceptions.YggException):
+            main_loop(log=MagicMock(), NTRY=N_MAXTRIES)
             assert 0
-    main_loop(2)
+    main_loop(log=MagicMock, NTRY=2)

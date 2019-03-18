@@ -1,17 +1,12 @@
 import shlex
+from functools import wraps
+from collections import defaultdict
 import requests
 from cmd2 import Cmd
-import logging
-from . import ygg
-from . import ylogging
-from . import link
-from functools import wraps
-from .exceptions import YggException
-# from pprint import (PrettyPrinter, pprint)
-# pp = PrettyPrinter(indent=4)
-
-
-LOG = logging.INFO
+import yggscr.ygg
+import yggscr.link
+import yggscr.exceptions
+import yggscr.ylogging
 
 
 def wrapper(method):
@@ -31,16 +26,16 @@ def wrapper(method):
 
 class YggShell(Cmd):
     'Ygg command line interface'
-    def __init__(self, ygg_browser=None, **kwargs):
+    def __init__(self, log=None, ygg_browser=None, **kwargs):
         Cmd.__init__(self, **kwargs)
+        self.log = log or yggscr.ylogging.init_default_logger()
         self.intro = "Welcome to Ygg Shell. Type help or ? to list commands.\n"
         self.prompt = "> "
-        self.log = ylogging.consolelog(__name__, LOG)
         self.allow_redirection = False
         if ygg_browser is not None:
             self.ygg_browser = ygg_browser
         else:
-            self.ygg_browser = ygg.YggBrowser(loglevel=LOG)
+            self.ygg_browser = yggscr.ygg.YggBrowser(self.log)
 #        self.ygg_browser.proxify("socks5h://192.168.1.17:9100")
 
     def print_torrents(self, torrents, n=None):
@@ -95,7 +90,7 @@ class YggShell(Cmd):
         print("Instant speed (KBps):Up {} - Down {}".format(
               mystat['i_up'], mystat['i_down']))
         print("Mean speed (KBps):Up {} - Down {}".format(
-              mystat['m_up'], mystat['m_down']))
+            mystat['m_up'], mystat['m_down']))
 
     def do_print(self, line):
         'prints connection status'
@@ -105,6 +100,18 @@ class YggShell(Cmd):
             print("Network error:%s" % e)
             return
 
+    @staticmethod
+    def kv_to_dict(line):
+        """ Converts a:1 b:3 a:2 to {'a': ['1', '2'], 'b': '3'} """
+        q = defaultdict(list)
+        for t in shlex.split(line.strip()):
+            try:
+                k, v = t.rsplit(':', 1)
+            except ValueError as e:
+                raise yggscr.exceptions.YggException("Error: Invalid syntax in search_torrents {}".format(e))
+            q[k].append(v)
+        return {k: (v if len(v) > 1 else v[0]) for (k, v) in q.items()}
+
     def do_search_torrents(self, line):
         '''search torrents
         search_torrents q:<pattern> [c:<category>] [s:<subcategory>]
@@ -113,30 +120,17 @@ class YggShell(Cmd):
         d is for detail which will fetch each torrent url for more details
         n is the number of torrents to display (all by default)
         '''
-        q = {}
-        try:
-            for t in shlex.split(line.strip()):
-                k, v = t.rsplit(':', 1)
-                if k not in q:
-                    q[k] = v
-                else:
-                    if isinstance(q[k], list):
-                        q[k].append(v)
-                    else:
-                        q[k] = [q[k], v]
-        except ValueError as e:
-            raise YggException("Error: Invalid syntax in search_torrents {}".format(e))
+        q = self.kv_to_dict(line)
         try:
             q['name'] = q.pop('q')
             q['category'] = q.pop('c', "")
             q['sub_category'] = q.pop('s', "")
         except KeyError as e:
-            raise YggException("Error: Invalid syntax in search_torrents {}".format(e))
+            raise yggscr.exceptions.YggException("Error: Invalid syntax in search_torrents {}".format(e))
 
         detail = q.pop('d', False)
         n = int(q.pop('n', 3))
 
-        self.log.debug("do_search_torrents parameter:{}".format(q))
         try:
             torrents = self.ygg_browser.search_torrents(
                 q=q,
@@ -161,9 +155,9 @@ class YggShell(Cmd):
                 try:
                     n = int(line[2:])
                 except ValueError:
-                    raise YggException("Error: Syntax is next [n:nmax]")
+                    raise yggscr.exceptions.YggException("Error: Syntax is next [n:nmax]")
             else:
-                raise YggException("Error: Syntax is next [n:nmax]")
+                raise yggscr.exceptions.YggException("Error: Syntax is next [n:nmax]")
         else:
             n = 3
         torrents = self.ygg_browser.next_torrents(nmax=n)
@@ -195,7 +189,7 @@ class YggShell(Cmd):
     def do_lscat(self, line):
         'list categories and subcategories'
         print("List of cat, subcat combinaisons:\n%s" %
-              link.list_cat_subcat())
+              yggscr.link.list_cat_subcat())
 
     def do_ping(self, line):
         'perform a connection to /'
@@ -210,3 +204,12 @@ class YggShell(Cmd):
         'do a simple get on an url'
         print("Getting %s ..." % url)
         self.ygg_browser.open(url)
+
+    def do_debug(self, line):
+        'toggle debug'
+        if yggscr.ylogging.loggerlevel_as_text(self.log) == "WARNING":
+            yggscr.ylogging.set_log_debug(True)
+            print("Debug active")
+        else:
+            yggscr.ylogging.set_log_debug(False)
+            print("Debug inactive")

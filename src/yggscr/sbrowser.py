@@ -1,18 +1,18 @@
+import json
 import requests
 import cfscrape
 import robobrowser
-import json
-from . import ylogging
-from logging import CRITICAL, ERROR, WARNING, INFO, DEBUG #noqa
 
 
 class SBrowser:
+    """ General scrapper browser with cloudFlare bypass """
+    def __init__(self, log, scraper=None,
+                 browser=None, proxy=None, **kwargs):
 
-    def __init__(self, scraper=None,
-                 browser=None, proxy=None, loglevel=INFO, **kwargs):
-
-        self.log = ylogging.consolelog(name=__name__, loglevel=loglevel)
-        self.scraper = scraper or cfscrape.create_scraper()
+        self.log = log
+        # BUG Limnoria vs Python requests or cfscrape
+        # self.scraper = scraper or cfscrape.create_scraper()
+        self.scraper = requests.Session()
         self.browser = browser or robobrowser.RoboBrowser(session=self.scraper, **kwargs)
         self.proxify(proxy)
         self.log.debug("Created SBrowser")
@@ -21,14 +21,14 @@ class SBrowser:
         cd = self.connection_details()
         return "[Browser] - CF was {}, UA {}, Proxy {}, \
                Local {} Host {} Country {} City {}".format(
-                    "active" if self.is_cloudflare() else "inactive",
-                    self.browser.session.headers['User-Agent'],
-                    "none" if self.proxy is None else self.proxy,
-                    cd["ip"],
-                    cd["hostname"] if "hostname" in cd else "N/A",
-                    cd["country"] if "country" in cd else "N/A",
-                    cd["city"] if "city" in cd else "N/A",
-                )
+                   "active" if self.is_cloudflare() else "inactive",
+                   self.browser.session.headers['User-Agent'],
+                   "none" if self.proxy is None else self.proxy,
+                   cd["ip"],
+                   cd["hostname"] if "hostname" in cd else "N/A",
+                   cd["country"] if "country" in cd else "N/A",
+                   cd["city"] if "city" in cd else "N/A",
+               )
 
     def is_cloudflare(self):
         try:
@@ -45,7 +45,7 @@ class SBrowser:
         """
         self.proxy = https_proxy
         self.browser.session.proxies = {'https': self.proxy}
-        self.log.debug("Proxy set to {}".format(self.browser.session.proxies))
+        self.log.debug("Proxy set to %s", self.browser.session.proxies)
 
     def connection_details(self):
         """
@@ -53,16 +53,16 @@ class SBrowser:
         """
         try:
             self.open("https://ipinfo.io/json")
-            self.log.debug("IPINFO Server returned (%s)" % self.response().content)
+            self.log.debug("IPINFO Server returned (%s)", self.response().content)
             res = json.loads(self.response().content.decode('utf-8'))
         except (requests.exceptions.ProxyError,
                 requests.exceptions.ConnectionError):
             return {'ip': 'Unknown'}
         except ValueError:
-            self.log.error("Server returned no JSON (%s)" % self.response().content)
+            self.log.error("Server returned no JSON (%s)", self.response().content)
             return {'ip': 'Unknown'}
-        except Exception as e:
-            self.log.error("Unknown exception {}".format(e))
+        except Exception as exc:  # TODO
+            self.log.error("Unknown exception %s", exc)
             return {'ip': 'Unknown'}
         else:
             return res
@@ -74,5 +74,5 @@ class SBrowser:
         return self.browser.response
 
     def open(self, url, **kwargs):
-        self.log.debug(">>> {}".format(url))
+        self.log.debug(">>> %s", url)
         self.browser.open(url, **kwargs)

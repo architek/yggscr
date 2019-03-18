@@ -22,7 +22,7 @@ WORKDIR /opt/yggscr
 RUN echo "__builddate__ = '$BUILD_DATE'" > src/yggscr/__build__.py
 RUN apk --update --no-cache add uwsgi uwsgi-python3 nodejs && \
     mkdir /run/ygg/ && chown -R uwsgi:uwsgi /run/ygg
-RUN pip install --no-index --find-links=/opt/yggscr/wheels -r requirements.txt
+RUN pip install --no-index --find-links=/opt/yggscr/wheels -r requirements-dev.txt
 
 ENV PYTHONPATH /opt/yggscr/src
 ENV DEF_GUID=1001

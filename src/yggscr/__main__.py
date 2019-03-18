@@ -11,9 +11,9 @@ Main routine of Ygg Scraper shell.
 """
 
 __all__ = ('main',)
-from yggscr.shell import YggShell
+import yggscr.shell
 
 
 def main():
     """Main routine of Ygg Scraper shell."""
-    YggShell().cmdloop()
+    yggscr.shell.YggShell().cmdloop()

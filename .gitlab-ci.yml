@@ -21,8 +21,8 @@ cache:
 # As push to dev or master is not allowed anyway
 job_build:
     stage: build
-    only:
-        - merge_requests
+#    only:
+#        - merge_requests
     
     script:
         - echo "Building the app"
@@ -36,8 +36,8 @@ job_test:
     stage: test
     dependencies:
         - job_build
-    only:
-        - merge_requests
+#    only:
+#        - merge_requests
     except:
         - master
     
@@ -67,7 +67,7 @@ job_deploy_prod:
     stage: deploy
     environment:
         name: production
-#    allow_failure: false
+#   allow_failure: false
     when: manual
     only:
         - master

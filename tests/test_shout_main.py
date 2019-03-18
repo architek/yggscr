@@ -6,13 +6,17 @@
 
 
 import pytest
-from src.yggscr.shout import main as main_shout
+import yggscr.shout
+
 
 # 20s test
 @pytest.mark.timeout(20)
 def test_shout_main():
+    ' Testing shout script for 20s '
     print("Testing for 20s")
     try:
-        main_shout([])
+        yggscr.shout.main([])
+    except Exception:
+        assert 0
     except:
         pass

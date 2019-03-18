@@ -65,7 +65,7 @@ job_deploy_prod:
     stage: deploy
     environment:
         name: production
-#    allow_failure: false
+#   allow_failure: false
     when: manual
     only:
         - master

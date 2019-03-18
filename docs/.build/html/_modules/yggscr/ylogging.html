@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>yggscr.ylogging &#8212; YggScr 1.2.17 documentation</title>
+    <title>yggscr.ylogging &#8212; YggScr 1.2.18 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -86,21 +86,44 @@
           <div class="body" role="main">
             
   <h1>Source code for yggscr.ylogging</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">logging</span>
+<span></span><span class="sd">&quot;&quot;&quot; Logger object - As logging, we only need and enforce a single instance &quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">logging</span>
 
 
-<div class="viewcode-block" id="consolelog"><a class="viewcode-back" href="../../source/yggscr.html#yggscr.ylogging.consolelog">[docs]</a><span class="k">def</span> <span class="nf">consolelog</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">loglevel</span><span class="p">):</span>
-    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+<div class="viewcode-block" id="get_logger"><a class="viewcode-back" href="../../source/yggscr.html#yggscr.ylogging.get_logger">[docs]</a><span class="k">def</span> <span class="nf">get_logger</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Return yggscr logger &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;yggscr&quot;</span><span class="p">)</span></div>
 
-    <span class="n">formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%(asctime)s</span><span class="s2"> - </span><span class="si">%(name)20s</span><span class="s2"> - </span><span class="si">%(levelname)9s</span><span class="s2"> &quot;</span>
-                                  <span class="s2">&quot;- </span><span class="si">%(message)-70s</span><span class="s2"> [</span><span class="si">%(filename)s</span><span class="s2">:</span><span class="si">%(lineno)s</span><span class="s2">]&quot;</span><span class="p">)</span>
-    <span class="n">stream_handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()</span>
-    <span class="n">stream_handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">loglevel</span><span class="p">)</span>
-    <span class="n">stream_handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">formatter</span><span class="p">)</span>
 
-    <span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">stream_handler</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Starting logger at level </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">loglevel</span><span class="p">))</span>
+<div class="viewcode-block" id="set_log_debug"><a class="viewcode-back" href="../../source/yggscr.html#yggscr.ylogging.set_log_debug">[docs]</a><span class="k">def</span> <span class="nf">set_log_debug</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Update logger level WARN/DEBUG &quot;&quot;&quot;</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span> <span class="k">if</span> <span class="n">debug</span> <span class="k">else</span> <span class="n">logging</span><span class="o">.</span><span class="n">WARN</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;logger </span><span class="si">{}</span><span class="s2"> level is now set to debug:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">debug</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="loggerlevel_as_text"><a class="viewcode-back" href="../../source/yggscr.html#yggscr.ylogging.loggerlevel_as_text">[docs]</a><span class="k">def</span> <span class="nf">loggerlevel_as_text</span><span class="p">(</span><span class="n">logger</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Get debug level as text &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLevelName</span><span class="p">(</span><span class="n">logger</span><span class="o">.</span><span class="n">level</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="add_stdout_handler"><a class="viewcode-back" href="../../source/yggscr.html#yggscr.ylogging.add_stdout_handler">[docs]</a><span class="k">def</span> <span class="nf">add_stdout_handler</span><span class="p">(</span><span class="n">logger</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; If no handlers already registered, add a stream formatted handler, level WARN &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">logger</span><span class="o">.</span><span class="n">handlers</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">propagate</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">WARN</span><span class="p">)</span>
+
+        <span class="n">formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%(asctime)s</span><span class="s2"> - </span><span class="si">%(name)20s</span><span class="s2"> - </span><span class="si">%(levelname)9s</span><span class="s2"> &quot;</span>
+                                      <span class="s2">&quot;- </span><span class="si">%(message)-70s</span><span class="s2"> [</span><span class="si">%(filename)s</span><span class="s2">:</span><span class="si">%(lineno)s</span><span class="s2">]&quot;</span><span class="p">)</span>
+        <span class="n">stream_handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()</span>
+        <span class="n">stream_handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">formatter</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">stream_handler</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="init_default_logger"><a class="viewcode-back" href="../../source/yggscr.html#yggscr.ylogging.init_default_logger">[docs]</a><span class="k">def</span> <span class="nf">init_default_logger</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Used in non OO calling to create logger and add a stream handler &quot;&quot;&quot;</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">()</span>
+    <span class="n">add_stdout_handler</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;init_default_logger called from:&quot;</span><span class="p">,</span> <span class="n">stack_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">logger</span></div>
 </pre></div>
 

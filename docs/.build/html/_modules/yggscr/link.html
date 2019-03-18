@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>yggscr.link &#8212; YggScr 1.2.17 documentation</title>
+    <title>yggscr.link &#8212; YggScr 1.2.18 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -88,7 +88,9 @@
   <h1>Source code for yggscr.link</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">exceptions</span> <span class="k">as</span> <span class="n">ygge</span>
+<span class="kn">import</span> <span class="nn">yggscr.ylogging</span>
+<span class="kn">import</span> <span class="nn">yggscr.exceptions</span>
+
 
 <span class="n">links</span> <span class="o">=</span> <span class="p">(</span>
     <span class="s2">&quot;2145-filmvidéo&quot;</span><span class="p">,</span>
@@ -153,15 +155,15 @@
     <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">links</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">cat</span> <span class="ow">in</span> <span class="n">link</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">subcat</span> <span class="ow">or</span> <span class="n">subcat</span> <span class="ow">in</span> <span class="n">link</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">link</span>
-    <span class="k">raise</span> <span class="n">ygge</span><span class="o">.</span><span class="n">YggException</span><span class="p">(</span><span class="s2">&quot;Cat or subcat not found in get_link&quot;</span><span class="p">)</span></div>
+    <span class="k">raise</span> <span class="n">yggscr</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">YggException</span><span class="p">(</span><span class="s2">&quot;Cat or subcat not found in get_link&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="get_cat_id"><a class="viewcode-back" href="../../source/yggscr.html#yggscr.link.get_cat_id">[docs]</a><span class="k">def</span> <span class="nf">get_cat_id</span><span class="p">(</span><span class="n">cat</span><span class="p">,</span> <span class="n">subcat</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">log</span><span class="p">:</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;get_cat_id(</span><span class="si">{}</span><span class="s2">,</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cat</span><span class="p">,</span> <span class="n">subcat</span><span class="p">))</span>
-    <span class="k">if</span> <span class="n">cat</span> <span class="o">==</span> <span class="s2">&quot;filmvideo&quot;</span> <span class="ow">or</span> <span class="n">cat</span> <span class="o">==</span> <span class="s2">&quot;film-vidéo&quot;</span><span class="p">:</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;get_cat_id(</span><span class="si">%s</span><span class="s2">,</span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">cat</span><span class="p">,</span> <span class="n">subcat</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">cat</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;filmvideo&quot;</span><span class="p">,</span> <span class="s2">&quot;film-vidéo&quot;</span><span class="p">):</span>
         <span class="n">cat</span> <span class="o">=</span> <span class="s2">&quot;filmvidéo&quot;</span>
-    <span class="k">if</span> <span class="n">cat</span> <span class="o">==</span> <span class="s2">&quot;jeu-video&quot;</span> <span class="ow">or</span> <span class="n">cat</span> <span class="o">==</span> <span class="s2">&quot;jeu-vidéo&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">cat</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;jeu-video&quot;</span><span class="p">,</span> <span class="s2">&quot;jeu-vidéo&quot;</span><span class="p">):</span>
         <span class="n">cat</span> <span class="o">=</span> <span class="s2">&quot;jeu+vidéo&quot;</span>
     <span class="k">if</span> <span class="n">subcat</span> <span class="o">==</span> <span class="s2">&quot;série-tv&quot;</span><span class="p">:</span>
         <span class="n">subcat</span> <span class="o">=</span> <span class="s2">&quot;serie-tv&quot;</span>
@@ -172,15 +174,15 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">cat_id</span> <span class="ow">and</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\d+-</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">re</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">cat</span><span class="p">),</span> <span class="n">link</span><span class="p">):</span>
             <span class="n">cat_id</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\d+&#39;</span><span class="p">,</span> <span class="n">link</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">log</span><span class="p">:</span>
-                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;cat_id </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cat_id</span><span class="p">))</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;cat_id </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">cat_id</span><span class="p">)</span>
             <span class="k">continue</span>
         <span class="k">if</span> <span class="n">cat_id</span> <span class="ow">and</span> <span class="n">subcat</span> <span class="ow">and</span> <span class="s2">&quot;-</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">subcat</span><span class="p">)</span> <span class="ow">in</span> <span class="n">link</span><span class="p">:</span>
             <span class="n">subcat_id</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\d+&#39;</span><span class="p">,</span> <span class="n">link</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">log</span><span class="p">:</span>
-                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;subcat_id </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">subcat_id</span><span class="p">))</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;subcat_id </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">subcat_id</span><span class="p">)</span>
             <span class="k">break</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">cat_id</span> <span class="ow">or</span> <span class="p">(</span><span class="n">subcat</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">subcat_id</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="n">ygge</span><span class="o">.</span><span class="n">YggException</span><span class="p">(</span><span class="s2">&quot;Cat or subcat not found in get_cat_id&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">yggscr</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">YggException</span><span class="p">(</span><span class="s2">&quot;Cat or subcat not found in get_cat_id&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="n">cat_id</span><span class="p">,</span> <span class="s2">&quot;sub_category&quot;</span><span class="p">:</span> <span class="n">subcat_id</span><span class="p">}</span></div>
 
 
@@ -205,11 +207,11 @@
 
 
 <div class="viewcode-block" id="list_cats"><a class="viewcode-back" href="../../source/yggscr.html#yggscr.link.list_cats">[docs]</a><span class="k">def</span> <span class="nf">list_cats</span><span class="p">():</span>
-    <span class="n">cats</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">mcats</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">links</span><span class="p">:</span>
         <span class="k">if</span> <span class="s1">&#39;/&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">link</span><span class="p">:</span>
-            <span class="n">cats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
-    <span class="k">return</span> <span class="n">cats</span></div>
+            <span class="n">mcats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">mcats</span></div>
 
 
 <div class="viewcode-block" id="cat_subcat_from_href"><a class="viewcode-back" href="../../source/yggscr.html#yggscr.link.cat_subcat_from_href">[docs]</a><span class="k">def</span> <span class="nf">cat_subcat_from_href</span><span class="p">(</span><span class="n">href</span><span class="p">):</span>

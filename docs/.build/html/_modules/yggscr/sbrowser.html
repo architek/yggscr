@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>yggscr.sbrowser &#8212; YggScr 1.2.17 documentation</title>
+    <title>yggscr.sbrowser &#8212; YggScr 1.2.18 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -86,22 +86,20 @@
           <div class="body" role="main">
             
   <h1>Source code for yggscr.sbrowser</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">requests</span>
+<span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">requests</span>
 <span class="kn">import</span> <span class="nn">cfscrape</span>
 <span class="kn">import</span> <span class="nn">robobrowser</span>
-<span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">ylogging</span>
-<span class="kn">from</span> <span class="nn">logging</span> <span class="k">import</span> <span class="n">CRITICAL</span><span class="p">,</span> <span class="n">ERROR</span><span class="p">,</span> <span class="n">WARNING</span><span class="p">,</span> <span class="n">INFO</span><span class="p">,</span> <span class="n">DEBUG</span> <span class="c1">#noqa</span>
 
 
 <div class="viewcode-block" id="SBrowser"><a class="viewcode-back" href="../../source/yggscr.html#yggscr.sbrowser.SBrowser">[docs]</a><span class="k">class</span> <span class="nc">SBrowser</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; General scrapper browser &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log</span><span class="p">,</span> <span class="n">scraper</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">browser</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">proxy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scraper</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">browser</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">proxy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">loglevel</span><span class="o">=</span><span class="n">INFO</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">ylogging</span><span class="o">.</span><span class="n">consolelog</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">loglevel</span><span class="o">=</span><span class="n">loglevel</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">scraper</span> <span class="o">=</span> <span class="n">scraper</span> <span class="ow">or</span> <span class="n">cfscrape</span><span class="o">.</span><span class="n">create_scraper</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">browser</span> <span class="o">=</span> <span class="n">browser</span> <span class="ow">or</span> <span class="n">robobrowser</span><span class="o">.</span><span class="n">RoboBrowser</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">scraper</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">log</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">proxify</span><span class="p">(</span><span class="n">proxy</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Created SBrowser&quot;</span><span class="p">)</span>
 
@@ -109,14 +107,14 @@
         <span class="n">cd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connection_details</span><span class="p">()</span>
         <span class="k">return</span> <span class="s2">&quot;[Browser] - CF was </span><span class="si">{}</span><span class="s2">, UA </span><span class="si">{}</span><span class="s2">, Proxy </span><span class="si">{}</span><span class="s2">, </span><span class="se">\</span>
 <span class="s2">               Local </span><span class="si">{}</span><span class="s2"> Host </span><span class="si">{}</span><span class="s2"> Country </span><span class="si">{}</span><span class="s2"> City </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="s2">&quot;active&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_cloudflare</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;inactive&quot;</span><span class="p">,</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">browser</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;User-Agent&#39;</span><span class="p">],</span>
-                    <span class="s2">&quot;none&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxy</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxy</span><span class="p">,</span>
-                    <span class="n">cd</span><span class="p">[</span><span class="s2">&quot;ip&quot;</span><span class="p">],</span>
-                    <span class="n">cd</span><span class="p">[</span><span class="s2">&quot;hostname&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;hostname&quot;</span> <span class="ow">in</span> <span class="n">cd</span> <span class="k">else</span> <span class="s2">&quot;N/A&quot;</span><span class="p">,</span>
-                    <span class="n">cd</span><span class="p">[</span><span class="s2">&quot;country&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;country&quot;</span> <span class="ow">in</span> <span class="n">cd</span> <span class="k">else</span> <span class="s2">&quot;N/A&quot;</span><span class="p">,</span>
-                    <span class="n">cd</span><span class="p">[</span><span class="s2">&quot;city&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;city&quot;</span> <span class="ow">in</span> <span class="n">cd</span> <span class="k">else</span> <span class="s2">&quot;N/A&quot;</span><span class="p">,</span>
-                <span class="p">)</span>
+                   <span class="s2">&quot;active&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_cloudflare</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;inactive&quot;</span><span class="p">,</span>
+                   <span class="bp">self</span><span class="o">.</span><span class="n">browser</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;User-Agent&#39;</span><span class="p">],</span>
+                   <span class="s2">&quot;none&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxy</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxy</span><span class="p">,</span>
+                   <span class="n">cd</span><span class="p">[</span><span class="s2">&quot;ip&quot;</span><span class="p">],</span>
+                   <span class="n">cd</span><span class="p">[</span><span class="s2">&quot;hostname&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;hostname&quot;</span> <span class="ow">in</span> <span class="n">cd</span> <span class="k">else</span> <span class="s2">&quot;N/A&quot;</span><span class="p">,</span>
+                   <span class="n">cd</span><span class="p">[</span><span class="s2">&quot;country&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;country&quot;</span> <span class="ow">in</span> <span class="n">cd</span> <span class="k">else</span> <span class="s2">&quot;N/A&quot;</span><span class="p">,</span>
+                   <span class="n">cd</span><span class="p">[</span><span class="s2">&quot;city&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;city&quot;</span> <span class="ow">in</span> <span class="n">cd</span> <span class="k">else</span> <span class="s2">&quot;N/A&quot;</span><span class="p">,</span>
+               <span class="p">)</span>
 
 <div class="viewcode-block" id="SBrowser.is_cloudflare"><a class="viewcode-back" href="../../source/yggscr.html#yggscr.sbrowser.SBrowser.is_cloudflare">[docs]</a>    <span class="k">def</span> <span class="nf">is_cloudflare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
@@ -133,7 +131,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">proxy</span> <span class="o">=</span> <span class="n">https_proxy</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">browser</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">proxies</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;https&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxy</span><span class="p">}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Proxy set to </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">browser</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">proxies</span><span class="p">))</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Proxy set to </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">browser</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">proxies</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SBrowser.connection_details"><a class="viewcode-back" href="../../source/yggscr.html#yggscr.sbrowser.SBrowser.connection_details">[docs]</a>    <span class="k">def</span> <span class="nf">connection_details</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -141,16 +139,16 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;https://ipinfo.io/json&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;IPINFO Server returned (</span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">response</span><span class="p">()</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;IPINFO Server returned (</span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">response</span><span class="p">()</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
             <span class="n">res</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">response</span><span class="p">()</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
         <span class="k">except</span> <span class="p">(</span><span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ProxyError</span><span class="p">,</span>
                 <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ConnectionError</span><span class="p">):</span>
             <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;ip&#39;</span><span class="p">:</span> <span class="s1">&#39;Unknown&#39;</span><span class="p">}</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Server returned no JSON (</span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">response</span><span class="p">()</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Server returned no JSON (</span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">response</span><span class="p">()</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
             <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;ip&#39;</span><span class="p">:</span> <span class="s1">&#39;Unknown&#39;</span><span class="p">}</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Unknown exception </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>  <span class="c1"># TODO</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Unknown exception </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">exc</span><span class="p">)</span>
             <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;ip&#39;</span><span class="p">:</span> <span class="s1">&#39;Unknown&#39;</span><span class="p">}</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">res</span></div>
@@ -162,7 +160,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">browser</span><span class="o">.</span><span class="n">response</span></div>
 
 <div class="viewcode-block" id="SBrowser.open"><a class="viewcode-back" href="../../source/yggscr.html#yggscr.sbrowser.SBrowser.open">[docs]</a>    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;&gt;&gt;&gt; </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">url</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;&gt;&gt;&gt; </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">browser</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
 </pre></div>
 

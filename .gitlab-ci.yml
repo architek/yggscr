@@ -21,8 +21,8 @@ cache:
 # As push to dev or master is not allowed anyway
 job_build:
     stage: build
-    only:
-        - merge_requests
+#    only:
+#        - merge_requests
     
     script:
         - echo "Building the app"

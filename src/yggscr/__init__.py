@@ -1,13 +1,13 @@
 # -*- encoding: utf-8 -*-
-# Ygg Scraper v1.2.11
+# Ygg Scraper v1.2.17
 # Yggtorrent scraper library - Webserver - Rss - Shell
-# Copyright © 2018, Laurent Kislaire.
+# Copyright © 2018-2019, Laurent Kislaire.
 # All rights reserved.
 #
 """
 Yggtorrent scraper library - Webserver - Rss - Shell
 
-:Copyright: © 2018, Laurent Kislaire.
+:Copyright: © 2018-2019, Laurent Kislaire.
 :License: ISC (see /LICENSE).
 """
 
@@ -25,7 +25,7 @@ from .__build__ import __builddate__ #noqa
 
 
 __title__ = 'Ygg Scraper'
-__version__ = '1.2.11'
+__version__ = '1.2.17'
 __author__ = 'Laurent Kislaire'
 __license__ = 'ISC'
 __docformat__ = 'restructuredtext en'

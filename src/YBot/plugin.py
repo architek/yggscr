@@ -1,27 +1,26 @@
 ###
-# Copyright (c) 2018, Laurent
+# Copyright (c) 2018-2019, Laurent
 # All rights reserved.
 #
 ###
 
-import yggscr
-import requests
 import threading
 from time import sleep, time
 from hashlib import sha256
-import supybot.ircdb as ircdb   #noqa
-from supybot.commands import (wrap, optional)
-import supybot.callbacks as callbacks
+from collections import defaultdict
+import requests
+from bs4 import BeautifulSoup
+import yggscr.ylogging
 from yggscr.ygg import YggBrowser
 from yggscr.link import list_cat_subcat
 from yggscr.shout import (YggShout, ShoutMessage)
 from yggscr.exceptions import YggException
-from collections import defaultdict
+import supybot.ircutils as ircutils
+from supybot.commands import (wrap, optional)
+import supybot.callbacks as callbacks
+# import supybot.ircdb as ircdb
 # import supybot.utils as utils
 # import supybot.plugins as plugins
-import supybot.ircutils as ircutils
-from bs4 import BeautifulSoup
-from logging import INFO, DEBUG  #noqa
 
 try:
     from supybot.i18n import PluginInternationalization
@@ -32,7 +31,7 @@ except ImportError:
     def _(x):
         return x
 
-shout_err = 0
+_shout_err = 0
 
 
 class YBot(callbacks.Plugin):
@@ -40,15 +39,14 @@ class YBot(callbacks.Plugin):
     threaded = True
 
     def __init__(self, irc):
-        global shout_err
+        global _shout_err
 
         self.__parent = super(YBot, self)
         self.__parent.__init__(irc)
-        self.yggb = YggBrowser(loglevel=DEBUG)
-        #self.yggb.proxify("socks5h://192.168.1.9:9100")
-        self.shout = YggShout(self.yggb)
-        shout_err = 0
-        self.col = dict()
+        self.yggb = YggBrowser(log=self.log)
+        self._shout = YggShout(robs=self.yggb, log=self.log)
+        _shout_err = 0
+        self._col = dict()
 
     def yggv(self, irc, msg, args):
         """
@@ -75,8 +73,8 @@ class YBot(callbacks.Plugin):
         irc.replySuccess()
     yprox = wrap(yprox, ['owner', optional('anything')])
 
-    def ysearch(self, irc, msg, args, n, detail, p):
-        """[n:nmax] [detail True/False] q:pattern [c:cat [s:subcat]] [opt:val]*
+    def ysearch(self, irc, msg, args, n, detail, p):  # noqa
+        """[n(int)] [detail (True/False)] q:pattern [c:cat [s:subcat]] [opt:val]*
         Searches on ygg and return first page results -
         Will only return the first nmax results and waits 1s between each reply
         """
@@ -93,7 +91,6 @@ class YBot(callbacks.Plugin):
                     q[k] = v
         except ValueError:
             irc.error("Wrong syntax")
-            pass
             return
 
         q['name'] = q.pop('q')
@@ -234,7 +231,6 @@ class YBot(callbacks.Plugin):
                         1+_ if n > 1 else "", self.yggb.browser.url, dt, sts), prefixNick=False)
                 statuses[sts] += 1
             except Exception as e:
-                pass
                 mmax = float("inf")
                 irc.reply("{:>2} timeout! [{}]".format(1+_, e), prefixNick=False)
         if n == 1:
@@ -243,7 +239,9 @@ class YBot(callbacks.Plugin):
             mmean = sum(t)/len(t)
         str_statuses = ' | '.join('{}:{}'.format(key, value) for key, value in statuses.items())
         irc.reply("{} packet{} transmitted, {} received, {:.2%} packet loss, http codes {}".
-                  format(n, "s" if n > 1 else "", len(t), 1-len(t)/n, str_statuses), prefixNick=False)
+                  format(n, "s" if n > 1 else "",
+                         len(t), 1-len(t)/n, str_statuses),
+                  prefixNick=False)
         irc.reply("rtt min/avg/max = {:.2f}/{:.2f}/{:.2f} ms".
                   format(mmin, mmean, mmax), prefixNick=False)
 
@@ -270,11 +268,11 @@ class YBot(callbacks.Plugin):
         # Don't colorize members unless w_colour for color tracking
         if group == 2:
             if w_colour:
-                hash = sha256()
-                hash.update(user.encode())
-                hash = hash.digest()[0]
-                hash = hash % len(colours)
-                user = ircutils.mircColor(user, colours[hash])
+                mhash = sha256()
+                mhash.update(user.encode())
+                mhash = mhash.digest()[0]
+                mhash = hash % len(colours)
+                user = ircutils.mircColor(user, colours[mhash])
             else:
                 pass
         elif group not in gcolours.keys():
@@ -287,49 +285,61 @@ class YBot(callbacks.Plugin):
             user = ircutils.bold(user)
         return user
 
-    def shoutify(self, shout, w_colour):
-        user = "{0: >12}".format(shout.user)
-        user = self.colorize_user(user, shout.group, w_colour)
+    def shoutify(self, shoutm, w_colour):
+        user = "{0: >12}".format(shoutm.user)
+        user = self.colorize_user(user, shoutm.group, w_colour)
         fmt = self.registryValue('shout.fmt')
-        msg = shout.message.replace('\n', ' ').replace('\n', ' ')
-        return fmt.format(time=shout.mtime, id=shout.id, fuser=user, user=shout.user, group=shout.group, message=msg)
+        msg = shoutm.message.replace('\n', ' ').replace('\n', ' ')
+        return fmt.format(time=shoutm.mtime, id=shoutm.id, fuser=user,
+                          user=shoutm.user, group=shoutm.group, message=msg)
 
     def yshout(self, irc, msg, args, n, w_colour=False, hfile=None):
         """[int n] [boolean user_colorized] [injected html file]
         Print last shout messages and detects gap. Time is UTC.
         User will be colorized if boolean is True.
         """
-        global shout_err
+        global _shout_err
         rate_err = self.registryValue('shout.rate_err')
         if hfile:
             try:
                 with open(hfile, "r") as fn:
                     html = fn.read()
-            except:
+            except Exception:
                 irc.error("Can't read file %s" % hfile)
                 return
-            shout = ShoutMessage(shout=None, soup=BeautifulSoup(html, 'html.parser'))
-            irc.reply(self.shoutify(shout, False), prefixNick=False)
+            shoutm = ShoutMessage(shout=None, soup=BeautifulSoup(html, 'html.parser'))
+            irc.reply(self.shoutify(shoutm, False), prefixNick=False)
             return
         try:
-            self.shout.get_shouts()
-            diff = self.shout.do_diff()
-            shout_err = 0
+            self._shout.get_shouts()
+            diff = self._shout.do_diff()
+            _shout_err = 0
         except Exception as e:
-            self.log.info("Could not dump shout, aborting. Error %s. Tid %s" % (e, threading.get_ident()))
-            shout_err += 1
-            if shout_err % rate_err == 0:
+            self.log.info("Could not dump shout, aborting. Error %s. Tid %s", e, threading.get_ident())
+            _shout_err += 1
+            if _shout_err % rate_err == 0:
                 irc.error("Shout ({} messages suppressed) (Exception {})".format(rate_err, e))
                 irc.error("Connection details: {}".format(self.yggb))
             return
         if n is None:
             n = len(diff)
-        for removed, shout in diff[len(diff)-n:]:
+        for removed, shoutm in diff[len(diff)-n:]:
             prefix = "REMOVED!!: " if removed else ""
-            irc.reply(
-                    prefix + self.shoutify(shout, w_colour), prefixNick=False)
+            irc.reply(prefix + self.shoutify(shoutm, w_colour), prefixNick=False)
             sleep(1)
     yshout = wrap(yshout, ['owner', optional('int'), optional('boolean'), optional('filename')])
+
+    def ydebug(self, irc, msg, args, debug):
+        """[debug: boolean to set debug]
+        Get or set bot debug level
+        """
+        if debug is None:
+            irc.reply("Debug level for %s is %s" % (self.log.name, yggscr.ylogging.loggerlevel_as_text(self.log)))
+        else:
+            yggscr.ylogging.set_log_debug(debug)
+            irc.replySuccess()
+
+    ydebug = wrap(ydebug, [optional('boolean')])
 
 
 Class = YBot

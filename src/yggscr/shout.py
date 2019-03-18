@@ -2,12 +2,14 @@
 
 from __future__ import unicode_literals
 import time
+import socket
+import sys
+import requests
 from bs4 import NavigableString
-
 from .ygg import YggBrowser
 from .const import SHOUT_URL
-import requests
-import socket
+from .exceptions import YggException
+import yggscr.ylogging
 
 
 class ShoutMessage(object):
@@ -34,10 +36,8 @@ class ShoutMessage(object):
             and self.group == other.group and self.message == other.message
 
     def parse_shout(self, soup):
-        if self.shout is not None and self.shout.debug:
-            print("Parsing\n%s" % soup.prettify())
         message = ""
-        id = soup.get('data-id')
+        d_id = soup.get('data-id')
         username = soup.find("a", class_="username").text.strip()
         group_id = soup.find("a", class_="username")['user-group-id']
         mtime = soup.time['datetime'][:-5]
@@ -51,12 +51,13 @@ class ShoutMessage(object):
                     message = message + e.string
             elif e.name == "a":
                 message = message + e["href"]
-        return mtime, id, username, int(group_id), str(message)
+        return mtime, d_id, username, int(group_id), str(message)
 
 
 class YggShout:
-    def __init__(self, robs=None, debug=False, irc=False, colour=False):
-        self.robs = robs or YggBrowser()
+    def __init__(self, log, robs=None, debug=False, irc=False, colour=False):
+        self.log = log
+        self.robs = robs or YggBrowser(log=self.log)
         self.irc = irc
         self.colour = colour
         self.last_shouts = []
@@ -76,17 +77,17 @@ class YggShout:
         """ Compute and return list of new shouts """
         last_index = None
         self.diffshouts = []
-        for shout in self.new_shouts:
-            try:
-                index = self.last_shouts.index(shout)
-            except ValueError:
-                self.diffshouts.append([False, shout])
-            else:
-                if last_index is not None:
-                    if last_index != (index-1):
-                        for i in range(last_index+1, index-1):
+        if self.last_shouts:
+            for shout in self.new_shouts:
+                try:
+                    index = self.last_shouts.index(shout)
+                except ValueError:
+                    self.diffshouts.append([False, shout])
+                else:
+                    if last_index is not None:
+                        for i in range(last_index+1, index):
                             self.diffshouts.append([True, self.last_shouts[i]])
-                last_index = index
+                    last_index = index
         self.last_shouts = self.new_shouts
         return self.diffshouts
 
@@ -101,61 +102,67 @@ class YggShout:
 
 
 def parse_file(hfile):
-    try:
-        with open(hfile, "r") as fn:
-            html = fn.read()
-    except FileNotFoundError:
-        print("Can't read file {}".format(hfile))
-        exit(1)
+    with open(hfile, "r") as fn:
+        html = fn.read()
     from bs4 import BeautifulSoup
     soup = BeautifulSoup(html, 'html.parser')
     print(soup.get_text())
 
 
-def main():
-    import sys
-    if len(sys.argv) > 1:
-        hfile = sys.argv[1]
-        parse_file(hfile)
-        exit(0)
+yggshout = None
 
-    yggshout = None
-    while(True):
+
+def main_loop(log, NTRY=5):
+    global yggshout
+    nt = 0
+    while nt < 2*NTRY:
         try:
-            nt = 0
-            while nt < 10:
-                try:
-                    if yggshout is None:
-                        yggshout = YggShout()
-                        print("Started")
-                    if nt == 5:
-                        print("Max retries reached... Reconnecting")
-                        yggshout = YggShout()
-                        time.sleep(1)
-                    yggshout.get_shouts()
-                    break
-                except (requests.exceptions.Timeout, socket.timeout) as e:
-                    dt = 1 + 15*(nt % 5)
-                    if nt > 0:
-                        print("ERROR: Can't get shout messages... [{}] - Trying again in {}s...".format(e, dt))
-                    time.sleep(dt)
-                    nt += 1
-                except requests.exceptions.ConnectionError as e:
-                    print("Connection error...[{}]".format(e))
-                    nt += 1
-            if nt >= 10:
-                print("FATAL: No connection")
-                exit(2)
-            elif nt > 1:
-                print("Reconnected")
-            for removed, shout in yggshout.do_diff():
-                if removed:
-                    shout.message += "<-- REMOVED"
-                print(shout)
-            time.sleep(15)
-        except KeyboardInterrupt:
-            sys.exit(0)
+            if yggshout is None:
+                yggshout = YggShout(log=log)
+                print("Started")
+            elif nt == NTRY:
+                print("Max retries reached... Reconnecting")
+                yggshout = YggShout(log=log)
+                time.sleep(1)
+            yggshout.get_shouts()
+        except (requests.exceptions.Timeout, socket.timeout) as e:
+            dt = 1 + 15*(nt % 5)
+            if nt > 0:
+                print("ERROR: Can't get shout messages... [{}] - Trying again in {}s...".format(e, dt))
+            time.sleep(dt)
+            nt += 1
+        except requests.exceptions.ConnectionError as e:
+            print("Connection error...[{}]".format(e))
+            nt += 1
+        else:
+            break
+    else:
+        raise YggException("Shout connection timeout")
+    if nt > 1:
+        print("Reconnected")
+    for removed, shout in yggshout.do_diff():
+        if removed:
+            shout.message += "<-- REMOVED"
+        print(shout)
 
 
-if __name__ == '__main__':
-    main()
+def main(argv=None):
+    if argv is None:
+        argv = sys.argv
+    log = yggscr.ylogging.init_default_logger()
+    if len(argv) > 1:
+        hfile = argv[1]
+        try:
+            parse_file(hfile)
+        except (FileNotFoundError, IsADirectoryError) as e:
+            print("Can't read file, {}".format(e))
+            sys.exit(1)
+    else:
+        while True:
+            try:
+                main_loop(log)
+                time.sleep(15)
+            except KeyboardInterrupt:
+                return
+            except YggException as e:
+                print("Fatal: {}".format(e))

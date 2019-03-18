@@ -1,12 +1,12 @@
 # -*- encoding: utf-8 -*-
 # Yggtorrent scraper library - Webserver - Rss - Shell
-# Copyright © 2018, Laurent Kislaire.
+# Copyright © 2018-2019, Laurent Kislaire.
 # See /LICENSE for licensing information.
 
 """
 Main routine of Ygg Scraper standalone webserver.
 
-:Copyright: © 2018, Laurent Kislaire.
+:Copyright: © 2018-2019, Laurent Kislaire.
 :License: ISC (see /LICENSE).
 """
 

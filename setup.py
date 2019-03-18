@@ -20,7 +20,7 @@ with open('src/yggscr/__build__.py', 'w') as f:
     f.write("__builddate__ = '{}'".format(builddate))
 
 setup(name='yggscr',
-      version='1.2.11',
+      version='1.2.17',
       description='Yggtorrent scraper library - Webserver - Rss - Shell',
       keywords='yggscr',
       author='Laurent Kislaire',
@@ -48,13 +48,19 @@ setup(name='yggscr',
           'robobrowser>=0.5.3',
           'cmd2>=0.8.0',
           'requests[socks]>=2.18.4',
-          'cfscrape>=1.9.4',
+          'cfscrape>=1.9.6',
           'bottle>=0.12.13',
           'bottle-werkzeug>=0.1.1',
           'transmissionrpc>=0.11',
           'deluge_client>=1.6.0',
           'configparser>=3.5.0',
       ],
+      tests_require=[
+          "pytest>=3.6.0",
+          "mock",
+          "pytest-timeout",
+      ],
+      test_suite="tests",
       entry_points={
           'console_scripts': [
               'yshell = yggscr.__main__:main',

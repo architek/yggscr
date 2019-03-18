@@ -3,33 +3,31 @@
 import re
 import os
 import json
-from logging import CRITICAL, ERROR, WARNING, INFO, DEBUG #noqa
 import datetime
+from urllib.parse import urlparse, parse_qs, urlsplit
 from bs4 import BeautifulSoup
-from yggscr import ylogging
 from yggscr.stats import Stats
 from yggscr.torrents import Torrent
 from yggscr.sbrowser import SBrowser
 from yggscr.exceptions import YggException, LoginFailed, TooManyFailedLogins
 from yggscr.const import YGG_HOME, TOP_DAY_URL, TOP_WEEK_URL, TOP_MONTH_URL, \
-                   EXCLUS_URL, TOP_SEED_URL, SEARCH_URL, get_dl_link
+                   EXCLUS_URL, SEARCH_URL, get_dl_link
 from yggscr.link import get_cat_id, list_cat_subcat
+from yggscr.ylogging import init_default_logger
 
-from urllib.parse import urlparse, parse_qs, urlsplit
 
 # from pprint import (PrettyPrinter, pprint)
 # pp = PrettyPrinter(indent=4)
 
 
 class YggBrowser(SBrowser):
-    """Ygg Scrapper with CloudFlare bypass
-    """
-    def __init__(self, scraper=None,
-                 browser=None, proxy=None, loglevel=INFO):
-        self.log = ylogging.consolelog(__name__, loglevel)
-        SBrowser.__init__(self, scraper=scraper, browser=browser,
+    """ Ygg Scrapper """
+    def __init__(self, log=None, scraper=None,
+                 browser=None, proxy=None):
+        self.log = log or init_default_logger()
+        SBrowser.__init__(self, log=self.log, scraper=scraper, browser=browser,
                           proxy=proxy, history=False, timeout=10,
-                          parser='html.parser', loglevel=loglevel)
+                          parser='html.parser')
         self.idstate = None
         self.stats = Stats()
         self.browser.session.hooks['response'].append(self.gen_state())
@@ -52,12 +50,10 @@ class YggBrowser(SBrowser):
                 else:
                     self.idstate = "Anonymous"
                 if old_state != self.idstate:
-                    self.log.debug("Auth state changed {}->{}".format(
-                        old_state, self.idstate))
+                    self.log.debug("Auth state changed %s->%s", old_state, self.idstate)
         return upd_state
 
     def login(self, ygg_id=None, ygg_pass=None):
-
         if ygg_id != self.last_ygg_id:
             self.login_attempts = 1
             self.last_ygg_id = ygg_id
@@ -71,7 +67,6 @@ class YggBrowser(SBrowser):
         except KeyError:
             self.log.error("Asked to login but provided "
                            "neither config nor environment variable")
-            pass
             return
 
         self.open(YGG_HOME)
@@ -107,11 +102,11 @@ class YggBrowser(SBrowser):
         html = str(self.response().content)
         pos_r = html.find('Ratio')
         html = html[pos_r-500:pos_r+500]
-        vals = re.findall(r'\b([0-9\.]+)([GT])[oB]\b', html)
+        vals = re.findall(r'\b([0-9\.]+)([GTP])[oB]\b', html)
         if len(vals) != 2:
             raise YggException("Can't find ratio information")
-        else:
-            self.stats.add(vals)
+
+        self.stats.add(vals)
 
         # Return dict of first level keys
         return {k: v for (k, v) in self.stats.__dict__.items() if not isinstance(v, dict)}
@@ -130,20 +125,19 @@ class YggBrowser(SBrowser):
                         torrent_age=datetime.datetime.fromtimestamp(
                             int(BeautifulSoup(
                                 jtor[4], 'html.parser').div.text)).strftime(
-                            "%Y-%m-%d %H:%M:%S"),
+                                    "%Y-%m-%d %H:%M:%S"),
                         torrent_size=jtor[5].split(">")[-1],
                         torrent_completed=jtor[6],
                         torrent_seed=jtor[7],
                         torrent_leech=jtor[8],
                         href=BeautifulSoup(jtor[1], 'html.parser').find(
                             'a', href=True)['href'],
-                        cat=jcat
+                        cat=jcat,
+                        log=self.log
                     ))
                 except Exception as e:
                     # unknown elements
-                    pass
-                    self.log.debug(
-                        "While getting xhr: {}, jtor={}".format(e, jtor))
+                    self.log.debug("While getting xhr: %s, jtor=%s", e, jtor)
         return torrent_list
 
     def top_day(self):
@@ -158,9 +152,6 @@ class YggBrowser(SBrowser):
     def exclus(self):
         self.open(EXCLUS_URL)
         return self._parse_torrents(table_num=0, n=100)
-
-    def top_seeded(self):
-        return self._get_torrents_xhr(TOP_SEED_URL, method="post")
 
     def _parse_torrents(self, sup=None, detail=False, table_num=1, n=100):
         torrent_list = []
@@ -197,10 +188,10 @@ class YggBrowser(SBrowser):
                     tid = parse_qs(urlparse(thref).query)['id'][0]
                     torrent_list.append(Torrent(
                         name, comm, age, size, compl, seeders, leechers, href,
-                        thref, tid, uploader=uploader))
+                        thref=thref, tid=tid, uploader=uploader, log=self.log))
                 else:
                     torrent_list.append(Torrent(
-                        name, comm, age, size, compl, seeders, leechers, href))
+                        name, comm, age, size, compl, seeders, leechers, href, log=self.log))
         except (IndexError, KeyError):
             raise YggException("Couldn't decode web page")
 
@@ -215,7 +206,7 @@ class YggBrowser(SBrowser):
         if category and not category.isdigit():
             q.pop('category')   # Formsdict
             q.pop('sub_category', '')
-            q.update(get_cat_id(category, sub_category, self.log))
+            q.update(get_cat_id(category, sub_category, log=self.log))
 
         self.log.debug("Searching...")
 
@@ -229,8 +220,7 @@ class YggBrowser(SBrowser):
 
         qx['do'] = 'search'
         self.open(SEARCH_URL, params=qx)
-        self.log.debug("Searched on this url {} with detail:{}"
-                       .format(self.response().url, detail))
+        self.log.debug("Searched on this url %s with detail:%s", self.response().url, detail)
 
         return self._parse_torrents(detail=detail, n=nmax)
 
@@ -239,7 +229,7 @@ class YggBrowser(SBrowser):
         if s_href:
             self.browser.follow_link(s_href)
         else:
-            return None
+            return []
         return self._parse_torrents(n=nmax)
 
     def cat_subcat(self):
@@ -249,16 +239,16 @@ class YggBrowser(SBrowser):
         self.open(YGG_HOME)
         return self.response().status_code
 
-    def download_torrent(self, torrent=None, id=None):
+    def download_torrent(self, torrent=None, torrent_id=None):
         href = torrent.get_dl_link() if torrent is not None \
-                                       else get_dl_link(id)
+                                       else get_dl_link(torrent_id)
         self.open(href)
         iheaders = self.response().headers
         try:
             headers = [('Content-type', iheaders['Content-type']),
-                       ('Content-Disposition',  iheaders['Content-Disposition'])]
+                       ('Content-Disposition', iheaders['Content-Disposition'])]
         except KeyError:
-            self.log.error("Couldn't download torrent")
+            self.log.error("Couldn't download torrent (%s doesn't seem to be a file)", href)
             return
         response_body = self.response().content
         return headers, response_body

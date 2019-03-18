@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 # Ygg Scraper test suite
-# Copyright © 2018, Laurent Kislaire.
+# Copyright © 2018-2019, Laurent Kislaire.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without

@@ -2,20 +2,21 @@ import re
 import cgi
 import html
 import shlex
-import bottle
 import pathlib
-import logging
 import tempfile
 from os import chmod
 from itertools import cycle
 from urllib.parse import urlencode
+import bottle
+from yggscr import __builddate__, __version__
+from yggscr.const import RSS_TPL, DL_TPL, get_dl_link
+import yggscr.ylogging
+from yggscr.exceptions import YggException, LoginFailed, TooManyFailedLogins
+from yggscr.client import rtorrent_add_torrent, \
+    transmission_add_torrent, deluge_add_torrent, exec_cmd
 from yggscr.link import cats
 from yggscr.ygg import YggBrowser
 from yserver.config import Config
-from yggscr import __builddate__, __version__
-from yggscr.const import RSS_TPL, DL_TPL, get_dl_link
-from yggscr.exceptions import YggException, LoginFailed, TooManyFailedLogins
-from yggscr.client import rtorrent_add_torrent, transmission_add_torrent, deluge_add_torrent, exec_cmd
 
 
 bcyc = cycle([True, False])
@@ -25,6 +26,7 @@ class YggServer(bottle.Bottle):
     def __init__(self, cfg="yserver.cfg"):
         super(YggServer, self).__init__()
         self.cfg = cfg
+        self.log = yggscr.ylogging.init_default_logger()  # stdout
         self.start()
         self.setup_routes()
         self.debug()
@@ -43,37 +45,28 @@ class YggServer(bottle.Bottle):
 
         self.config = Config()
         self.config.load_config(self.cfg)
+        yggscr.ylogging.set_log_debug(self.log, self.config.bool('debug'))
 
-        self.ygg = YggBrowser(
-            proxy=self.config['proxy'],
-            loglevel=logging.DEBUG if self.config.bool('debug') else logging.INFO,
-        )
-        self.log = self.ygg.log
+        self.ygg = YggBrowser(proxy=self.config['proxy'], log=self.log)
 
-        self.log.debug("Yserver configuration used: {}".format(self.cfg))
+        self.log.debug("Yserver configuration used: %s", self.cfg)
 
         self.auth()
-        self.log.info("Anonymous: {}, Proxy: {}, Ygg Auth: {}".format(
-            self.state['ano'],
-            self.ygg.proxy,
-            self.ygg.idstate,
-        ))
+        self.log.info("Anonymous: %s, Proxy: %s, Ygg Auth: %s", self.state['ano'], self.ygg.proxy, self.ygg.idstate)
         self.setup_client_cols()
 
     def debug(self):
+        """ This is performed only once, at instance init """
         if self.config.bool('debug'):
             bottle.debug(True)
             try:
-                pass
+                # FIXME decide werkzeug lib
                 from bottle.ext import werkzeug
                 werkzeug = werkzeug.Plugin()
                 self.install(werkzeug)
                 self.log.debug("Werkzeug installed")
             except Exception as e:
-                self.log.warning(
-                    "Couldn't start werkzeug ({}) debug middleware"
-                    ", disabling".format(e))
-                pass
+                self.log.warning("Couldn't start werkzeug (%s) debug middleware, disabling", e)
 
     def auth(self):
         try:
@@ -85,7 +78,6 @@ class YggServer(bottle.Bottle):
             # running from CLI, try to auth
             self.log.debug("Could not load uwsgi python module")
             self.state['ano'] = False
-            pass
 
         if not self.state['ano']:
             try:
@@ -93,31 +85,30 @@ class YggServer(bottle.Bottle):
                 password = self.config['ygg.password']
             except KeyError:
                 self.state['ano'] = True
-                pass
 
         if not self.state['ano']:
             try:
                 self.ygg.login(ygg_id=username, ygg_pass=password)
             except Exception as e:
-                self.log.error("Could not login with user <{}>, exception {}".format(username, e))
+                self.log.error("Could not login with user <%s>, exception %s", username, e)
             # FIXME exception here vs 3 attempts later
 
     def setup_routes(self):
         self.add_hook('before_request', self.reco)
         for l, m in (
-            ('/', self.index),
-            ('/reco', self.index_reco),
-            ('/search', self.search_index),
-            ('/rssearch', self.rssearch),
-            ('/top/<name:re:(day|week|month|exclus)>', self.top_day),
-            ('/dl/<idtorrent:int>', self.dl_torrent),
-            ('/<client:re:(ts|rt|dg|ex)>/<idtorrent:int>/<cat:re:', self.send_torrent),
-            ('/ex/<cat:path>/<subcat:path>/<idtorrent:int>', self.exec_torrent),
-            ('/rss', self.rss),
-            ('/rss/<cat>', self.rss_cat),
-            ('/stats', self.stats),
-            ('/static/<filepath>', self.server_static),
-            ('/images/<filepath>', self.server_images),
+                ('/', self.index),
+                ('/reco', self.index_reco),
+                ('/search', self.search_index),
+                ('/rssearch', self.rssearch),
+                ('/top/<name:re:(day|week|month|exclus)>', self.top_day),
+                ('/dl/<idtorrent:int>', self.dl_torrent),
+                ('/<client:re:(ts|rt|dg|ex)>/<idtorrent:int>/<cat:re:', self.send_torrent),
+                ('/ex/<cat:path>/<subcat:path>/<idtorrent:int>', self.exec_torrent),
+                ('/rss', self.rss),
+                ('/rss/<cat>', self.rss_cat),
+                ('/stats', self.stats),
+                ('/static/<filepath>', self.server_static),
+                ('/images/<filepath>', self.server_images),
         ):
             self.route(path=l, callback=m)
 
@@ -167,11 +158,11 @@ class YggServer(bottle.Bottle):
 
         bottle.response.set_header('Content-type', 'application/xml')
         return rss_tpl.format(items="\n".join(
-                    item_tpl.format(
-                        torrent=torrent,
-                        uri=base.format(id=torrent.tid),
-                        title=html.escape(torrent.title))
-                    for torrent in torrents))
+            item_tpl.format(
+                torrent=torrent,
+                uri=base.format(id=torrent.tid),
+                title=html.escape(torrent.title))
+            for torrent in torrents))
 
     # Hooks
     def reco(self):
@@ -182,31 +173,25 @@ class YggServer(bottle.Bottle):
         try:
             self.ygg.ping()
         except Exception as e:
-            self.log.warning(
-                "Ping failed, can't check state, exception is {}".format(e))
+            self.log.warning("Ping failed, can't check state, exception is %s", e)
         else:
-            self.log.debug("Ping reported state {}".format(
-                self.ygg.idstate))
+            self.log.debug("Ping reported state %s", self.ygg.idstate)
         if self.ygg.idstate != "Authenticated":
             try:
                 self.ygg.login(ygg_id=self.config['ygg.username'],
                                ygg_pass=self.config['ygg.password'])
             except LoginFailed as e:
-                self.log.warning("Failed login, exception is {}".format(e))
-                pass
+                self.log.warning("Failed login, exception is %s", e)
                 return
             except TooManyFailedLogins as e:
-                self.log.error(
-                    "Too many failed logins, login disabled (fix your settings), exception is {}".format(e))
+                self.log.error("Too many failed logins, login disabled (fix your settings), exception is %s", e)
                 self.state['ano'] = True
-                pass
                 return
             except YggException as e:
-                self.log.error("Generic exception got raised: {}".format(e))
-                pass
+                self.log.error("Generic exception got raised: %s", e)
                 return
 
-            self.log.debug("Logged in as %s" % self.config['ygg.username'])
+            self.log.debug("Logged in as %s", self.config['ygg.username'])
         else:
             self.log.debug("Already authenticated")
 
@@ -231,12 +216,13 @@ class YggServer(bottle.Bottle):
             rtn=["Running version {} built on {}.".format(__version__, __builddate__),
                  "Showing as {}".format(ua),
                  "Welcome " + (
-                 "Anonymous - Connect for more options"
-                    if self.state['ano'] else self.config['ygg.username']),
+                     "Anonymous - Connect for more options"
+                     if self.state['ano'] else self.config['ygg.username']),
                  ]
             )
 
     def search_index(self):
+        # FIXME linting (no member decode?)
         q = bottle.request.copy().query.decode()
         if q.pop('act', "") == "Rssize":
             bottle.redirect("rssearch?" + bottle.request.query_string)
@@ -267,9 +253,8 @@ class YggServer(bottle.Bottle):
         torrents = self.ygg.search_torrents(q=q)
         if self.state['ano']:
             return self.rssize(torrents, DL_TPL)
-        else:
-            return self.rssize(torrents, bottle.request.urlparts.scheme + "://" +
-                               bottle.request.urlparts.netloc+bottle.request.script_name+"dl/{id}")
+        return self.rssize(torrents, bottle.request.urlparts.scheme + "://" +
+                           bottle.request.urlparts.netloc+bottle.request.script_name+"dl/{id}")
 
     def top_day(self, name):
         torrents = {
@@ -285,7 +270,7 @@ class YggServer(bottle.Bottle):
                                   len(torrents))])
 
     def dl_torrent(self, idtorrent):
-        head, resp = self.ygg.download_torrent(id=idtorrent)
+        head, resp = self.ygg.download_torrent(torrent_id=idtorrent)
         for k, v in head:
             bottle.response.set_header(k, v)
         return resp
@@ -295,14 +280,14 @@ class YggServer(bottle.Bottle):
 
         try:
             old_req = bottle.request
-            _, resp = self.ygg.download_torrent(id=idtorrent)
+            _, resp = self.ygg.download_torrent(torrent_id=idtorrent)
         except Exception as e:
             rtn.append("Couldn't download torrent [{}]".format(e))
             self.state['qs'] = 'search?'
             return self.mtemplate('search_results', rtn=rtn, request=old_req)
 
         h = self.ygg.response().headers
-        value, params = cgi.parse_header(h['Content-Disposition'])
+        _, params = cgi.parse_header(h['Content-Disposition'])
         fname = pathlib.Path(bytes(params['filename'][:-len(".torrent")], "iso8859-1").decode("utf-8"))
         fp = tempfile.NamedTemporaryFile(prefix="yggscr-{}-".format(fname), suffix=".torrent")
         fp.write(resp)
@@ -326,7 +311,7 @@ class YggServer(bottle.Bottle):
 
         try:
             old_req = bottle.request
-            _, resp = self.ygg.download_torrent(id=idtorrent)
+            _, resp = self.ygg.download_torrent(torrent_id=idtorrent)
             rtn.append("Torrent downloaded, sending to {} client...".format(client))
         except Exception as e:
             rtn.append("Couldn't download torrent [{}]".format(e))
@@ -357,7 +342,6 @@ class YggServer(bottle.Bottle):
                 rtn.append("Deluged RPC returned {}".format(r))
         except Exception as e:
             rtn.append("|".join(filter(None, ("Adding torrent failed", str(e)))))
-            pass
         else:
             rtn.append("Ok")
         self.state['qs'] = 'search?'
@@ -374,7 +358,7 @@ class YggServer(bottle.Bottle):
             cat = cats[cat]
         elif cat not in cats.values():
             return self.rss()
-        self.ygg.get(RSS_TPL.format(category=cat))
+        self.ygg.open(RSS_TPL.format(category=cat))
         uri = bottle.request.urlparts.scheme+"://" + \
             bottle.request.urlparts.netloc
         if self.state['ano']:

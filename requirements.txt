@@ -7,3 +7,5 @@ bottle-werkzeug>=0.1.1
 transmissionrpc>=0.11
 deluge_client>=1.6.0
 configparser>=3.5.0
+urllib3>=1.24.2
+Jinja2>=2.10.1
